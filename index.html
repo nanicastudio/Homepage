@@ -1,8 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <title>Nanica Studio</title>
-  <link rel="icon" type="image/png" href="NanicaLogoInitial_square.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="NanicaLogoInitial_square.png">
+    <title>Nanica Studio</title>
+    <style>
+        /* --- 基础设置 --- */
+        :root {
+            --primary-red: #8a1c1c; /* 哑光深红 */
+            --bg-white: #f5f5f5;    /* 哑光米白 */
+            --bg-dark: #121212;     /* 接近黑 */
+            --text-main: #1a1a1a;
+            --text-light: #ffffff;
+            --rainbow-gradient: linear-gradient(90deg, #ff5e62, #ff9966, #ffff66, #66ff66, #66ccff, #9966ff, #ff66cc);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-white);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- 布局工具 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        /* --- 创意几何元素 --- */
+        .geo-shape {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        .circle { border-radius: 50%; }
+        .square { transform: rotate(45deg); }
+
+        /* --- 导航栏 --- */
+        header {
+            background-color: var(--bg-white);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 彩虹向日葵 Logo 概念图 (CSS绘制) */
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 0 2px var(--primary-red);
+        }
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 50%;
+            background: var(--rainbow-gradient);
+            z-index: -1;
+            opacity: 0; /* 悬停时显示彩虹 */
+            transition: opacity 0.3s;
+        }
+        .logo:hover .logo-icon::after { opacity: 1; }
+
+        nav ul { display: flex; gap: 30px; }
+        nav ul li a { font-weight: 500; font-size: 0.9rem; letter-spacing: 1px; }
+        nav ul li a:hover { color: var(--primary-red); }
+
+        /* --- Hero 区域 --- */
+        .hero {
+            background-color: var(--primary-red);
+            color: var(--text-light);
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 500px;
+            border-left: 3px solid var(--text-light); /* 简约线条 */
+            padding-left: 20px;
+        }
+
+        /* 装饰圆 */
+        .hero-bg-circle {
+            width: 600px;
+            height: 600px;
+            background: #000;
+            opacity: 0.1;
+            position: absolute;
+            right: -100px;
+            bottom: -100px;
+        }
+
+        /* --- 通用标题样式 --- */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 4px;
+            background: var(--primary-red);
+            margin-top: 10px;
+        }
+
+        /* --- 游戏部分 (网格布局) --- */
+        .game-category { margin-bottom: 60px; }
+        .category-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .category-label::before {
+            content:''; width: 8px; height: 8px; background: var(--primary-red);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #eee;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        
+        /* 简约彩虹悬停效果 */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--rainbow-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+        .card:hover::before { transform: scaleX(1); }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #333; /* 这里以后换成图片 */
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 0.8rem;
+        }
+
+        .card h3 { font-size: 1.2rem; margin-bottom: 5px; }
+        .card p { font-size: 0.9rem; color: #777; }
+
+        /* --- 音乐部分 (双栏) --- */
+        .music-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            background: var(--bg-dark);
+            color: #fff;
+            padding: 80px; /* 宽大的内边距 */
+        }
+
+        .music-info h3 { font-size: 1.5rem; margin-bottom: 20px; color: var(--primary-red);}
+        .music-tags span {
+            display: inline-block;
+            border: 1px solid #444;
+            padding: 5px 15px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            border-radius: 20px;
+        }
+
+        .band-list .band-item {
+            margin-bottom: 30px;
+            border-left: 2px solid var(--primary-red);
+            padding-left: 20px;
+        }
+        .band-item h4 { font-size: 1.8rem; font-weight: 300; }
+        .band-item p { color: #888; font-size: 0.9rem; margin-top: 5px;}
+
+        /* --- 3D 设计部分 --- */
+        .design-showcase {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .design-item {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 40px;
+            text-align: center;
+        }
+        .design-shape {
+            width: 100px;
+            height: 100px;
+            background: #eee;
+            margin: 0 auto 20px;
+            border-radius: 50%; /* 圆形展示台 */
+        }
+
+        /* --- 页脚 --- */
+        footer {
+            background-color: var(--primary-red);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            font-size: 0.9rem;
+        }
+
+        /* --- 响应式 --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .music-layout { grid-template-columns: 1fr; padding: 40px 20px; }
+            .nav-inner { flex-direction: column; gap: 15px; }
+        }
+
+    </style>
 </head>
 <body>
-  <h1>Welcome to Nanica Studio OvO</h1>
+
+    <header>
+        <div class="container nav-inner">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                NANICA STUDIO
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#games">GAMES</a></li>
+                    <li><a href="#music">MUSIC</a></li>
+                    <li><a href="#design">DESIGN</a></li>
+                    <li><a href="#contact">CONTACT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="geo-shape circle hero-bg-circle"></div>
+        <div class="container hero-content">
+            <h1>Create.<br>Resonate.<br>Materialize.</h1>
+            <p>独立游戏开发 / 独立音乐制作 / 3D创意设计</p>
+        </div>
+    </section>
+
+    <section id="games" class="section-padding">
+        <div class="container">
+            <h2 class="section-title">Indie Games</h2>
+
+            <div class="game-category">
+                <div class="category-label">Solo Projects</div>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background:#222;">Orbit Echo Image</div>
+                        <h3>Orbit Echo</h3>
+                        <p>探索深空的孤独回响。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background:#333;">Band Run Image</div>
+                        <h3>Band Run</h3>
+                        <p>节奏与奔跑的完美结合。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background:#444;">Golden Handcuff Image</div>
+                        <h3>Golden Handcuff</h3>
+                        <p>关于束缚与自由的叙事。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background:#2a2a2a;">Hell Kid Image</div>
+                        <h3>Hell Kid</h3>
+                        <p>地狱之子的逆袭之旅。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-category">
+                <div class="category-label">Co-op Productions</div>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background:#8a1c1c;">GameLoveLetter</div>
+                        <h3>GameLoveLetter</h3>
+                        <p>写给游戏的一封情书。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background:#6d1616;">FlowerFactoria</div>
+                        <h3>FlowerFactoria</h3>
+                        <p>工业与自然的策略经营。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background:#521111;">Tabi Color</div>
+                        <h3>Tabi Color</h3>
+                        <p>色彩斑斓的旅途。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="music">
+        <div class="music-layout">
+            <div class="music-info">
+                <h2 class="section-title" style="color:#fff; border-color:#fff;">Indie Music</h2>
+                <p style="margin-bottom: 20px; opacity: 0.8;">我们探索声音的边界，从指尖的钢琴到躁动的乐队现场。</p>
+                
+                <h3>Genres</h3>
+                <div class="music-tags">
+                    <span>J-Pop</span>
+                    <span>New Age</span>
+                    <span>Piano Solo</span>
+                    <span>Band Sound</span>
+                </div>
+            </div>
+
+            <div class="band-list">
+                <h3>Our Bands</h3>
+                <br>
+                <div class="band-item">
+                    <h4>Banish.Hannashi</h4>
+                    <p>Alternative / Indie Rock</p>
+                </div>
+                <div class="band-item">
+                    <h4>Netcafe</h4>
+                    <p>Electronic / Chillout / Ambient</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="design" class="section-padding">
+        <div class="container">
+            <h2 class="section-title">Design & 3D Print</h2>
+            <p style="max-width: 600px; margin-bottom: 40px; color:#555;">
+                将虚拟带入现实。专注于高精度3D打印、个人设计委托及游戏周边定制。
+            </p>
+
+            <div class="design-showcase">
+                <div class="design-item">
+                    <div class="design-shape"></div>
+                    <h3>Game Peripherals</h3>
+                    <p>Nanica Studio 游戏独家周边定制。</p>
+                </div>
+                <div class="design-item">
+                    <div class="design-shape" style="border-radius: 0;"></div> <h3>Fan Art Merch</h3>
+                    <p>明日方舟 (Arknights) 及其他同人周边设计。</p>
+                </div>
+                <div class="design-item">
+                    <div class="design-shape" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background-color: var(--primary-red);"></div> <h3>Personal Commission</h3>
+                    <p>接受个人3D建模与打印委托。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <h3>NANICA STUDIO</h3>
+            <p style="margin: 10px 0; opacity: 0.7;">Create with Passion. Design with Heart.</p>
+            <div style="width: 100px; height: 3px; background: var(--rainbow-gradient); margin: 20px auto;"></div>
+            <p>&copy; 2025 Nanica Studio. All Rights Reserved.</p>
+        </div>
+    </footer>
+
 </body>
+</html>
