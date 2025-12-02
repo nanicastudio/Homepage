@@ -22,6 +22,10 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth; /* 让点击导航跳转时更平滑 */
+        }
+
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background-color: var(--bg-white);
@@ -56,7 +60,7 @@
         /* --- 导航栏 --- */
         header {
             background-color: var(--bg-white);
-            padding: 20px 0;
+            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -75,32 +79,21 @@
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            color: var(--text-main);
         }
 
-        /* 彩虹向日葵 Logo 概念图 (CSS绘制) */
-        .logo-icon {
-            width: 24px;
-            height: 24px;
-            background: var(--bg-dark);
-            border-radius: 50%;
-            position: relative;
-            box-shadow: 0 0 0 2px var(--primary-red);
+        /* 新增：Logo 图片样式 */
+        .logo-img {
+            height: 36px; /* 设置一个合适的高度，宽度自适应 */
+            width: auto;
+            display: block;
+            /* 如果图片是纯方形，想加一点圆角可以把下面这行注释取消掉 */
+            /* border-radius: 4px; */
         }
-        .logo-icon::after {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 50%;
-            background: var(--rainbow-gradient);
-            z-index: -1;
-            opacity: 0; /* 悬停时显示彩虹 */
-            transition: opacity 0.3s;
-        }
-        .logo:hover .logo-icon::after { opacity: 1; }
-
+        
         nav ul { display: flex; gap: 30px; }
-        nav ul li a { font-weight: 500; font-size: 0.9rem; letter-spacing: 1px; }
+        nav ul li a { font-weight: 500; font-size: 0.9rem; letter-spacing: 1px; position: relative; }
         nav ul li a:hover { color: var(--primary-red); }
 
         /* --- Hero 区域 --- */
@@ -180,7 +173,7 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 30px;
         }
 
@@ -212,7 +205,7 @@
 
         .card-img-placeholder {
             width: 100%;
-            height: 180px;
+            aspect-ratio: 16 / 9; /* 固定图片比例为 16:9 */
             background-color: #333; /* 这里以后换成图片 */
             margin-bottom: 20px;
             display: flex;
@@ -220,6 +213,8 @@
             justify-content: center;
             color: #555;
             font-size: 0.8rem;
+            background-size: cover;
+            background-position: center;
         }
 
         .card h3 { font-size: 1.2rem; margin-bottom: 5px; }
@@ -233,6 +228,14 @@
             background: var(--bg-dark);
             color: #fff;
             padding: 80px; /* 宽大的内边距 */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 音乐背景装饰 */
+        .music-bg-shape {
+            width: 300px; height: 300px; background: var(--primary-red);
+            position: absolute; top: -50px; right: -50px; opacity: 0.05; border-radius: 50%;
         }
 
         .music-info h3 { font-size: 1.5rem; margin-bottom: 20px; color: var(--primary-red);}
@@ -244,7 +247,9 @@
             margin-bottom: 10px;
             font-size: 0.8rem;
             border-radius: 20px;
+            transition: 0.3s;
         }
+        .music-tags span:hover { border-color: var(--primary-red); color: var(--primary-red); }
 
         .band-list .band-item {
             margin-bottom: 30px;
@@ -262,18 +267,25 @@
         }
         .design-item {
             flex: 1;
-            min-width: 300px;
+            min-width: 280px;
             background: #fff;
             border: 1px solid #ddd;
             padding: 40px;
             text-align: center;
+            transition: 0.3s;
         }
+        .design-item:hover { border-color: var(--primary-red); }
+
         .design-shape {
             width: 100px;
             height: 100px;
             background: #eee;
             margin: 0 auto 20px;
             border-radius: 50%; /* 圆形展示台 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem; color: #999;
         }
 
         /* --- 页脚 --- */
@@ -281,15 +293,19 @@
             background-color: var(--primary-red);
             color: white;
             text-align: center;
-            padding: 40px 0;
+            padding: 50px 0;
             font-size: 0.9rem;
         }
+        footer a:hover { text-decoration: underline; }
 
         /* --- 响应式 --- */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
-            .music-layout { grid-template-columns: 1fr; padding: 40px 20px; }
-            .nav-inner { flex-direction: column; gap: 15px; }
+            .music-layout { grid-template-columns: 1fr; padding: 60px 20px; }
+            .nav-inner { flex-wrap: wrap; }
+            nav { margin-top: 15px; width: 100%; }
+            nav ul { justify-content: space-between; gap: 10px; }
+            nav ul li a { font-size: 0.8rem; }
         }
 
     </style>
@@ -298,10 +314,10 @@
 
     <header>
         <div class="container nav-inner">
-            <div class="logo">
-                <div class="logo-icon"></div>
+            <a href="#" class="logo">
+                <img src="NanicaLogoInitial_square.png" alt="Nanica Studio Logo" class="logo-img">
                 NANICA STUDIO
-            </div>
+            </a>
             <nav>
                 <ul>
                     <li><a href="#games">GAMES</a></li>
@@ -329,22 +345,22 @@
                 <div class="category-label">Solo Projects</div>
                 <div class="grid">
                     <div class="card">
-                        <div class="card-img-placeholder" style="background:#222;">Orbit Echo Image</div>
+                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #222, #333);">Orbit Echo View</div>
                         <h3>Orbit Echo</h3>
                         <p>探索深空的孤独回响。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background:#333;">Band Run Image</div>
+                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #333, #444);">Band Run View</div>
                         <h3>Band Run</h3>
                         <p>节奏与奔跑的完美结合。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background:#444;">Golden Handcuff Image</div>
+                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #444, #555);">Golden Handcuff View</div>
                         <h3>Golden Handcuff</h3>
                         <p>关于束缚与自由的叙事。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background:#2a2a2a;">Hell Kid Image</div>
+                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #2a2a2a, #1a1a1a);">Hell Kid View</div>
                         <h3>Hell Kid</h3>
                         <p>地狱之子的逆袭之旅。</p>
                     </div>
@@ -355,17 +371,17 @@
                 <div class="category-label">Co-op Productions</div>
                 <div class="grid">
                     <div class="card">
-                        <div class="card-img-placeholder" style="background:#8a1c1c;">GameLoveLetter</div>
+                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #8a1c1c, #521111);">GameLoveLetter View</div>
                         <h3>GameLoveLetter</h3>
                         <p>写给游戏的一封情书。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background:#6d1616;">FlowerFactoria</div>
+                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #6d1616, #3d0c0c);">FlowerFactoria View</div>
                         <h3>FlowerFactoria</h3>
                         <p>工业与自然的策略经营。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background:#521111;">Tabi Color</div>
+                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #521111, #2e0909);">Tabi Color View</div>
                         <h3>Tabi Color</h3>
                         <p>色彩斑斓的旅途。</p>
                     </div>
@@ -376,11 +392,12 @@
 
     <section id="music">
         <div class="music-layout">
+             <div class="geo-shape music-bg-shape"></div>
             <div class="music-info">
                 <h2 class="section-title" style="color:#fff; border-color:#fff;">Indie Music</h2>
-                <p style="margin-bottom: 20px; opacity: 0.8;">我们探索声音的边界，从指尖的钢琴到躁动的乐队现场。</p>
+                <p style="margin-bottom: 30px; opacity: 0.8; max-width: 400px;">我们探索声音的边界，从指尖的钢琴叙事到躁动的乐队现场。</p>
                 
-                <h3>Genres</h3>
+                <h3 style="font-size: 1.1rem; color:#bbb;">Genres</h3>
                 <div class="music-tags">
                     <span>J-Pop</span>
                     <span>New Age</span>
@@ -390,7 +407,7 @@
             </div>
 
             <div class="band-list">
-                <h3>Our Bands</h3>
+                <h3 style="color:#fff;">Our Bands</h3>
                 <br>
                 <div class="band-item">
                     <h4>Banish.Hannashi</h4>
@@ -408,21 +425,23 @@
         <div class="container">
             <h2 class="section-title">Design & 3D Print</h2>
             <p style="max-width: 600px; margin-bottom: 40px; color:#555;">
-                将虚拟带入现实。专注于高精度3D打印、个人设计委托及游戏周边定制。
+                将虚拟带入现实。专注于高精度3D打印、个人设计委托及游戏周边定制，连接数字创意与实体触感。
             </p>
 
             <div class="design-showcase">
                 <div class="design-item">
-                    <div class="design-shape"></div>
+                    <div class="design-shape">Placeholder</div>
                     <h3>Game Peripherals</h3>
                     <p>Nanica Studio 游戏独家周边定制。</p>
                 </div>
                 <div class="design-item">
-                    <div class="design-shape" style="border-radius: 0;"></div> <h3>Fan Art Merch</h3>
+                    <div class="design-shape" style="border-radius: 4px;">Placeholder</div> 
+                    <h3>Fan Art Merch</h3>
                     <p>明日方舟 (Arknights) 及其他同人周边设计。</p>
                 </div>
                 <div class="design-item">
-                    <div class="design-shape" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background-color: var(--primary-red);"></div> <h3>Personal Commission</h3>
+                    <div class="design-shape" style="background-color: var(--primary-red); color:white; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; ">Shape</div> 
+                    <h3>Personal Commission</h3>
                     <p>接受个人3D建模与打印委托。</p>
                 </div>
             </div>
@@ -431,10 +450,18 @@
 
     <footer id="contact">
         <div class="container">
-            <h3>NANICA STUDIO</h3>
+            <div style="display: inline-flex; align-items: center; gap: 10px; margin-bottom: 15px; font-weight: bold; font-size: 1.2rem;">
+                 <img src="NanicaLogoInitial_square.png" alt="Logo" style="height: 24px; width: auto; filter: brightness(0) invert(1);"> NANICA STUDIO
+            </div>
             <p style="margin: 10px 0; opacity: 0.7;">Create with Passion. Design with Heart.</p>
-            <div style="width: 100px; height: 3px; background: var(--rainbow-gradient); margin: 20px auto;"></div>
-            <p>&copy; 2025 Nanica Studio. All Rights Reserved.</p>
+            
+            <div style="width: 80px; height: 3px; background: var(--rainbow-gradient); margin: 25px auto; opacity: 0.8;"></div>
+
+            <div style="margin-bottom: 20px; font-size: 0.9rem;">
+                <p>Contact: contact@nanicastudio.com (Example)</p>
+                 </div>
+            
+            <p style="opacity: 0.5; font-size: 0.8rem;">&copy; 2025 Nanica Studio. All Rights Reserved.</p>
         </div>
     </footer>
 
