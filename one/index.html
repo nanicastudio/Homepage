@@ -63,7 +63,7 @@
   .choice-icon{font-size:1.1rem;flex-shrink:0;}
   .choice-cost{margin-left:auto;font-size:0.75rem;font-family:'Cinzel',serif;color:var(--muted);white-space:nowrap;}
   .nyarla-msg{background:rgba(80,0,100,0.2);border:1px solid rgba(176,64,192,0.5);border-radius:4px;padding:12px 16px;font-size:0.9rem;color:#d8a0e8;font-style:italic;position:relative;}
-  .nyarla-msg::before{content:'奈亚子 ·';display:block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;color:var(--nyarla);margin-bottom:5px;font-style:normal;}
+  .nyarla-msg::before{content:'？·';display:block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;color:var(--nyarla);margin-bottom:5px;font-style:normal;}
   .inventory-panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:14px 18px;}
   .inv-title{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.18em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
   .inv-items{display:flex;flex-wrap:wrap;gap:8px;}
@@ -713,21 +713,21 @@ const scenes = {
 };
 
 const NYARLA_LINES = [
-  "嗯～你终于注意到我了呢。别担心，我只是路过。哈斯塔大人对你很感兴趣哦。",
+  "嗯～你终于注意到我了呢。别担心，我只是路过。那位大人对你很感兴趣哦。",
   "抵抗是没有意义的啦～黄衣之王的诗篇已经开始唱了，你听不见吗？",
   "那些所谓的好人只会让你孤立无援哦。不如让我来帮你？代价嘛……很小很小的。",
   "你看起来好累啊。加入我们的话，就什么都不用担心了呢～",
-  "哈斯塔大人说……你已经半只脚踏进来了。剩下那半只，你自己决定吧？",
+  "那位大人说……你已经半只脚踏进来了。剩下那半只，你自己决定吧？",
   "嘻嘻，你越来越像我们的人了呢。黄色真的很适合你。",
 ];
 
 const endingData = {
-  "_end1": { icon:"✨", cls:"good", title:"结局一：封印者", desc:"你用知识与意志封印了哈斯塔。阿卡姆城的居民不会知道这个夜晚发生过什么。历史上从不缺少这样的人，他们以自己的名字换取世界的安全，然后被遗忘在沉默里。<br><br>但那首旋律，你永远忘不掉。" },
-  "_end2": { icon:"💫", cls:"good", title:"结局二：意志胜者", desc:"你用最渺小的人类记忆击退了最古老的神明。不是因为人类强大，而是因为那种渺小本身——短暂、具体、不可复制——是哈斯塔永远无法拥有也无法理解的东西。<br><br>你赢了。代价是永远记得那首你永远不能唱出的歌。" },
-  "_end3": { icon:"👑", cls:"yellow", title:"结局三：黄金落幕", desc:"没有人是真正的失败者，也没有人是真正的胜利者。哈斯塔得到了他想要的，阿卡姆也没有被摧毁——只是多了一道永远散不去的、黄昏一样的光晕。<br><br>有些结局，是由疲惫而非邪恶造成的。" },
-  "_end4": { icon:"🌠", cls:"yellow", title:"结局四：永恒的窗", desc:"你和哈斯塔达成了一个在神话中没有先例的协议。你成为了一扇窗——他通过你欣赏世界，但不通过你控制世界。<br><br>这是一个危险的、脆弱的平衡。但你活着，而阿卡姆也活着。<br><br>你开始写一本小说，题目叫《黄色的欣赏者》。它永远不会出版，但它每天都在被阅读。" },
-  "_end5": { icon:"🌑", cls:"dark", title:"结局五：黄衣降临", desc:"哈斯塔降临了。<br><br>从人类的角度来说，这是灾难，是世界的终结。但从那个新世界的居民角度来说，他们每一天都在创造有史以来最美丽的东西，而那些东西将永远不会被遗忘。<br><br>这是世界的终结，也是某种意义上，文明的顶点。" },
-  "_end6": { icon:"♾️", cls:"yellow", title:"结局六：共生者", desc:"你和哈斯塔成为了神话史上唯一一例共生。人类的个体意志与古神的永恒意志并存于同一个容器里。<br><br>奈亚子后来说，这是她见过的最有趣的结局。她把你们的故事写成了一首诗，献给了哈斯塔。他读了，沉默了很久，然后说：<br><br>「这就是我喜欢人类的原因。」" },
+  "_end1": { icon:"✨", cls:"good", title:"深渊，凝视着你", desc:"你用知识与意志封印了哈斯塔。阿卡姆城的居民不会知道这个夜晚发生过什么。历史上从不缺少这样的人，他们以自己的名字换取世界的安全，然后被遗忘在沉默里。<br><br>但那首旋律，你永远忘不掉。" },
+  "_end2": { icon:"💫", cls:"good", title:"深渊，你也凝视了它", desc:"你用最渺小的人类记忆击退了最古老的神明。不是因为人类强大，而是因为那种渺小本身——短暂、具体、不可复制——是哈斯塔永远无法拥有也无法理解的东西。<br><br>你赢了。代价是永远记得那首你永远不能唱出的歌。" },
+  "_end3": { icon:"👑", cls:"yellow", title:"灵魂湮灭·黄金落幕", desc:"没有人是真正的失败者，也没有人是真正的胜利者。哈斯塔得到了他想要的，阿卡姆也没有被摧毁——只是多了一道永远散不去的、黄昏一样的光晕。<br><br>有些结局，是由疲惫而非邪恶造成的。" },
+  "_end4": { icon:"🌠", cls:"yellow", title:"深渊，成为了你的家", desc:"你和哈斯塔达成了一个在神话中没有先例的协议。你成为了一扇窗——他通过你欣赏世界，但不通过你控制世界。<br><br>这是一个危险的、脆弱的平衡。但你活着，而阿卡姆也活着。<br><br>你开始写一本小说，题目叫《黄色的欣赏者》。它永远不会出版，但它每天都在被阅读。" },
+  "_end5": { icon:"🌑", cls:"dark", title:"灵魂湮灭·黄衣降临", desc:"哈斯塔降临了。<br><br>从人类的角度来说，这是灾难，是世界的终结。但从那个新世界的居民角度来说，他们每一天都在创造有史以来最美丽的东西，而那些东西将永远不会被遗忘。<br><br>这是世界的终结，也是某种意义上，文明的顶点。" },
+  "_end6": { icon:"♾️", cls:"yellow", title:"深渊，与你合而为一", desc:"你和哈斯塔成为了神话史上唯一一例共生。人类的个体意志与古神的永恒意志并存于同一个容器里。<br><br>N后来说，这是她见过的最有趣的结局。她把你们的故事写成了一首诗，献给了哈斯塔。他读了，沉默了很久，然后说：<br><br>「这就是我喜欢人类的原因。」" },
 };
 
 let state = { sanity:100, health:100, corruption:0, inventory:[], currentScene:"start", flags:{} };
@@ -736,7 +736,7 @@ function showNyarla(line) {
   const el = document.getElementById("nyarlaMsg");
   el.style.display = "block";
   el.innerHTML = line || NYARLA_LINES[Math.floor(Math.random()*NYARLA_LINES.length)];
-  addLog("[奈亚子低语]","corrupt");
+  addLog("[N 的低语]","corrupt");
 }
 function hideNyarla() { document.getElementById("nyarlaMsg").style.display = "none"; }
 
