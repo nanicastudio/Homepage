@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>假面之夜 · 叙拉古悬案</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Serif+SC:wght@300;400;600&display=swap');
+
+:root {
+  --bg:        #080604;
+  --bg2:       #110d08;
+  --bg3:       #1a1208;
+  --panel:     #1e1508;
+  --border:    #3a2a10;
+  --gold:      #c9a84c;
+  --gold-dim:  #7a6228;
+  --red:       #8b1a1a;
+  --red-bright:#c0352a;
+  --cream:     #e8d8b0;
+  --text:      #c8b888;
+  --muted:     #6a5830;
+  --white:     #f0e8d0;
+
+  /* character colors */
+  --angelina:  #9b6bb5;
+  --texas:     #3a7ab5;
+  --lapland:   #b54a3a;
+  --dmitri:    #4a8a5a;
+  --harold:    #8a7a3a;
+  --sin:       #5a4a7a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Serif SC', 'Cormorant Garamond', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ─── Ambient candle flicker ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(180,100,20,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 20%, rgba(140,30,20,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 30% at 50% 100%, rgba(100,60,10,0.08) 0%, transparent 40%);
+  animation: ambientFlicker 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes ambientFlicker {
+  0%   { opacity: 0.7; }
+  33%  { opacity: 1; }
+  66%  { opacity: 0.85; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── Mask watermark ─── */
+body::after {
+  content: '𝕸';
+  position: fixed; bottom: -2%; right: -1%;
+  font-size: 30vw; color: rgba(201,168,76,0.025);
+  pointer-events: none; z-index: 0;
+  font-family: 'Cormorant Garamond', serif;
+  line-height: 1; user-select: none;
+}
+
+/* ─── Layout ─── */
+.game-wrap {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto;
+  padding: 0 16px 40px;
+  display: flex; flex-direction: column; gap: 0;
+}
+
+/* ─── Header ─── */
+.game-header {
+  text-align: center;
+  padding: 32px 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.header-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.7rem; letter-spacing: 0.35em;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.header-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 600; color: var(--gold);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 40px rgba(201,168,76,0.35);
+  line-height: 1.2;
+}
+.header-sub {
+  font-size: 0.8rem; color: var(--muted);
+  font-style: italic; margin-top: 6px;
+  letter-spacing: 0.1em;
+}
+
+/* ─── Main 2-col layout ─── */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px;
+}
+@media (max-width: 680px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .sidebar { order: -1; }
+}
+
+/* ─── Dialogue Box ─── */
+.dialogue-area {
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+.scene-banner {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--gold-dim);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.scene-icon { font-size: 1.6rem; }
+.scene-info {}
+.scene-label {
+  font-size: 0.62rem; letter-spacing: 0.25em;
+  color: var(--muted); text-transform: uppercase;
+  font-family: 'Cormorant Garamond', serif;
+}
+.scene-name {
+  font-size: 1rem; color: var(--cream);
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600; letter-spacing: 0.05em;
+}
+
+/* Chat log */
+.chat-log {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  min-height: 360px; max-height: 420px;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 16px;
+  scroll-behavior: smooth;
+}
+.chat-log::-webkit-scrollbar { width: 4px; }
+.chat-log::-webkit-scrollbar-track { background: var(--bg); }
+.chat-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Message bubbles */
+.msg {
+  display: flex; flex-direction: column; gap: 4px;
+  animation: msgIn 0.35s ease;
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg-header {
+  display: flex; align-items: center; gap: 8px;
+}
+.msg-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+  border: 1px solid currentColor;
+}
+.msg-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.78rem; letter-spacing: 0.12em;
+  font-weight: 600; text-transform: uppercase;
+}
+.msg-body {
+  margin-left: 40px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0 6px 6px 6px;
+  padding: 10px 14px;
+  font-size: 0.92rem; line-height: 1.75;
+  color: var(--cream);
+  position: relative;
+}
+.msg-body::before {
+  content: '';
+  position: absolute; top: 0; left: -1px;
+  width: 3px; height: 100%; border-radius: 3px 0 0 3px;
+  background: currentColor;
+}
+
+/* character color themes */
+.char-angelina .msg-avatar, .char-angelina .msg-name { color: var(--angelina); }
+.char-angelina .msg-body { border-left-color: var(--angelina); }
+.char-angelina .msg-body::before { background: var(--angelina); }
+
+.char-texas .msg-avatar, .char-texas .msg-name { color: var(--texas); }
+.char-texas .msg-body::before { background: var(--texas); }
+
+.char-lapland .msg-avatar, .char-lapland .msg-name { color: var(--lapland); }
+.char-lapland .msg-body::before { background: var(--lapland); }
+
+.char-dmitri .msg-avatar, .char-dmitri .msg-name { color: var(--dmitri); }
+.char-dmitri .msg-body::before { background: var(--dmitri); }
+
+.char-harold .msg-avatar, .char-harold .msg-name { color: var(--harold); }
+.char-harold .msg-body::before { background: var(--harold); }
+
+.char-sin .msg-avatar, .char-sin .msg-name { color: var(--sin); }
+.char-sin .msg-body::before { background: var(--sin); }
+
+.char-player .msg-header { flex-direction: row-reverse; }
+.char-player .msg-body { margin-left: 0; margin-right: 40px; border-radius: 6px 0 6px 6px; background: #1a1a0a; }
+.char-player .msg-body::before { left: auto; right: -1px; background: var(--gold-dim); border-radius: 0 3px 3px 0; }
+.char-player .msg-name { color: var(--gold); }
+.char-player .msg-avatar { color: var(--gold); border-color: var(--gold-dim); }
+
+/* Narrator */
+.msg-narrator {
+  text-align: center;
+  font-style: italic; color: var(--muted);
+  font-size: 0.82rem; letter-spacing: 0.05em;
+  padding: 4px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 4px 0;
+}
+
+/* Choices */
+.choices-wrap {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.choice-btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Noto Serif SC', Georgia, serif;
+  font-size: 0.88rem; line-height: 1.5;
+  padding: 11px 16px 11px 44px;
+  text-align: left; cursor: pointer;
+  border-radius: 2px;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.choice-btn::before {
+  content: attr(data-num);
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.75rem; color: var(--gold-dim);
+  letter-spacing: 0.05em;
+}
+.choice-btn:hover {
+  border-color: var(--gold-dim);
+  background: rgba(201,168,76,0.06);
+  color: var(--cream);
+  transform: translateX(3px);
+}
+.choice-btn:disabled {
+  opacity: 0.35; cursor: not-allowed; transform: none;
+}
+.choice-tag {
+  float: right; margin-left: 8px;
+  font-size: 0.7rem; color: var(--gold-dim);
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.1em;
+}
+
+/* ─── Sidebar ─── */
+.sidebar { display: flex; flex-direction: column; gap: 14px; }
+
+.side-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold-dim);
+}
+.side-title {
+  padding: 10px 14px 8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.65rem; letter-spacing: 0.22em;
+  color: var(--muted); text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.side-body { padding: 12px 14px; }
+
+/* Evidence board */
+.evidence-list { display: flex; flex-direction: column; gap: 8px; }
+.evidence-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  font-size: 0.78rem; color: var(--text);
+  line-height: 1.5;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.evidence-item.new-clue {
+  border-color: var(--gold);
+  animation: clueGlow 1s ease;
+}
+@keyframes clueGlow {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 12px rgba(201,168,76,0.3); }
+}
+.evidence-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.65rem; color: var(--gold-dim);
+  display: block; margin-bottom: 3px; letter-spacing: 0.15em;
+}
+.evidence-empty { color: var(--muted); font-style: italic; font-size: 0.8rem; }
+
+/* Character status */
+.char-list { display: flex; flex-direction: column; gap: 6px; }
+.char-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(58,42,16,0.5);
+  font-size: 0.8rem; cursor: pointer;
+  transition: color 0.15s;
+}
+.char-status:last-child { border-bottom: none; }
+.char-status:hover { color: var(--cream); }
+.char-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.char-status-name { flex: 1; }
+.char-status-tag {
+  font-size: 0.68rem; font-family: 'Cormorant Garamond', serif;
+  color: var(--muted); letter-spacing: 0.05em;
+}
+.char-status-tag.questioned { color: var(--gold-dim); }
+.char-status-tag.suspicious { color: var(--red-bright); }
+
+/* Progress */
+.progress-bar-wrap {
+  height: 4px; background: var(--bg);
+  border-radius: 2px; overflow: hidden; margin-bottom: 8px;
+}
+.progress-bar-fill {
+  height: 100%; background: var(--gold);
+  border-radius: 2px; transition: width 0.5s ease;
+}
+.progress-text { font-size: 0.75rem; color: var(--muted); }
+.progress-text span { color: var(--gold); }
+
+/* Accusation button */
+.accuse-btn {
+  width: 100%; padding: 11px;
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red-bright);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem; letter-spacing: 0.15em;
+  text-transform: uppercase; cursor: pointer;
+  transition: all 0.2s; margin-top: 4px;
+}
+.accuse-btn:hover { background: rgba(139,26,26,0.15); border-color: var(--red-bright); }
+.accuse-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ─── Scene nav ─── */
+.scene-nav {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-top: 6px;
+}
+.nav-btn {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 8px 6px; text-align: center;
+  font-family: 'Noto Serif SC', serif; font-size: 0.72rem;
+  color: var(--muted); cursor: pointer;
+  transition: all 0.2s; line-height: 1.4;
+}
+.nav-btn:hover, .nav-btn.active {
+  border-color: var(--gold-dim); color: var(--cream);
+  background: rgba(201,168,76,0.05);
+}
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-icon { display: block; font-size: 1.2rem; margin-bottom: 3px; }
+
+/* ─── Overlay (accusation / ending) ─── */
+.overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(8,6,4,0.96);
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px;
+  text-align: center;
+}
+.overlay.show { display: flex; animation: fadeIn 0.6s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.overlay-icon { font-size: 4rem; margin-bottom: 20px; }
+.overlay-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 600; margin-bottom: 12px;
+  letter-spacing: 0.08em;
+}
+.overlay-title.correct { color: var(--gold); text-shadow: 0 0 30px rgba(201,168,76,0.4); }
+.overlay-title.wrong   { color: var(--red-bright); }
+.overlay-title.neutral { color: var(--cream); }
+.overlay-body {
+  max-width: 540px; font-size: 0.92rem; line-height: 1.85;
+  color: var(--text); font-style: italic; margin-bottom: 28px;
+}
+.overlay-body b { color: var(--cream); font-style: normal; }
+.overlay-btn {
+  background: transparent; border: 1px solid var(--gold-dim);
+  color: var(--gold); padding: 11px 32px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem; letter-spacing: 0.2em;
+  text-transform: uppercase; cursor: pointer;
+  transition: all 0.2s; margin: 4px;
+}
+.overlay-btn:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+
+/* Accusation choices in overlay */
+.accuse-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; max-width: 480px; width: 100%;
+  margin-bottom: 20px;
+}
+.accuse-char-btn {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 14px 10px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-family: 'Noto Serif SC', serif; font-size: 0.82rem;
+  color: var(--text); transition: all 0.2s;
+}
+.accuse-char-btn:hover {
+  border-color: var(--red); color: var(--cream);
+  background: rgba(139,26,26,0.12);
+}
+.accuse-char-icon { font-size: 1.8rem; }
+.accuse-char-name { letter-spacing: 0.05em; }
+.accuse-cancel {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); padding: 9px 24px;
+  font-family: 'Cormorant Garamond', serif; font-size: 0.8rem;
+  cursor: pointer; letter-spacing: 0.15em; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.accuse-cancel:hover { border-color: var(--border); color: var(--text); }
+
+/* Typing indicator */
+.typing-indicator {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; color: var(--muted); font-size: 0.8rem; font-style: italic;
+}
+.typing-dots { display: flex; gap: 4px; }
+.typing-dots span {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--muted); animation: typingBounce 1.2s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* highlight text */
+.hl-gold { color: var(--gold); }
+.hl-red  { color: var(--red-bright); }
+.hl-mute { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- Accusation Overlay -->
+<div class="overlay" id="accuseOverlay">
+  <div style="font-size:0.7rem;letter-spacing:0.3em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;font-family:'Cormorant Garamond',serif;">指认凶手</div>
+  <div class="overlay-title neutral" style="margin-bottom:6px;">你认为——</div>
+  <div style="color:var(--muted);font-size:0.85rem;font-style:italic;margin-bottom:22px;">谁是这场假面之夜背后的真正主谋？</div>
+  <div class="accuse-grid" id="accuseGrid"></div>
+  <button class="accuse-cancel" onclick="closeAccuse()">再想想</button>
+</div>
+
+<!-- Ending Overlay -->
+<div class="overlay" id="endingOverlay">
+  <div class="overlay-icon" id="endIcon"></div>
+  <div class="overlay-title" id="endTitle"></div>
+  <div class="overlay-body" id="endBody"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+    <button class="overlay-btn" onclick="restartGame()">重新调查</button>
+  </div>
+</div>
+
+<div class="game-wrap">
+  <div class="game-header">
+    <div class="header-eyebrow">明日方舟 · 叙拉古 · 假面舞会</div>
+    <div class="header-title">假面之夜</div>
+    <div class="header-sub">Una Notte di Maschere · 一场没有结束的宴会</div>
+  </div>
+
+  <div class="main-layout">
+    <!-- Left: Dialogue -->
+    <div class="dialogue-area">
+      <div class="scene-banner">
+        <div class="scene-icon" id="sceneIcon">🕯️</div>
+        <div class="scene-info">
+          <div class="scene-label">当前地点</div>
+          <div class="scene-name" id="sceneName">叙拉古 · 贝尔托尼宫殿 · 宴会厅</div>
+        </div>
+      </div>
+
+      <div class="chat-log" id="chatLog"></div>
+
+      <div class="choices-wrap" id="choicesWrap"></div>
+
+      <!-- Scene nav (hidden initially) -->
+      <div id="navWrap" style="display:none;">
+        <div style="font-size:0.65rem;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;font-family:'Cormorant Garamond',serif;margin-bottom:8px;">前往调查</div>
+        <div class="scene-nav" id="sceneNav"></div>
+      </div>
+    </div>
+
+    <!-- Right: Sidebar -->
+    <div class="sidebar">
+      <!-- Progress -->
+      <div class="side-card">
+        <div class="side-title">调查进度</div>
+        <div class="side-body">
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+          </div>
+          <div class="progress-text">已收集线索 <span id="clueCount">0</span> / 5</div>
+          <button class="accuse-btn" id="accuseBtn" disabled onclick="openAccuse()">▸ 指认凶手</button>
+        </div>
+      </div>
+
+      <!-- Evidence -->
+      <div class="side-card">
+        <div class="side-title">证据板</div>
+        <div class="side-body">
+          <div class="evidence-list" id="evidenceList">
+            <div class="evidence-empty">尚无线索……</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Characters -->
+      <div class="side-card">
+        <div class="side-title">相关人物</div>
+        <div class="side-body">
+          <div class="char-list" id="charList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  GAME DATA
+// ═══════════════════════════════════════════════
+
+const CHARS = {
+  angelina: { name:'安洁莉娜', icon:'🌸', color:'var(--angelina)' },
+  texas:    { name:'德克萨斯', icon:'🗡️', color:'var(--texas)' },
+  lapland:  { name:'拉普兰德', icon:'🐺', color:'var(--lapland)' },
+  dmitri:   { name:'德米特里', icon:'🎭', color:'var(--dmitri)' },
+  harold:   { name:'哈罗德',   icon:'🕰️', color:'var(--harold)' },
+  sin:      { name:'斥罪',    icon:'🗂️', color:'var(--sin)' },
+  player:   { name:'博士',    icon:'👤', color:'var(--gold)' },
+};
+
+// Clue definitions
+const CLUES = {
+  c1: { title:'破碎的源石酒杯',   desc:'在宴会厅角落发现，边缘有不明粉末残留，并非普通破损。' },
+  c2: { title:'德米特里的证词',   desc:'德米特里声称在舞会最高峰时曾见博士独自走向北翼走廊。' },
+  c3: { title:'拉普兰德的异样',   desc:'拉普兰德腕部有新鲜抓痕，她说是舞会中碰瓷，但方向不对。' },
+  c4: { title:'哈罗德的邀请名单', desc:'宾客名单上的某个名字被人为划去，笔迹与哈罗德不同。' },
+  c5: { title:'斥罪的密信残片',   desc:'半张烧焦的纸，隐约可见"……午夜之前，务必……北翼……"。' },
+};
+
+// ═══════════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════════
+let state = {
+  clues: new Set(),
+  questioned: new Set(),
+  suspicious: new Set(),
+  phase: 'intro',   // intro | investigate | accuse
+  navUnlocked: false,
+};
+
+// ═══════════════════════════════════════════════
+//  SCENE DEFINITIONS
+// ═══════════════════════════════════════════════
+const SCENES = {
+
+  // ── INTRO ──────────────────────────────────
+  intro: {
+    icon: '🕯️', location: '叙拉古 · 贝尔托尼宫殿 · 宴会厅',
+    onEnter: () => {
+      addNarrator('公历1131年，深秋。叙拉古最古老的家族贝尔托尼举办了一年一度的假面舞会。宾客云集，面具之下，无人知晓彼此的身份……直到午夜前的一刻钟。');
+      addMsg('angelina', '博士……<br>博士……<span class="hl-red">死了？</span>');
+      setTimeout(()=>{
+        addMsg('angelina', '我是说——我在北翼走廊发现了您倒在地上，没有脉搏。我……我以为您死了。但当我转身去叫人，再回来——<span class="hl-gold">您不见了。</span><br><br>只留下一个破碎的源石酒杯，和地板上一片血迹。');
+        setTimeout(()=>{
+          addMsg('angelina', '现在我不知道您……您怎么在这里？您还好吗？<br><br>不管怎样——这件事绝对有问题。<b>这栋宫殿里有人动了手脚。</b>我们必须在所有宾客离场之前查明真相。');
+          showChoices([
+            { text:'"安洁莉娜，我没事。告诉我你看到的一切。"', next:'intro_q1' },
+            { text:'"你确定那是我？也许你认错了？"', next:'intro_q2' },
+          ]);
+        }, 900);
+      }, 600);
+    }
+  },
+
+  intro_q1: {
+    icon: '🕯️', location: '叙拉古 · 贝尔托尼宫殿 · 宴会厅',
+    onEnter: () => {
+      addMsg('player', '安洁莉娜，我没事。告诉我你看到的一切。');
+      addMsg('angelina', '是的，博士。<br><br>大约半小时前，我经过北翼走廊，看见一个穿着<span class="hl-gold">金色面具</span>的人——和您今晚戴的一模一样——倒在地上。我跑过去，确认了脉搏，<span class="hl-red">什么都没有。</span><br><br>我慌了，转身要去叫人，前后不超过三十秒。回来时那里什么也没有，只有破碎的酒杯和血迹。');
+      setTimeout(()=>{
+        addMsg('angelina', '博士，有几个人今晚的行为都很可疑——<b>德米特里</b>在附近徘徊，<b>拉普兰德</b>和<b>德克萨斯</b>在宴会中途消失过，而<b>哈罗德</b>……他是今晚的东道主，他知道这宫殿里的每一个角落。');
+        addMsg('angelina', '还有一个叫<b>斥罪</b>的人，受人委托今晚送来一封信——我怀疑那封信和这件事有关。<br><br>博士，<span class="hl-gold">我们从哪里开始？</span>');
+        setTimeout(()=>{
+          unlockInvestigation();
+        }, 500);
+      }, 700);
+    }
+  },
+
+  intro_q2: {
+    icon: '🕯️', location: '叙拉古 · 贝尔托尼宫殿 · 宴会厅',
+    onEnter: () => {
+      addMsg('player', '你确定那是我？也许你认错了？');
+      addMsg('angelina', '我……我知道这听起来很荒唐，博士。<br><br>但那个面具——是<span class="hl-gold">贝尔托尼家族专门为您定制的那一个</span>，我们抵达前您就戴上了。今晚只有一个人戴那副面具。<br><br>更何况，我认识您的手。那就是您的手。<span class="hl-red">但那只手没有温度了。</span>');
+      setTimeout(()=>{
+        addMsg('angelina', '博士，无论如何——这件事不正常。有人在这栋宫殿里动了手脚，而且他们知道<b>我们今晚在这里</b>。<br><br>请相信我，我们必须调查。');
+        setTimeout(()=>{
+          unlockInvestigation();
+        }, 500);
+      }, 700);
+    }
+  },
+
+  // ── TEXAS ──────────────────────────────────
+  texas_hall: {
+    icon: '🗡️', location: '叙拉古 · 贝尔托尼宫殿 · 西侧长廊',
+    onEnter: () => {
+      markQuestioned('texas');
+      addNarrator('德克萨斯站在长廊尽头，独自靠着石柱。她没有戴面具，手臂交叉，眼神望向窗外的夜色。');
+      addMsg('texas', '……博士。');
+      addMsg('texas', '你来找我，说明你已经知道一些事了。');
+      showChoices([
+        { text:'"你在舞会中途去了哪里？"', next:'texas_q1' },
+        { text:'"你和拉普兰德今晚有什么计划？"', next:'texas_q2' },
+        { text:'"你知道有人想伤害我吗？"', next:'texas_q3' },
+      ]);
+    }
+  },
+
+  texas_q1: {
+    icon: '🗡️', location: '叙拉古 · 贝尔托尼宫殿 · 西侧长廊',
+    onEnter: () => {
+      addMsg('player', '你在舞会中途去了哪里？');
+      addMsg('texas', '我去了宫殿的武器陈列室。');
+      addMsg('texas', '……不是为了什么特别的理由。我在那种嘈杂的场合待不住。');
+      setTimeout(()=>{
+        addMsg('texas', '我在那里待了大约二十分钟，然后回到宴会厅找拉普兰德。她不在原来的位置，<span class="hl-red">这让我有些不安。</span><br><br>至于北翼走廊——我没有去过。你可以查宫殿的仆人，他们应该看到过我。');
+        showChoices([
+          { text:'"你和拉普兰德今晚有什么计划？"', next:'texas_q2' },
+          { text:'"你知道有人想伤害我吗？"', next:'texas_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 600);
+    }
+  },
+
+  texas_q2: {
+    icon: '🗡️', location: '叙拉古 · 贝尔托尼宫殿 · 西侧长廊',
+    onEnter: () => {
+      addMsg('player', '你和拉普兰德今晚有什么计划？');
+      addMsg('texas', '……');
+      addMsg('texas', '我们是受哈罗德的邀请来的。说是叙拉古家族的"和解宴"，我有些疑虑，但拉普兰德说没关系，<span class="hl-gold">她说她已经"安排好了"。</span>');
+      setTimeout(()=>{
+        addMsg('texas', '我不知道她说的"安排"是什么意思。<br><br>但她今晚的状态……<span class="hl-red">不对劲。</span>笑得太多，喝得太少，眼睛一直在扫视人群。你最好去问问她。');
+        showChoices([
+          { text:'"你知道有人想伤害我吗？"', next:'texas_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  texas_q3: {
+    icon: '🗡️', location: '叙拉古 · 贝尔托尼宫殿 · 西侧长廊',
+    onEnter: () => {
+      addMsg('player', '你知道有人想伤害我吗？');
+      addMsg('texas', '博士——');
+      addMsg('texas', '想伤害你的人很多，你是罗德岛的博士。但在<b>这个场合</b>，在<b>这个夜晚</b>……<br><br>我收到过一条匿名信息，说今晚的宴会"有惊喜"。我本以为是哈罗德的噱头。<span class="hl-red">现在我不这么认为了。</span>');
+      setTimeout(()=>{
+        addMsg('texas', '查哈罗德的邀请名单。<span class="hl-gold">名单上有些东西不对。</span><br><br>……这是我能告诉你的全部了。');
+        showChoices([
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 600);
+    }
+  },
+
+  // ── LAPLAND ────────────────────────────────
+  lapland_garden: {
+    icon: '🐺', location: '叙拉古 · 贝尔托尼宫殿 · 内庭花园',
+    onEnter: () => {
+      markQuestioned('lapland');
+      addNarrator('拉普兰德站在喷泉边，手里握着一杯没动过的红酒，面具戴在头顶而不是脸上，如同一顶奇特的冠冕。她看见你时，嘴角浮现出那个一贯的、让人摸不透的微笑。');
+      addMsg('lapland', '哎呀，博士——据说你死了，怎么还有心情来见我？');
+      addMsg('lapland', '……开玩笑的。你没有那么容易死。');
+      showChoices([
+        { text:'"你腕上的伤是怎么来的？"', next:'lapland_q1' },
+        { text:'"你说你"安排好了"——安排了什么？"', next:'lapland_q2' },
+        { text:'"今晚是不是你做的？"', next:'lapland_q3' },
+      ]);
+    }
+  },
+
+  lapland_q1: {
+    icon: '🐺', location: '叙拉古 · 贝尔托尼宫殿 · 内庭花园',
+    onEnter: () => {
+      addMsg('player', '你腕上的伤是怎么来的？');
+      addMsg('lapland', '……');
+      addMsg('lapland', '你还挺仔细的。');
+      setTimeout(()=>{
+        addMsg('lapland', '舞会上有人撞了我，酒杯碎了，割到了腕部。就这么简单。<br><br>……<span class="hl-red">不相信我的脸色</span>？那也没办法，博士，我就是这张脸。');
+        addClue('c3');
+        showChoices([
+          { text:'"你说你"安排好了"——安排了什么？"', next:'lapland_q2' },
+          { text:'"今晚是不是你做的？"', next:'lapland_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  lapland_q2: {
+    icon: '🐺', location: '叙拉古 · 贝尔托尼宫殿 · 内庭花园',
+    onEnter: () => {
+      addMsg('player', '你对德克萨斯说，你"安排好了"——安排了什么？');
+      addMsg('lapland', '呵。德克萨斯嘴这么快。');
+      addMsg('lapland', '我只是告诉她不用担心今晚的宴会，因为我提前<span class="hl-gold">摸清了宫殿的出入口布局</span>，以防万一。职业习惯，博士，我们做这行的人总要留条退路。');
+      setTimeout(()=>{
+        addMsg('lapland', '至于其他的……<br><br>我在舞会中途去了一趟二楼观览台，从上面可以俯瞰整个宴会厅。我看见<b>斥罪</b>把一封信交给了<b>哈罗德</b>。哈罗德看完之后，<span class="hl-red">脸色非常难看。</span>');
+        showChoices([
+          { text:'"今晚是不是你做的？"', next:'lapland_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  lapland_q3: {
+    icon: '🐺', location: '叙拉古 · 贝尔托尼宫殿 · 内庭花园',
+    onEnter: () => {
+      addMsg('player', '直接问你——今晚的事，是不是你做的？');
+      addMsg('lapland', '……');
+      setTimeout(()=>{
+        addMsg('lapland', '<span class="hl-mute">沉默了很长时间。</span><br><br>如果是我——你现在还能站在这里吗，博士？<br><br>我杀人，但我不做半吊子的事。你还活着，所以答案显而易见。');
+        addMsg('lapland', '不过……<span class="hl-gold">想害你的人</span>今晚确实在这里。我只是还没决定要不要告诉你是谁。<br><br>去把该问的人都问一遍，也许你自己就能找到答案。');
+        showChoices([
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 800);
+    }
+  },
+
+  // ── DMITRI ─────────────────────────────────
+  dmitri_ballroom: {
+    icon: '🎭', location: '叙拉古 · 贝尔托尼宫殿 · 宴会厅中央',
+    onEnter: () => {
+      markQuestioned('dmitri');
+      addNarrator('德米特里是今晚少数没有掩饰自己身份的宾客，他戴着宴会必备的半面具，却笑容灿烂得几乎让人忘记这里发生了什么。他是叙拉古本地的小贵族，与贝尔托尼家族有些远亲关系。');
+      addMsg('dmitri', '博士！我还以为今晚见不到您了，外面都在传……啊，反正是些谣言。');
+      addMsg('dmitri', '您找我有事？');
+      showChoices([
+        { text:'"你说你在北翼走廊附近——你看到了什么？"', next:'dmitri_q1' },
+        { text:'"你和哈罗德是什么关系？"', next:'dmitri_q2' },
+        { text:'"舞会上有没有什么不对劲的地方？"', next:'dmitri_q3' },
+      ]);
+    }
+  },
+
+  dmitri_q1: {
+    icon: '🎭', location: '叙拉古 · 贝尔托尼宫殿 · 宴会厅中央',
+    onEnter: () => {
+      addMsg('player', '你说你在北翼走廊附近——你看到了什么？');
+      addMsg('dmitri', '啊……那个。');
+      addMsg('dmitri', '是的，我去北翼找洗手间，结果走错了。然后我看见……一个人。<span class="hl-gold">戴着金色面具的人</span>，靠着墙走路，步态非常不稳定。');
+      setTimeout(()=>{
+        addMsg('dmitri', '我本来要上前，但那人好像察觉到了我，加快了脚步，拐进走廊深处。过了没多久，我听见——<span class="hl-red">什么东西破碎的声音。</span><br><br>然后就没动静了。我当时很害怕，就走了，真对不起。');
+        addClue('c2');
+        showChoices([
+          { text:'"你和哈罗德是什么关系？"', next:'dmitri_q2' },
+          { text:'"舞会上有没有什么不对劲的地方？"', next:'dmitri_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  dmitri_q2: {
+    icon: '🎭', location: '叙拉古 · 贝尔托尼宫殿 · 宴会厅中央',
+    onEnter: () => {
+      addMsg('player', '你和哈罗德是什么关系？');
+      addMsg('dmitri', '哈罗德先生？他是贝尔托尼家族的总管，管着这栋宫殿大大小小的事务。');
+      addMsg('dmitri', '我和他不算熟……但我知道他今晚压力很大。我偷听到他和一个仆人说——<span class="hl-gold">"那批货不能出事"</span>。什么货，我就不知道了。');
+      setTimeout(()=>{
+        addMsg('dmitri', '另外，我注意到宾客名单在宴会开始之前被修改过。哈罗德拿着名单在门口站了很久，后来名单上好像少了几个人。<br><br>……<span class="hl-mute">当然，这可能只是普通的宾客变动。</span>');
+        showChoices([
+          { text:'"舞会上有没有什么不对劲的地方？"', next:'dmitri_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  dmitri_q3: {
+    icon: '🎭', location: '叙拉古 · 贝尔托尼宫殿 · 宴会厅中央',
+    onEnter: () => {
+      addMsg('player', '舞会上有没有什么不对劲的地方？');
+      addMsg('dmitri', '嗯……有一件小事，我不确定算不算。');
+      addMsg('dmitri', '宴会开始时提供的饮品——我发现有一种颜色比往年更深，我没有喝。但我看见很多宾客喝了之后都变得<span class="hl-red">昏昏欲睡，比平时更快</span>。');
+      setTimeout(()=>{
+        addMsg('dmitri', '喝那种酒的都是……<span class="hl-mute">手持金色酒杯的人。</span>今晚的金色酒杯是专门为贵宾准备的，博士，您也拿了一个吧？');
+        addClue('c1');
+        showChoices([
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  // ── HAROLD ─────────────────────────────────
+  harold_study: {
+    icon: '🕰️', location: '叙拉古 · 贝尔托尼宫殿 · 总管书房',
+    onEnter: () => {
+      markQuestioned('harold');
+      addNarrator('哈罗德在书房里，桌上摆着几叠整齐的文件。他是个五十多岁的叙拉古人，头发梳理得一丝不乱，但你注意到他的手在微微颤抖。');
+      addMsg('harold', '博士……很高兴您还安然无恙。<br><br>请坐，请坐。今晚的事让宫殿上下都很……困扰。');
+      showChoices([
+        { text:'"你是这次舞会的主办人，你提前知道会发生什么？"', next:'harold_q1' },
+        { text:'"邀请名单上划掉的那个名字是谁？"', next:'harold_q2' },
+        { text:'"斥罪送来的信里写了什么？"', next:'harold_q3' },
+      ]);
+    }
+  },
+
+  harold_q1: {
+    icon: '🕰️', location: '叙拉古 · 贝尔托尼宫殿 · 总管书房',
+    onEnter: () => {
+      addMsg('player', '你是这次舞会的主办人，你提前知道会发生什么？');
+      addMsg('harold', '博士，您这话……让我很为难。');
+      addMsg('harold', '我主办了这场舞会，是的，但这场舞会本是为了<span class="hl-gold">联络叙拉古各家族</span>，增进友谊。我绝没有想到会发生这样的事。');
+      setTimeout(()=>{
+        addMsg('harold', '……但我必须承认，<span class="hl-red">一个月前</span>，我收到过一封威胁信。说如果今晚某件"交易"不能完成，就会有人付出代价。<br><br>我以为只是恐吓，我没有上报。博士，这……是我的失职。');
+        showChoices([
+          { text:'"邀请名单上划掉的那个名字是谁？"', next:'harold_q2' },
+          { text:'"斥罪送来的信里写了什么？"', next:'harold_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  harold_q2: {
+    icon: '🕰️', location: '叙拉古 · 贝尔托尼宫殿 · 总管书房',
+    onEnter: () => {
+      addMsg('player', '邀请名单上有一个名字被划掉了，那是谁？');
+      addMsg('harold', '……您怎么——');
+      addMsg('harold', '<span class="hl-mute">沉默片刻。</span>');
+      setTimeout(()=>{
+        addMsg('harold', '是……是<span class="hl-red">卡洛斯·贝尔托尼</span>。家族的旁支，一直在从事一些……不太体面的生意。他原本在邀请名单上，但上周我接到通知，说他<b>另有安排</b>，不会出席。<br><br>是谁通知我的？是<b>斥罪</b>。他作为信使，转达了卡洛斯的"意思"。');
+        addClue('c4');
+        showChoices([
+          { text:'"斥罪送来的信里写了什么？"', next:'harold_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  harold_q3: {
+    icon: '🕰️', location: '叙拉古 · 贝尔托尼宫殿 · 总管书房',
+    onEnter: () => {
+      addMsg('player', '今晚斥罪给你送了信，信里写了什么？');
+      addMsg('harold', '……');
+      addMsg('harold', '您知道得很清楚，博士。');
+      setTimeout(()=>{
+        addMsg('harold', '信里说——计划提前了。<span class="hl-gold">目标会在午夜前出现在北翼走廊。</span><br><br>我……我当时没有意识到"目标"指的是您。我以为那是卡洛斯家族的内部交易术语，我以为和我无关，我就……没有管。<br><br><span class="hl-red">我真的不知道目标是您，博士。</span>');
+        addMsg('harold', '那封信我烧掉了一半，另一半……应该还在壁炉里。');
+        addClue('c5');
+        showChoices([
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 800);
+    }
+  },
+
+  // ── SIN ────────────────────────────────────
+  sin_corridor: {
+    icon: '🗂️', location: '叙拉古 · 贝尔托尼宫殿 · 东侧廊道',
+    onEnter: () => {
+      markQuestioned('sin');
+      addNarrator('斥罪站在廊道阴影处，一件朴素的深色外衣几乎让他融入了背景。他看起来并不惊讶于你的出现。');
+      addMsg('sin', '博士。<br><br>我猜你会来找我的。');
+      showChoices([
+        { text:'"你给哈罗德送了什么信？"', next:'sin_q1' },
+        { text:'"是谁雇了你？"', next:'sin_q2' },
+        { text:'"你知道北翼走廊发生了什么吗？"', next:'sin_q3' },
+      ]);
+    }
+  },
+
+  sin_q1: {
+    icon: '🗂️', location: '叙拉古 · 贝尔托尼宫殿 · 东侧廊道',
+    onEnter: () => {
+      addMsg('player', '你给哈罗德送了什么信？');
+      addMsg('sin', '我是信使。我不看信的内容。');
+      addMsg('sin', '……通常如此。<br><br>但这封信在递送前封口松动了，我——<span class="hl-mute">无意间看了一眼</span>。里面写着时间、地点，还有一个词：<span class="hl-gold">Marionette</span>。傀儡。');
+      setTimeout(()=>{
+        addMsg('sin', '我不知道那个词的含义，但那封信来自于——<span class="hl-red">一个我不应该提名字的人。</span>在叙拉古，有些名字说出来会带来麻烦。');
+        showChoices([
+          { text:'"是谁雇了你？"', next:'sin_q2' },
+          { text:'"你知道北翼走廊发生了什么吗？"', next:'sin_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 700);
+    }
+  },
+
+  sin_q2: {
+    icon: '🗂️', location: '叙拉古 · 贝尔托尼宫殿 · 东侧廊道',
+    onEnter: () => {
+      addMsg('player', '是谁雇了你送这封信？');
+      addMsg('sin', '……');
+      addMsg('sin', '博士，叙拉古的信使有自己的规矩。我透露委托人，我的生意就做到头了。<br><br>但我可以告诉你一件事：委托我的人，今晚<span class="hl-gold">不在这栋宫殿里。</span>');
+      setTimeout(()=>{
+        addMsg('sin', '他让我带一句话——<em>"金丝线牵傀儡，傀儡不知身后人。"</em><br><br>博士，<span class="hl-red">这句话是给你的。</span>他知道你会活下来。他知道你会追查。他就是要你查。');
+        markSuspicious('sin');
+        showChoices([
+          { text:'"你知道北翼走廊发生了什么吗？"', next:'sin_q3' },
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 800);
+    }
+  },
+
+  sin_q3: {
+    icon: '🗂️', location: '叙拉古 · 贝尔托尼宫殿 · 东侧廊道',
+    onEnter: () => {
+      addMsg('player', '你知道北翼走廊发生了什么吗？');
+      addMsg('sin', '我知道一些。');
+      addMsg('sin', '北翼走廊，是这栋宫殿唯一一处<span class="hl-gold">源石信号屏蔽</span>的区域——贝尔托尼家族用于秘密会面。这一点，只有非常了解这座宫殿的人才会知道。');
+      setTimeout(()=>{
+        addMsg('sin', '源石信号屏蔽意味着什么，博士？意味着在那里使用源石技艺<span class="hl-red">不会被感知到，也不会留下痕迹。</span><br><br>如果有人想在那里……做些什么，那是绝佳的地点。');
+        addMsg('sin', '我说完了，博士。剩下的，由你来判断。');
+        showChoices([
+          { text:'（返回调查）', next:'_nav' },
+        ]);
+      }, 800);
+    }
+  },
+
+};
+
+// ═══════════════════════════════════════════════
+//  ACCUSATION & ENDINGS
+// ═══════════════════════════════════════════════
+const ACCUSATION_CHARS = [
+  { id:'texas',   label:'德克萨斯' },
+  { id:'lapland', label:'拉普兰德' },
+  { id:'dmitri',  label:'德米特里' },
+  { id:'harold',  label:'哈罗德' },
+  { id:'sin',     label:'斥罪' },
+];
+
+const ENDINGS = {
+  lapland: {
+    correct: false,
+    icon: '🐺',
+    title: '错误的指控',
+    cls: 'wrong',
+    body: `<b>拉普兰德</b>平静地接受了你的指控，然后笑了。<br><br>
+"博士，我做过很多事，但<b>不包括这件</b>。"她把腕上的伤痕展示给所有人看——那是一道陈旧的伤疤，不是今晚造成的。<br><br>
+当天夜里，<b>真正的幕后人</b>趁乱消失了。案件就此悬而未决，叙拉古的夜晚拥有了一个新的传说。<br><br>
+<span style="color:var(--muted)">结局：错误的审判</span>`
+  },
+  texas: {
+    correct: false,
+    icon: '🗡️',
+    title: '错误的指控',
+    cls: 'wrong',
+    body: `<b>德克萨斯</b>没有说话。她只是用那双深蓝色的眼睛注视着你，然后沉默地转身离开。<br><br>
+没有辩解，因为她知道辩解是徒劳的——不是因为她有罪，而是因为她从不解释自己。<br><br>
+三天后，你收到一封信，上面只有一行字：<em>"查一查那批货的去向。"</em> 没有署名。<br><br>
+<span style="color:var(--muted)">结局：沉默的撤离</span>`
+  },
+  dmitri: {
+    correct: false,
+    icon: '🎭',
+    title: '错误的指控',
+    cls: 'wrong',
+    body: `<b>德米特里</b>当场崩溃，痛哭流涕，一再发誓自己什么都不知道。<br><br>
+安洁莉娜悄悄拉了拉你的袖子。她没有说话，但眼神告诉你：<b>你指控了一个无辜的人。</b><br><br>
+真正的幕后人喝着今晚最后一杯酒，从容离开了宫殿，消失在叙拉古的夜色中。<br><br>
+<span style="color:var(--muted)">结局：代罪的羔羊</span>`
+  },
+  harold: {
+    correct: false,
+    icon: '🕰️',
+    title: '半真半假',
+    cls: 'neutral',
+    body: `<b>哈罗德</b>承认了失职——他知情，他不报告，他算是从犯。<br><br>
+但他不是策划者。在贝尔托尼家族的审问下，他供出了<b>卡洛斯·贝尔托尼</b>的名字，以及那个不在宫殿里的幕后指使者。<br><br>
+案件被移交叙拉古当局。哈罗德被解除总管职务。幕后人……已经不在叙拉古了。<br><br>
+你得到了一半的真相，代价是另一半永远沉入了地中海。<br><br>
+<span style="color:var(--muted)">结局：不完整的正义</span>`
+  },
+  sin: {
+    correct: true,
+    icon: '🎭',
+    title: '假面揭下',
+    cls: 'correct',
+    body: `<b>斥罪</b>愣了一秒，随后露出一个奇异的表情——介于钦佩和遗憾之间。<br><br>
+"博士，你比我想象的更快。"<br><br>
+他是信使，但不只是信使。他同时受雇于<b>卡洛斯·贝尔托尼</b>，负责在宫殿内部协调今晚的"行动"——用经过处理的源石粉末令博士短暂停止生命体征，为的是引发罗德岛的混乱，趁乱转移一批源石交易文件。<br><br>
+博士"死亡"只是手段，<b>目标从不是博士的生命</b>，而是博士口袋里那份合约。<br><br>
+斥罪被当场控制。安洁莉娜从你的内袋里取出那份合约，完好无损。<br><br>
+宴会在午夜后一小时结束，蜡烛逐渐熄灭。面具们鱼贯而出，带走了各自的秘密，只留下一个被解开的谜。<br><br>
+<span style="color:var(--gold)">结局：假面之夜，真相落幕</span>`
+  },
+};
+
+// ═══════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════
+function addMsg(charId, html, delay=0) {
+  const log = document.getElementById('chatLog');
+  const ch = CHARS[charId];
+  const div = document.createElement('div');
+  div.className = `msg char-${charId}`;
+
+  div.innerHTML = `
+    <div class="msg-header">
+      <div class="msg-avatar">${ch.icon}</div>
+      <div class="msg-name" style="color:${ch.color}">${ch.name}</div>
+    </div>
+    <div class="msg-body" style="--char-color:${ch.color}">${html}</div>
+  `;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function addNarrator(text) {
+  const log = document.getElementById('chatLog');
+  const div = document.createElement('div');
+  div.className = 'msg-narrator';
+  div.innerHTML = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function showTyping(charId, duration=800) {
+  return new Promise(res => {
+    const log = document.getElementById('chatLog');
+    const ch = CHARS[charId];
+    const div = document.createElement('div');
+    div.className = 'typing-indicator';
+    div.innerHTML = `<span style="color:${ch.color}">${ch.name}</span><div class="typing-dots"><span></span><span></span><span></span></div>`;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    setTimeout(()=>{ div.remove(); res(); }, duration);
+  });
+}
+
+function showChoices(choices) {
+  const wrap = document.getElementById('choicesWrap');
+  wrap.innerHTML = '';
+  choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.setAttribute('data-num', String.fromCharCode(65+i));
+    if (c.tag) btn.innerHTML = `${c.text}<span class="choice-tag">${c.tag}</span>`;
+    else btn.textContent = c.text;
+    btn.addEventListener('click', () => {
+      if (c.next === '_nav') {
+        showNav();
+        wrap.innerHTML = '';
+      } else {
+        wrap.innerHTML = '';
+        enterScene(c.next);
+      }
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function addClue(id) {
+  if (state.clues.has(id)) return;
+  state.clues.add(id);
+  renderEvidence();
+  updateProgress();
+
+  // Flash the new clue
+  const list = document.getElementById('evidenceList');
+  const items = list.querySelectorAll('.evidence-item');
+  if (items.length > 0) {
+    const last = items[items.length-1];
+    last.classList.add('new-clue');
+    setTimeout(()=>last.classList.remove('new-clue'), 2000);
+  }
+}
+
+function renderEvidence() {
+  const list = document.getElementById('evidenceList');
+  if (state.clues.size === 0) {
+    list.innerHTML = '<div class="evidence-empty">尚无线索……</div>';
+    return;
+  }
+  list.innerHTML = '';
+  let i = 1;
+  for (const id of state.clues) {
+    const cl = CLUES[id];
+    const div = document.createElement('div');
+    div.className = 'evidence-item';
+    div.innerHTML = `<span class="evidence-num">线索 · ${String(i).padStart(2,'0')}</span><b>${cl.title}</b><br>${cl.desc}`;
+    list.appendChild(div);
+    i++;
+  }
+}
+
+function updateProgress() {
+  const n = state.clues.size;
+  document.getElementById('clueCount').textContent = n;
+  document.getElementById('progressBar').style.width = (n/5*100)+'%';
+  if (n >= 3) {
+    document.getElementById('accuseBtn').disabled = false;
+  }
+}
+
+function markQuestioned(id) {
+  state.questioned.add(id);
+  renderCharList();
+}
+function markSuspicious(id) {
+  state.suspicious.add(id);
+  renderCharList();
+}
+
+function renderCharList() {
+  const list = document.getElementById('charList');
+  const chars = [
+    { id:'angelina', label:'安洁莉娜', role:'向导' },
+    { id:'texas',    label:'德克萨斯', role:'可疑' },
+    { id:'lapland',  label:'拉普兰德', role:'可疑' },
+    { id:'dmitri',   label:'德米特里', role:'目击者' },
+    { id:'harold',   label:'哈罗德',   role:'主办人' },
+    { id:'sin',      label:'斥罪',    role:'信使' },
+  ];
+  list.innerHTML = '';
+  chars.forEach(c => {
+    const ch = CHARS[c.id];
+    const questioned = state.questioned.has(c.id);
+    const suspicious = state.suspicious.has(c.id);
+    const div = document.createElement('div');
+    div.className = 'char-status';
+    let tag = questioned ? '已问询' : c.role;
+    let tagCls = questioned ? 'questioned' : '';
+    if (suspicious) { tag = '★ 可疑'; tagCls = 'suspicious'; }
+    div.innerHTML = `
+      <div class="char-dot" style="background:${ch.color}"></div>
+      <span class="char-status-name">${ch.name}</span>
+      <span class="char-status-tag ${tagCls}">${tag}</span>
+    `;
+    list.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  SCENE NAVIGATION
+// ═══════════════════════════════════════════════
+const NAV_LOCATIONS = [
+  { id:'texas_hall',     label:'西侧长廊',   sub:'德克萨斯',   icon:'🗡️' },
+  { id:'lapland_garden', label:'内庭花园',   sub:'拉普兰德',   icon:'🌿' },
+  { id:'dmitri_ballroom',label:'宴会厅中央', sub:'德米特里',   icon:'🎭' },
+  { id:'harold_study',   label:'总管书房',   sub:'哈罗德',     icon:'📜' },
+  { id:'sin_corridor',   label:'东侧廊道',   sub:'斥罪',       icon:'🗂️' },
+  { id:'_return_angelina', label:'找安洁莉娜', sub:'请求指引', icon:'🌸' },
+];
+
+function showNav() {
+  const wrap = document.getElementById('navWrap');
+  const nav = document.getElementById('sceneNav');
+  wrap.style.display = 'block';
+  nav.innerHTML = '';
+  NAV_LOCATIONS.forEach(loc => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn';
+    btn.innerHTML = `<span class="nav-icon">${loc.icon}</span>${loc.label}<br><span style="color:var(--muted);font-size:0.68rem">${loc.sub}</span>`;
+    btn.addEventListener('click', () => {
+      if (loc.id === '_return_angelina') {
+        enterScene('angelina_hint');
+      } else {
+        enterScene(loc.id);
+      }
+    });
+    nav.appendChild(btn);
+  });
+}
+
+// Dynamic hint scene for Angelina
+SCENES['angelina_hint'] = {
+  icon:'🌸', location:'叙拉古 · 贝尔托尼宫殿 · 宴会厅',
+  onEnter: () => {
+    markQuestioned('angelina');
+    const n = state.clues.size;
+    if (n < 2) {
+      addMsg('angelina', '博士，我们收集的线索还不够。<br>现在已知的是——北翼走廊发生了什么，以及有人刻意安排了这一切。<br><br>去找<b>德米特里</b>和<b>哈罗德</b>，他们知道的比他们说的多。');
+    } else if (n < 4) {
+      addMsg('angelina', '博士，我们有一些线索了。<br><br>我注意到——<span class="hl-gold">酒杯的问题</span>和<span class="hl-gold">信件的问题</span>都指向一件事：今晚有人很清楚你会出现在哪里，以及什么时候出现。<br><br>去找<b>斥罪</b>，他是传递信息的人。链条从他身上断开的。');
+    } else {
+      addMsg('angelina', '博士……我觉得我们已经接近真相了。<br><br>把所有的线索串联起来——<span class="hl-gold">酒杯里的源石粉末</span>，<span class="hl-gold">信件里的指令</span>，<span class="hl-gold">北翼走廊的特殊性质</span>……这是一个精心设计的局。<br><br>但<b>为什么</b>？博士，你口袋里有什么吗？');
+      setTimeout(()=>{
+        addMsg('player', '……合约文件。关于罗德岛与某个叙拉古家族的矿石合作协议。');
+        addMsg('angelina', '<span class="hl-red">那就是目标。</span><br><br>不是你的命，是那份合约。你可以指认幕后人了，博士。');
+      }, 700);
+    }
+    setTimeout(()=>{ showChoices([{ text:'（返回调查）', next:'_nav' }]); }, 1000);
+  }
+};
+
+function enterScene(sceneId) {
+  const scene = SCENES[sceneId];
+  if (!scene) return;
+
+  // Clear nav if entering a char scene
+  if (sceneId !== '_nav') {
+    document.getElementById('navWrap').style.display = 'none';
+  }
+
+  // Update banner
+  document.getElementById('sceneIcon').textContent = scene.icon;
+  document.getElementById('sceneName').textContent = scene.location;
+
+  // Clear choices
+  document.getElementById('choicesWrap').innerHTML = '';
+
+  // Add separator
+  addNarrator('— — —');
+
+  // Run scene
+  scene.onEnter();
+}
+
+// ═══════════════════════════════════════════════
+//  ACCUSATION
+// ═══════════════════════════════════════════════
+function openAccuse() {
+  const grid = document.getElementById('accuseGrid');
+  grid.innerHTML = '';
+  ACCUSATION_CHARS.forEach(c => {
+    const ch = CHARS[c.id];
+    const btn = document.createElement('button');
+    btn.className = 'accuse-char-btn';
+    btn.innerHTML = `<div class="accuse-char-icon">${ch.icon}</div><div class="accuse-char-name">${c.label}</div>`;
+    btn.addEventListener('click', ()=>{ closeAccuse(); resolveAccusation(c.id); });
+    grid.appendChild(btn);
+  });
+  document.getElementById('accuseOverlay').classList.add('show');
+}
+function closeAccuse() {
+  document.getElementById('accuseOverlay').classList.remove('show');
+}
+
+function resolveAccusation(charId) {
+  const ending = ENDINGS[charId];
+  document.getElementById('endIcon').textContent = ending.icon;
+  document.getElementById('endTitle').textContent = ending.title;
+  document.getElementById('endTitle').className = `overlay-title ${ending.cls}`;
+  document.getElementById('endBody').innerHTML = ending.body;
+  document.getElementById('endingOverlay').classList.add('show');
+}
+
+// ═══════════════════════════════════════════════
+//  UNLOCK INVESTIGATION
+// ═══════════════════════════════════════════════
+function unlockInvestigation() {
+  state.phase = 'investigate';
+  state.navUnlocked = true;
+  renderCharList();
+  addNarrator('调查开始。宫殿仍在进行着宴会，时间有限——在所有宾客离场之前，找到真相。');
+  showNav();
+  document.getElementById('choicesWrap').innerHTML = '';
+}
+
+// ═══════════════════════════════════════════════
+//  RESTART
+// ═══════════════════════════════════════════════
+function restartGame() {
+  state = { clues: new Set(), questioned: new Set(), suspicious: new Set(), phase:'intro', navUnlocked:false };
+  document.getElementById('endingOverlay').classList.remove('show');
+  document.getElementById('accuseOverlay').classList.remove('show');
+  document.getElementById('chatLog').innerHTML = '';
+  document.getElementById('choicesWrap').innerHTML = '';
+  document.getElementById('navWrap').style.display = 'none';
+  document.getElementById('sceneNav').innerHTML = '';
+  document.getElementById('accuseBtn').disabled = true;
+  renderEvidence();
+  updateProgress();
+  renderCharList();
+  document.getElementById('sceneIcon').textContent = '🕯️';
+  document.getElementById('sceneName').textContent = '叙拉古 · 贝尔托尼宫殿 · 宴会厅';
+  startGame();
+}
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+function startGame() {
+  renderCharList();
+  SCENES['intro'].onEnter();
+}
+
+startGame();
+</script>
+</body>
+</html>
