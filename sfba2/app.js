@@ -485,7 +485,28 @@ function renderList(){
   renderFilters();
   taskRows.innerHTML = '';
   tasks.forEach(t => taskRows.appendChild(listRow(t)));
+  sizeTaskColumn();
+  growAll(taskRows);
   updateSummary();
+}
+
+/* 任务列宽 = 最长任务文字宽度（下限翻倍到300，上限800，超出折行） */
+const _measureCtx = document.createElement('canvas').getContext('2d');
+function sizeTaskColumn(){
+  _measureCtx.font = "12.5px 'Noto Sans SC',system-ui,sans-serif";
+  let max = 0;
+  tasks.forEach(t => { max = Math.max(max, _measureCtx.measureText(t['任务'] || '').width); });
+  const base = window.matchMedia('(max-width:700px)').matches ? 180 : 300;
+  const w = Math.min(800, Math.max(base, Math.ceil(max) + 32));
+  const th = document.getElementById('thTask');
+  if(th) th.style.width = w + 'px';
+}
+function autoGrow(ta){
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+function growAll(scope){
+  scope.querySelectorAll('textarea').forEach(autoGrow);
 }
 
 function stIndex(s){ const i = STATUSES.indexOf(s); return i < 0 ? 0 : i; }
@@ -507,30 +528,38 @@ function listRow(t){
     <td class="tid">${esc(t['ID'])}</td>
     <td><input data-f="部门" value="${esc(t['部门'])}"></td>
     <td><input data-f="分类" value="${esc(t['分类'])}"></td>
-    <td><input data-f="任务" value="${esc(t['任务'])}"></td>
+    <td class="c-task"><textarea data-f="任务" rows="1">${esc(t['任务'])}</textarea></td>
     <td><input data-f="负责人" value="${esc(t['负责人'])}"></td>
     <td>
       <input data-f="前置任务" value="${esc(t['前置任务'])}">
       ${preNames.length ? `<div class="dep-hint">← <b>${preNames.map(esc).join('；')}</b></div>` : ''}
     </td>
     <td class="down-cell">${downs.length ? downs.map(d => esc(d['ID'] + ' ' + d['任务'])).join('<br>') : '<span style="color:var(--dim)">—</span>'}</td>
-    <td><input data-f="备注" value="${esc(t['备注'])}" placeholder="…"></td>
+    <td class="c-note"><textarea data-f="备注" rows="1" placeholder="…">${esc(t['备注'])}</textarea></td>
     <td><button class="row-del" title="删除任务">✕</button></td>`;
 
   // 状态点击循环
   tr.querySelector('.st-badge').addEventListener('click', () => {
     t['状态'] = STATUSES[(stIndex(t['状态']) + 1) % STATUSES.length];
     const nt = listRow(t); tr.replaceWith(nt);
+    growAll(nt);
     updateSummary(); renderFilters();
   });
   // 字段编辑
-  tr.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', () => { t[inp.dataset.f] = inp.value; });
-    // 前置任务/负责人改动后需要刷新依赖提示与筛选
-    inp.addEventListener('change', () => {
-      t[inp.dataset.f] = inp.value.trim();
-      renderList();
+  tr.querySelectorAll('input, textarea').forEach(inp => {
+    inp.addEventListener('input', () => {
+      t[inp.dataset.f] = inp.value;
+      if(inp.tagName === 'TEXTAREA') autoGrow(inp);
     });
+    // 前置任务/负责人改动后需要刷新依赖提示与筛选
+    if(inp.tagName === 'INPUT'){
+      inp.addEventListener('change', () => {
+        t[inp.dataset.f] = inp.value.trim();
+        renderList();
+      });
+    }else if(inp.dataset.f === '任务'){
+      inp.addEventListener('change', () => renderList());
+    }
   });
   tr.querySelector('.row-del').addEventListener('click', () => {
     if(!confirm(`删除任务 ${t['ID']} ${t['任务']}？`)) return;
@@ -693,6 +722,7 @@ document.getElementById('btnApply').addEventListener('click', () => {
 window.addEventListener('resize', () => {
   if(curView === 'map') drawWires();
   if(curView === 'tasks') drawTaskWires();
+  if(curView === 'list'){ sizeTaskColumn(); growAll(taskRows); }
 });
 if(window.ResizeObserver){
   new ResizeObserver(() => { if(curView === 'map') drawWires(); }).observe(board);
