@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>明日方舟 Only · 职能分工导图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E1013; --panel:#171B20; --panel-2:#1D2229; --line:#262C34;
+  --ink:#E8ECF1; --muted:#8B94A1; --dim:#5A6370;
+  --ak:#FFD90F; --ak-dark:#B89A00;
+  --dep-in:#4DA3FF;
+  --warn:#FF8A2A;
+  --st0:#6B7280;  /* 未开始 */
+  --st1:#FFD90F;  /* 进行中 */
+  --st2:#35D07F;  /* 已完成 */
+  --radius:2px;
+  --mono:ui-monospace,'SF Mono',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Noto Sans SC',system-ui,sans-serif; font-size:14px;
+  display:flex; flex-direction:column;
+}
+::selection{background:var(--ak);color:#111}
+
+/* ---------- header ---------- */
+header{
+  border-bottom:1px solid var(--line);
+  background:
+    repeating-linear-gradient(-45deg, var(--ak) 0 10px, #14161a 10px 20px) bottom/100% 4px no-repeat,
+    var(--panel);
+  padding:14px 20px 18px;
+  display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap;
+}
+.h-title{display:flex; flex-direction:column; gap:2px; min-width:260px}
+.h-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--ak)}
+h1{font-family:'Oswald','Noto Sans SC',sans-serif; font-weight:600; font-size:24px; letter-spacing:.04em}
+h1 .en{color:var(--muted); font-size:14px; font-weight:400; margin-left:10px; letter-spacing:.12em}
+.toolbar{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+button{
+  font-family:'Noto Sans SC',sans-serif; font-size:13px; cursor:pointer;
+  background:var(--panel-2); color:var(--ink); border:1px solid var(--line);
+  padding:7px 14px; border-radius:var(--radius); transition:border-color .15s, background .15s;
+}
+button:hover{border-color:var(--ak)}
+button:focus-visible{outline:2px solid var(--ak); outline-offset:2px}
+button.primary{background:var(--ak); color:#14161A; border-color:var(--ak); font-weight:700}
+button.primary:hover{background:#ffe45c}
+
+/* ---------- tabs ---------- */
+nav.tabs{
+  display:flex; gap:2px; padding:0 20px; background:var(--panel); border-bottom:1px solid var(--line);
+}
+.tab{
+  border:none; border-radius:0; background:transparent; color:var(--muted);
+  padding:11px 18px 9px; font-size:13.5px; position:relative; letter-spacing:.03em;
+}
+.tab:hover{color:var(--ink); border-color:transparent}
+.tab .tcode{font-family:var(--mono); font-size:10px; color:var(--dim); margin-right:6px; letter-spacing:.1em}
+.tab.on{color:var(--ink)}
+.tab.on::after{
+  content:""; position:absolute; left:8px; right:8px; bottom:-1px; height:3px;
+  background:var(--ak); clip-path:polygon(0 0,calc(100% - 6px) 0,100% 100%,0 100%);
+}
+.tab.on .tcode{color:var(--ak)}
+
+#hint{display:none; padding:8px 20px; font-size:12.5px; color:#14161A; background:var(--ak)}
+#hint.show{display:block}
+
+/* ---------- layout ---------- */
+main{flex:1; display:flex; min-height:0}
+.view{flex:1; min-width:0; display:none}
+.view.on{display:flex}
+
+/* ===== view 1: dept map ===== */
+#view-map.on{display:flex}
+#boardWrap{flex:1; overflow:auto; position:relative}
+#board{position:relative; padding:26px 26px 60px; min-width:720px}
+#wires,#twires{position:absolute; inset:0; pointer-events:none; overflow:visible}
+.grid{
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:38px 30px;
+}
+.card{
+  background:var(--panel); border:1px solid var(--line);
+  clip-path:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  padding:0 0 10px; cursor:pointer; position:relative;
+  transition:border-color .15s, opacity .2s;
+}
+.card:hover{border-color:#3a424d}
+.card:focus-visible{outline:2px solid var(--ak); outline-offset:2px}
+.card.sel{border-color:var(--ak)}
+.card.sel::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:4px;
+  background:repeating-linear-gradient(-45deg,var(--ak) 0 8px,#14161A 8px 16px);
+}
+.card.dep-out{border-color:var(--ak-dark)}
+.card.dep-in{border-color:#2b5f99}
+.card.faded{opacity:.28}
+.card.person-hit{border-color:var(--ak); box-shadow:0 0 0 1px var(--ak) inset}
+.card-head{padding:12px 14px 8px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:8px}
+.dept-code{font-family:var(--mono); font-size:10px; color:var(--dim); letter-spacing:.15em}
+.dept-name{font-family:'Oswald','Noto Sans SC',sans-serif; font-weight:600; font-size:17px; letter-spacing:.05em}
+.dep-tags{padding:7px 14px 0; display:flex; flex-wrap:wrap; gap:4px}
+.dep-tag{font-size:11px; color:var(--muted); border:1px dashed var(--line); padding:1px 7px; border-radius:var(--radius)}
+.dep-tag::before{content:"→ "; color:var(--ak)}
+.members{padding:8px 10px 0; display:flex; flex-direction:column; gap:6px}
+.member{background:var(--panel-2); border-left:3px solid var(--pc,#666); padding:7px 9px; border-radius:var(--radius)}
+.member .row1{display:flex; align-items:center; gap:7px}
+.member .name{font-weight:700; font-size:13.5px; cursor:pointer}
+.member .name:hover{color:var(--ak)}
+.member .role{font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--dim)}
+.member .role.lead{color:var(--ak)}
+.member .duties{margin-top:4px; display:flex; flex-wrap:wrap; gap:4px}
+.duty{font-size:11.5px; color:var(--muted); background:#12151A; padding:1px 7px; border-radius:var(--radius)}
+.member .note{margin-top:3px; font-size:11px; color:var(--warn)}
+
+aside{
+  width:270px; flex-shrink:0; border-left:1px solid var(--line); background:var(--panel);
+  overflow:auto; padding:16px 14px 30px;
+}
+aside h2{font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var(--muted); margin-bottom:12px}
+.legend{margin-bottom:16px; display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted)}
+.legend span{display:inline-block; width:22px; height:0; border-top:2px solid; margin-right:7px; vertical-align:middle}
+.lg-out span{border-color:var(--ak)} .lg-in span{border-color:var(--dep-in)}
+.person{
+  border:1px solid var(--line); border-left:3px solid var(--pc,#666);
+  background:var(--panel-2); border-radius:var(--radius);
+  padding:8px 10px; margin-bottom:8px; cursor:pointer; transition:border-color .15s;
+}
+.person:hover,.person.sel{border-color:var(--ak)}
+.person .p-name{font-weight:700; font-size:14px}
+.person .p-depts{margin-top:4px; font-size:11.5px; color:var(--muted); line-height:1.55}
+.person .p-depts b{color:var(--ink); font-weight:500}
+.person .p-task-link{margin-top:5px; font-size:11px; color:var(--ak); font-family:var(--mono); letter-spacing:.06em}
+
+/* ===== view 2: task map ===== */
+#taskWrap{flex:1; overflow:auto; position:relative}
+#taskBoard{position:relative; padding:26px 26px 80px; min-width:760px}
+.tgrid{
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:34px 28px;
+}
+.tcard{
+  background:var(--panel); border:1px solid var(--line);
+  clip-path:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  padding-bottom:10px;
+}
+.tcard-head{padding:11px 13px 8px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:8px}
+.tcard-head .prog{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--dim)}
+.tcard-head .prog b{color:var(--st2)}
+.tgroup{padding:8px 10px 0}
+.tgroup-label{font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--dim); margin:2px 0 5px}
+.tgroup-label::before{content:"▸ "; color:var(--ak)}
+.task{
+  background:var(--panel-2); border:1px solid transparent; border-left:3px solid var(--stc,#666);
+  border-radius:var(--radius); padding:6px 8px; margin-bottom:5px; cursor:pointer;
+  transition:border-color .15s, opacity .2s;
+}
+.task:hover{border-color:#3a424d; border-left-color:var(--stc)}
+.task.sel{border-color:var(--ak)}
+.task.up{border-color:var(--ak-dark)}
+.task.down{border-color:#2b5f99}
+.task.faded{opacity:.22}
+.task .t-r1{display:flex; align-items:center; gap:6px}
+.task .t-id{font-family:var(--mono); font-size:9.5px; color:var(--dim); letter-spacing:.06em}
+.task .t-name{font-size:12.5px; font-weight:500; flex:1}
+.task .t-dot{width:8px; height:8px; border-radius:50%; background:var(--stc); flex-shrink:0}
+.task .t-r2{margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+.task .t-who{font-size:11px; color:var(--muted)}
+.task .t-note{font-size:10.5px; color:var(--warn)}
+.tlegend{position:sticky; left:26px; display:flex; gap:16px; padding:0 0 16px; font-size:11.5px; color:var(--muted); flex-wrap:wrap; z-index:2}
+.tlegend i{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px}
+.tlegend .l0 i{background:var(--st0)} .tlegend .l1 i{background:var(--st1)} .tlegend .l2 i{background:var(--st2)}
+.tlegend span.ln{display:inline-block; width:20px; border-top:2px solid; margin-right:5px; vertical-align:middle}
+.tlegend .lu span.ln{border-color:var(--ak)} .tlegend .ld span.ln{border-color:var(--dep-in)}
+
+/* ===== view 3: task list ===== */
+#view-list{flex-direction:column; overflow:hidden}
+.filters{
+  padding:14px 20px 10px; border-bottom:1px solid var(--line); background:var(--panel);
+  display:flex; flex-direction:column; gap:9px;
+}
+.f-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+.f-label{font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--dim); width:70px; flex-shrink:0}
+.chip{
+  border:1px solid var(--line); background:var(--panel-2); color:var(--muted);
+  padding:3px 11px; border-radius:var(--radius); font-size:12px; cursor:pointer;
+}
+.chip:hover{border-color:var(--ak); color:var(--ink)}
+.chip.on{background:var(--ak); border-color:var(--ak); color:#14161A; font-weight:700}
+.chip.st0.on{background:var(--st0); border-color:var(--st0); color:#fff}
+.chip.st2.on{background:var(--st2); border-color:var(--st2); color:#08301C}
+.chip .cdot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:1px}
+.f-summary{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.04em}
+.f-summary b{color:var(--ink)}
+#listWrap{flex:1; overflow:auto; padding:0 20px 60px}
+#taskTable{border-collapse:collapse; width:100%; min-width:900px; margin-top:10px}
+#taskTable th{
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--muted); text-align:left;
+  padding:8px 7px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); z-index:2;
+}
+#taskTable td{padding:5px 5px; border-bottom:1px solid #1A1F26; vertical-align:middle}
+tr.trow{border-left:3px solid transparent}
+tr.trow.hide{display:none}
+.tid{font-family:var(--mono); font-size:11px; color:var(--dim)}
+.st-badge{
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+  border:1px solid var(--line); border-radius:var(--radius); padding:4px 10px; font-size:12px; white-space:nowrap;
+  background:var(--panel-2);
+}
+.st-badge:hover{border-color:var(--ak)}
+.st-badge i{width:8px; height:8px; border-radius:50%; background:var(--stc)}
+.st-badge.s1{color:var(--st1)} .st-badge.s2{color:var(--st2)} .st-badge.s0{color:var(--muted)}
+#taskTable input, #taskTable select{
+  width:100%; background:transparent; border:1px solid transparent; color:var(--ink);
+  font:inherit; font-size:12.5px; padding:5px 7px; border-radius:var(--radius);
+}
+#taskTable input:hover{border-color:var(--line); background:var(--panel-2)}
+#taskTable input:focus{outline:none; border-color:var(--ak); background:var(--panel-2)}
+.dep-hint{font-size:10.5px; color:var(--dim); padding:0 7px 2px; line-height:1.4}
+.dep-hint b{color:var(--muted); font-weight:500}
+.down-cell{font-size:11px; color:var(--dep-in); line-height:1.5}
+.row-del{padding:3px 8px; font-size:12px; color:var(--warn); border-color:transparent}
+.row-del:hover{border-color:var(--warn)}
+.list-actions{padding:14px 0 0; display:flex; gap:8px}
+
+footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; color:var(--dim); font-family:var(--mono); letter-spacing:.06em}
+
+/* ---------- member editor modal ---------- */
+#modal{position:fixed; inset:0; background:rgba(8,9,11,.72); display:none; z-index:50; align-items:center; justify-content:center; padding:20px}
+#modal.open{display:flex}
+.modal-box{
+  background:var(--panel); border:1px solid var(--line); width:min(1060px,100%); max-height:90vh;
+  display:flex; flex-direction:column;
+  clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+.modal-head{padding:14px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.modal-head h3{font-family:'Oswald','Noto Sans SC',sans-serif; font-size:17px; letter-spacing:.05em}
+.modal-head .tip{font-size:12px; color:var(--muted)}
+.modal-body{overflow:auto; padding:10px 18px}
+.modal-body table{border-collapse:collapse; width:100%}
+.modal-body th{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; color:var(--muted); text-align:left; padding:6px 6px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--panel); z-index:1}
+.modal-body td{padding:3px 3px}
+.modal-body td input{
+  width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--ink);
+  font:inherit; font-size:12.5px; padding:6px 8px; border-radius:var(--radius);
+}
+.modal-body td input:focus{outline:none; border-color:var(--ak)}
+.del-btn{padding:4px 9px; font-size:12px; color:var(--warn)}
+.modal-foot{padding:12px 18px; border-top:1px solid var(--line); display:flex; gap:8px}
+.modal-foot .spacer{flex:1}
+
+@media (max-width:860px){ aside{display:none} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-title">
+    <span class="h-eyebrow">ARKNIGHTS ONLY EVENT // STAFF OPERATION MAP</span>
+    <h1>职能分工导图<span class="en">DIVISION OF DUTIES</span></h1>
+  </div>
+  <div class="toolbar">
+    <button id="btnOpen" title="从本地打开 data.csv / tasks.csv（可多选）">打开 CSV</button>
+    <button id="btnReload" title="重新读取同目录 data.csv 与 tasks.csv">重新载入</button>
+    <button id="btnEdit">编辑成员</button>
+    <button id="btnSave" class="primary" title="保存 data.csv 与 tasks.csv">保存 CSV</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab on" data-view="map"><span class="tcode">01</span>分工导图</button>
+  <button class="tab" data-view="tasks"><span class="tcode">02</span>任务导图</button>
+  <button class="tab" data-view="list"><span class="tcode">03</span>任务列表</button>
+</nav>
+
+<div id="hint"></div>
+
+<main>
+  <!-- ========== VIEW 1 ========== -->
+  <section class="view on" id="view-map">
+    <div id="boardWrap">
+      <div id="board">
+        <svg id="wires">
+          <defs>
+            <marker id="arrY" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#FFD90F"/></marker>
+            <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#4DA3FF"/></marker>
+            <marker id="arrDim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#3a3f2a"/></marker>
+          </defs>
+          <g id="wireG"></g>
+        </svg>
+        <div class="grid" id="grid"></div>
+      </div>
+    </div>
+    <aside>
+      <h2>LEGEND / 图例</h2>
+      <div class="legend">
+        <div class="lg-out"><span></span>黄色箭头：该部门 <b>依赖 →</b> 谁</div>
+        <div class="lg-in"><span></span>蓝色高亮：<b>谁依赖</b> 当前选中部门</div>
+        <div>点击部门卡片固定高亮，点空白处取消；点击人名可查看 TA 的全部职责所在。</div>
+      </div>
+      <h2>ROSTER / 人员总览</h2>
+      <div id="roster"></div>
+    </aside>
+  </section>
+
+  <!-- ========== VIEW 2 ========== -->
+  <section class="view" id="view-tasks">
+    <div id="taskWrap">
+      <div id="taskBoard">
+        <div class="tlegend">
+          <span class="l0"><i></i>未开始</span>
+          <span class="l1"><i></i>进行中</span>
+          <span class="l2"><i></i>已完成</span>
+          <span class="lu"><span class="ln"></span>黄线：选中任务的 前置(上游)</span>
+          <span class="ld"><span class="ln"></span>蓝线：等它的 下游任务</span>
+        </div>
+        <svg id="twires">
+          <defs>
+            <marker id="tarrY" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#FFD90F"/></marker>
+            <marker id="tarrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#4DA3FF"/></marker>
+            <marker id="tarrDim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#3a3f2a"/></marker>
+          </defs>
+          <g id="twireG"></g>
+        </svg>
+        <div class="tgrid" id="tgrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== VIEW 3 ========== -->
+  <section class="view" id="view-list">
+    <div class="filters">
+      <div class="f-row">
+        <span class="f-label">PERSON</span>
+        <div id="fPersons" class="f-row" style="gap:6px"></div>
+      </div>
+      <div class="f-row">
+        <span class="f-label">STATUS</span>
+        <div id="fStatus" class="f-row" style="gap:6px"></div>
+        <span class="f-label" style="width:auto; margin-left:14px">DEPT</span>
+        <select id="fDept" class="chip" style="padding:4px 8px"></select>
+        <span class="f-summary" id="fSummary"></span>
+      </div>
+    </div>
+    <div id="listWrap">
+      <table id="taskTable">
+        <thead><tr>
+          <th style="width:88px">状态</th><th style="width:44px">ID</th>
+          <th style="width:110px">部门</th><th style="width:84px">分类</th>
+          <th>任务</th><th style="width:110px">负责人(;分隔)</th>
+          <th style="width:110px">前置任务(ID;分隔)</th><th style="width:150px">下游(等它的)</th>
+          <th style="width:190px">备注</th><th style="width:36px"></th>
+        </tr></thead>
+        <tbody id="taskRows"></tbody>
+      </table>
+      <div class="list-actions">
+        <button id="btnAddTask" class="primary">＋ 新任务</button>
+        <button id="btnClearFilter">清除筛选</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>DATA SOURCE: ./data.csv + ./tasks.csv · 列表内直接编辑 → 保存 CSV 持久化</footer>
+
+<!-- member editor -->
+<div id="modal" role="dialog" aria-modal="true" aria-label="编辑成员">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>编辑成员（data.csv）</h3>
+      <span class="tip">同一部门多名成员各占一行；「职责 / 依赖部门」用分号 ; 分隔多项</span>
+    </div>
+    <div class="modal-body">
+      <table>
+        <thead><tr><th style="width:13%">部门</th><th style="width:10%">人员</th><th style="width:9%">角色</th><th style="width:30%">职责（;分隔）</th><th style="width:22%">依赖部门（;分隔）</th><th style="width:12%">备注</th><th></th></tr></thead>
+        <tbody id="editRows"></tbody>
+      </table>
+    </div>
+    <div class="modal-foot">
+      <button id="btnAddRow">＋ 添加一行</button>
+      <div class="spacer"></div>
+      <button id="btnCancel">取消</button>
+      <button id="btnApply" class="primary">应用更改</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
