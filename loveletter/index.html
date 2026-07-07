@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>竹节虫工作室 - 献给我游戏人生的情书 (Love Letter) 全局资产管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+SC:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: #1A1917;
+            color: #E2DED6;
+        }
+        .disco-border { border: 2px solid #3A3630; }
+        .disco-header {
+            font-family: 'Cinzel', 'Noto Serif SC', serif;
+            color: #D29944;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        .disco-input {
+            background-color: #24221F;
+            border: 1px solid #4A443C;
+            color: #F1ECE1;
+        }
+        .disco-input:focus { border-color: #D29944; outline: none; }
+        .active-tab {
+            background-color: #3A3630;
+            color: #FFC043;
+            border-bottom: 3px solid #FFC043;
+        }
+        .disco-btn-purple {
+            background-color: #4A354F;
+            color: #E8D3EC;
+            transition: all 0.2s;
+        }
+        .disco-btn-purple:hover {
+            background-color: #63436A;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <!-- Header -->
+    <header class="mb-8 p-6 bg-[#24221F] disco-border rounded shadow-xl flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold disco-header tracking-wider">献给我游戏人生的情书 / LOVE LETTER</h1>
+            <p class="text-xs text-[#8A8173] mt-2 font-mono">STUDIO: PHASMIDS (竹节虫工作室) | 统一资产引擎（无状态数据解耦版）</p>
+        </div>
+        <div class="flex space-x-3">
+            <button onclick="exportAllToCSV()" class="disco-btn-purple px-4 py-2 rounded text-sm font-bold shadow">💾 导出全部 Tab (单CSV)</button>
+            <label class="cursor-pointer bg-[#3E3A33] hover:bg-[#524C43] text-[#E2DED6] px-4 py-2 rounded text-sm font-bold shadow text-center">
+                📂 导入全局 CSV 更新
+                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="importAllFromCSV(event)">
+            </label>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- 左侧导航栏 -->
+        <div class="lg:col-span-1 bg-[#24221F] disco-border rounded p-4 h-fit shadow-lg">
+            <h2 class="text-xs font-mono text-[#8A8173] uppercase tracking-widest mb-4 px-2">叙事资产模块 (Modules)</h2>
+            <nav class="space-y-1" id="moduleTabs">
+                <button onclick="switchModule('PLOT')" id="tab-PLOT" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition active-tab">⏳ 世界线与AI阶段 (Plot & AI)</button>
+                <button onclick="switchModule('CHAR')" id="tab-CHAR" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">👥 4人小队与天赋 (Characters)</button>
+                <button onclick="switchModule('QUEST')" id="tab-QUEST" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">🏆 黄金通马桶与玩梗任务 (Quests)</button>
+                <button onclick="switchModule('HIDEOUT')" id="tab-HIDEOUT" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">🍳 古神迷宫饭与安全屋 (Lore)</button>
+                <button onclick="switchModule('ITEMS')" id="tab-ITEMS" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">🎒 红字装备与补丁吐槽 (Items)</button>
+            </nav>
+            <div class="mt-6 p-3 bg-[#1A1917] border border-[#3A3630] rounded">
+                <p class="text-xs text-[#8A8173] leading-relaxed">
+                    💡 <span class="text-[#D29944]">多端同步说明</span>：当前版本已将所有数据抽取出来。导入/导出将覆盖包含所有 Tab 在内的完整剧情矩阵，避免零散同步。
+                </p>
+            </div>
+        </div>
+
+        <!-- 右侧主工作台 -->
+        <div class="lg:col-span-3 flex flex-col space-y-4">
+            <!-- 检索栏 -->
+            <div class="bg-[#24221F] disco-border rounded p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="w-full md:w-1/2">
+                    <input type="text" id="searchInput" oninput="filterData()" placeholder="🔍 跨列检索当前 Tab 核心创意内容..." class="w-full disco-input px-3 py-2 rounded text-sm">
+                </div>
+                <div>
+                    <button onclick="openAddModal()" class="bg-[#4E6148] hover:bg-[#5D7556] text-[#E8ECE7] px-4 py-2 rounded text-sm font-bold shadow">➕ 在当前Tab新增条目</button>
+                </div>
+            </div>
+
+            <!-- 数据表格 -->
+            <div class="bg-[#24221F] disco-border rounded overflow-hidden shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#2D2A25] border-b border-[#3A3630] text-xs font-mono uppercase text-[#8A8173]">
+                                <th class="p-3 w-24">唯一编码 (ID)</th>
+                                <th class="p-3 w-32">二级分类 (Tag)</th>
+                                <th class="p-3 w-40">关联主体/场景</th>
+                                <th class="p-3">核心文本 / 台词 / 吐槽描述 (点击修改)</th>
+                                <th class="p-3 w-24 text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody" class="text-sm divide-y divide-[#3A3630]">
+                            <tr><td colspan="5" class="p-8 text-center text-[#8A8173] font-mono">⌛ 正在请求载入本地初始化配置文件 data.csv...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 意识流动态编辑弹窗 -->
+    <div id="editModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#24221F] disco-border rounded-lg max-w-xl w-full p-6 shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold disco-header" id="modalTitle">编辑条目</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-mono text-[#8A8173] mb-1">ID (标记归档识别码)</label>
+                    <input type="text" id="modalId" class="w-full disco-input px-3 py-2 rounded text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-[#8A8173] mb-1">二级分类 (Tag)</label>
+                    <input type="text" id="modalTag" class="w-full disco-input px-3 py-2 rounded text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-[#8A8173] mb-1">关联主客体/说话人/触发场景</label>
+                    <input type="text" id="modalContext" class="w-full disco-input px-3 py-2 rounded text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-[#8A8173] mb-1">核心文本/台词描述</label>
+                    <textarea id="modalText" rows="5" class="w-full disco-input px-3 py-2 rounded text-sm font-sans resize-none"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeModal()" class="bg-[#3E3A33] hover:bg-[#524C43] text-[#E2DED6] px-4 py-2 rounded text-sm">取消</button>
+                <button onclick="saveModalData()" class="bg-[#D29944] hover:bg-[#E5AA55] text-[#1A1917] font-bold px-4 py-2 rounded text-sm">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 核心内存数据库：数组存放所有的扁平化对象 { id, module, tag, context, text }
+        let globalDatabase = [];
+        let currentModule = 'PLOT';
+        let isEditMode = false;
+
+        // 一、 初始化：从同目录拉取 data.csv 
+        async function loadInitialCSV() {
+            try {
+                const response = await fetch('data.csv');
+                if (!response.ok) {
+                    throw new Error(`无法读取外部配置文件 data.csv, HTTP 状态码: ${response.status}`);
+                }
+                const csvData = await response.text();
+                parseAndLoadGlobalDatabase(csvData);
+                console.log("Successfully initialized database from external data.csv");
+            } catch (error) {
+                console.error(error);
+                document.getElementById('dataTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-[#AE4A4A] font-mono leading-relaxed">
+                            ❌ 未能成功自动读取 [data.csv]。<br>
+                            <span class="text-xs text-[#8A8173]">原因：直接本地双击打开 HTML 会受到浏览器 CORS 策略限制。建议使用本地小型服务器（如 Live Server）运行；或者通过右上方 [导入全局 CSV 更新] 按钮手动选择载入你本地的 data.csv。</span>
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        // 二、数据渲染控制逻辑
+        function renderTable(dataToRender = null) {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+            
+            // 根据当前激活的 tab 标签，过滤出属于当前模块的数据
+            const displayRows = dataToRender || globalDatabase.filter(item => item.module === currentModule);
+            
+            if(displayRows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-[#8A8173] font-mono">⚠️ 该模块当前没有任何创意条目。</td></tr>`;
+                return;
+            }
+
+            displayRows.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-[#2A2722] transition cursor-pointer";
+                tr.onclick = (e) => { if(e.target.tagName !== 'BUTTON') openEditModal(row); };
+                
+                tr.innerHTML = `
+                    <td class="p-3 font-mono text-[#D29944] font-bold">${row.id}</td>
+                    <td class="p-3"><span class="bg-[#3A3630] text-[#E2DED6] text-xs px-2 py-1 rounded">${row.tag}</span></td>
+                    <td class="p-3 font-medium text-[#B5AD9E]">${row.context}</td>
+                    <td class="p-3 text-[#F1ECE1] font-sans leading-relaxed break-all">${row.text}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteRow('${row.id}')" class="text-[#AE4A4A] hover:text-[#E05D5D] font-mono text-xs font-bold">❌ 删除</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function switchModule(moduleKey) {
+            document.querySelectorAll('#moduleTabs button').forEach(btn => {
+                btn.className = "w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]";
+            });
+            document.getElementById(`tab-${moduleKey}`).className = "w-full text-left px-3 py-3 rounded text-sm font-medium transition active-tab";
+            
+            currentModule = moduleKey;
+            document.getElementById('searchInput').value = '';
+            renderTable();
+        }
+
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const currentTabRows = globalDatabase.filter(item => item.module === currentModule);
+            const filtered = currentTabRows.filter(row => 
+                row.tag.toLowerCase().includes(query) || 
+                row.context.toLowerCase().includes(query) || 
+                row.text.toLowerCase().includes(query) ||
+                row.id.toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        // 三、 弹窗交互控制
+        function openEditModal(row) {
+            isEditMode = true;
+            document.getElementById('modalTitle').innerText = "🔮 修改文本资产片段";
+            document.getElementById('modalId').value = row.id;
+            document.getElementById('modalId').disabled = true; // 编辑时锁定主键
+            document.getElementById('modalTag').value = row.tag;
+            document.getElementById('modalContext').value = row.context;
+            document.getElementById('modalText').value = row.text;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function openAddModal() {
+            isEditMode = false;
+            document.getElementById('modalTitle').innerText = `➕ 注入新的灵感到 [ ${currentModule} ]`;
+            document.getElementById('modalId').value = currentModule.substring(0,2) + "_" + Math.floor(Math.random()*10000);
+            document.getElementById('modalId').disabled = false;
+            document.getElementById('modalTag').value = "";
+            document.getElementById('modalContext').value = "";
+            document.getElementById('modalText').value = "";
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('editModal').classList.add('hidden'); }
+
+        function saveModalData() {
+            const id = document.getElementById('modalId').value.trim();
+            const tag = document.getElementById('modalTag').value || "未分类";
+            const context = document.getElementById('modalContext').value || "通用";
+            const text = document.getElementById('modalText').value || "";
+
+            if(!id || !text) { alert("ID 与 文本内容不可留空。"); return; }
+
+            if (isEditMode) {
+                const index = globalDatabase.findIndex(item => item.id === id);
+                if(index !== -1) {
+                    globalDatabase[index] = { id, module: globalDatabase[index].module, tag, context, text };
+                }
+            } else {
+                // 新增：自动打上当前所选 Tab 的 module 标签，实现同 CSV 隔离归档
+                globalDatabase.push({ id, module: currentModule, tag, context, text });
+            }
+            closeModal();
+            renderTable();
+        }
+
+        function deleteRow(id) {
+            if(confirm("确定永久移除此条文本资产吗？")) {
+                globalDatabase = globalDatabase.filter(item => item.id !== id);
+                renderTable();
+            }
+        }
+
+        // 四、 核心双向 CSV 解析处理器（全局一键式合集导出与读取）
+        function parseAndLoadGlobalDatabase(csvText) {
+            const parsedRows = parseCSV(csvText);
+            if(parsedRows.length < 2) return;
+            
+            const headers = parsedRows[0].map(h => h.replace(/^\uFEFF/, '').trim().toLowerCase());
+            const idIdx = headers.indexOf("id");
+            const modIdx = headers.indexOf("module");
+            const tagIdx = headers.indexOf("tag");
+            const ctxIdx = headers.indexOf("context");
+            const txtIdx = headers.indexOf("text");
+
+            const tempDatabase = [];
+            for(let i = 1; i < parsedRows.length; i++) {
+                const r = parsedRows[i];
+                if(r.length < headers.length || !r[idIdx]) continue;
+
+                tempDatabase.push({
+                    id: r[idIdx].trim(),
+                    module: modIdx !== -1 ? r[modIdx].trim().toUpperCase() : "PLOT",
+                    tag: tagIdx !== -1 ? r[tagIdx] : "基础类",
+                    context: ctxIdx !== -1 ? r[ctxIdx] : "常规场景",
+                    text: r[txtIdx] || ""
+                });
+            }
+            globalDatabase = tempDatabase;
+            renderTable();
+        }
+
+        // 强健的符合 RFC 4180 标准的 CSV 解析机（可兼容跨行和复杂逗号包裹）
+        function parseCSV(text) {
+            const lines = [];
+            let row = [""];
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                let next = text[i+1];
+                if (c === '"') {
+                    if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; }
+                    else { inQuotes = !inQuotes; }
+                } else if (c === ',' && !inQuotes) {
+                    row.push('');
+                } else if ((c === '\r' || c === '\n') && !inQuotes) {
+                    if (c === '\r' && next === '\n') { i++; }
+                    lines.push(row);
+                    row = [''];
+                } else {
+                    row[row.length - 1] += c;
+                }
+            }
+            if (row.length > 1 || row[0] !== '') lines.push(row);
+            return lines;
+        }
+
+        function exportAllToCSV() {
+            const fields = ["id", "module", "tag", "context", "text"];
+            let csv = '\uFEFF'; // UTF-8 BOM 防 Excel 乱码
+            csv += fields.join(",") + "\r\n";
+            
+            globalDatabase.forEach(item => {
+                let row = fields.map(fieldName => {
+                    let escaped = String(item[fieldName]).replace(/"/g, '""');
+                    if (escaped.search(/("|,|\n)/g) >= 0) { escaped = `"${escaped}"`; }
+                    return escaped;
+                });
+                csv += row.join(",") + "\r\n";
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "data.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importAllFromCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                parseAndLoadGlobalDatabase(e.target.result);
+                alert("📂 全局所有 Tab 的创意叙事资产已经成功覆盖载入！");
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // 绑定页面启动生命周期
+        window.onload = () => { loadInitialCSV(); };
+    </script>
+</body>
+</html>
