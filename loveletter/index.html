@@ -231,10 +231,6 @@ kbd{
   background:radial-gradient(ellipse at 50% 40%,#1c1810 0%,#0d0b07 75%);
 }
 .gatebox{text-align:center;max-width:420px;padding:40px 30px}
-.gatebox .studio{margin-bottom:10px}
-.gatebox h1{display:inline-block;margin-bottom:6px}
-.gatebox .codename{margin-bottom:34px}
-.gate-label{font-size:11px;letter-spacing:.4em;color:var(--paper-dim);margin-bottom:12px;text-transform:uppercase}
 #gate-input{
   background:var(--panel);border:1px solid var(--line);color:var(--amber-hi);
   font-family:inherit;font-size:26px;letter-spacing:.6em;text-align:center;text-indent:.6em;
@@ -242,8 +238,6 @@ kbd{
 }
 #gate-input:focus{border-color:var(--amber)}
 #gate-btn{display:block;margin:18px auto 0;padding:8px 30px}
-#gate-msg{margin-top:14px;font-size:12px;letter-spacing:.15em;color:var(--red);min-height:20px;font-style:italic}
-.gate-foot{margin-top:40px;font-size:11px;color:var(--paper-dim);letter-spacing:.15em;font-style:italic}
 #gate.shake .gatebox{animation:shake .35s}
 @keyframes shake{
   20%{transform:translateX(-8px)}40%{transform:translateX(8px)}
@@ -255,14 +249,8 @@ kbd{
 <body>
 <div id="gate">
   <div class="gatebox">
-    <div class="studio">Phasmids Studio · 竹节虫工作室</div><br>
-    <h1>献给我游戏人生的情书</h1>
-    <div class="codename">内部叙事档案 · 闲人免入</div>
-    <div class="gate-label">口令 · Passphrase</div>
     <input id="gate-input" type="password" inputmode="numeric" autocomplete="off" maxlength="12" aria-label="输入口令">
-    <button id="gate-btn" class="primary">开 柜</button>
-    <div id="gate-msg"></div>
-    <div class="gate-foot">"档案柜没有锁芯，只认暗号。" — 拾荒者</div>
+    <button id="gate-btn" class="primary">进 入</button>
   </div>
 </div>
 <div id="app" class="locked">
@@ -665,13 +653,6 @@ document.addEventListener("keydown", ev=>{
 
 /* ---------------- 密码门 ---------------- */
 const GATE_PASS = "2333";
-const WRONG_MSGS = [
-  "口令错误。米娜已经记下这次了。",
-  "还是不对。AI表示它当年一次就猜中了。",
-  "错误。伤害范围 0.85 → 0.15，我们认为这是轻微调整。",
-  "……要不你去把马桶通了再回来想想？",
-];
-let wrongCount = 0;
 function tryUnlock(){
   const v = $("#gate-input").value.trim();
   if(v === GATE_PASS){
@@ -681,8 +662,6 @@ function tryUnlock(){
   }else{
     const g = $("#gate");
     g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
-    $("#gate-msg").textContent = WRONG_MSGS[Math.min(wrongCount, WRONG_MSGS.length-1)];
-    wrongCount++;
     $("#gate-input").value = "";
     $("#gate-input").focus();
   }
