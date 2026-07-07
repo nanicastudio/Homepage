@@ -1,370 +1,635 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>竹节虫工作室 - 献给我游戏人生的情书 (Love Letter) 全局资产管理</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+SC:wght@400;700&display=swap');
-        
-        body {
-            font-family: 'Noto Serif SC', serif;
-            background-color: #1A1917;
-            color: #E2DED6;
-        }
-        .disco-border { border: 2px solid #3A3630; }
-        .disco-header {
-            font-family: 'Cinzel', 'Noto Serif SC', serif;
-            color: #D29944;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        }
-        .disco-input {
-            background-color: #24221F;
-            border: 1px solid #4A443C;
-            color: #F1ECE1;
-        }
-        .disco-input:focus { border-color: #D29944; outline: none; }
-        .active-tab {
-            background-color: #3A3630;
-            color: #FFC043;
-            border-bottom: 3px solid #FFC043;
-        }
-        .disco-btn-purple {
-            background-color: #4A354F;
-            color: #E8D3EC;
-            transition: all 0.2s;
-        }
-        .disco-btn-purple:hover {
-            background-color: #63436A;
-            color: #FFFFFF;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>献给我游戏人生的情书 · 世界观文档 | 竹节虫工作室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12100c;          /* 页面底色：暖黑 */
+  --panel:#1c1913;        /* 面板 */
+  --panel2:#262114;       /* 面板高亮 */
+  --paper:#e6d8b4;        /* 羊皮纸字色 */
+  --paper-dim:#9f8f6b;    /* 次级字色 */
+  --amber:#c9973c;        /* 琥珀金 */
+  --amber-hi:#eebc63;     /* 高亮金 */
+  --red:#a8402f;          /* 迪斯科红 */
+  --teal:#5e8f86;         /* 褪色蓝绿 */
+  --green:#7a9048;        /* 军绿 */
+  --grey:#78828f;         /* 灰蓝 */
+  --line:#3d3520;         /* 描边 */
+  --shadow:0 6px 24px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:"Noto Serif SC","Cormorant Garamond",serif;
+  font-size:15px;line-height:1.75;
+  overflow:hidden;
+}
+/* 油画噪点质感层 */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* 顶部暗角 */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:998;
+  background:radial-gradient(ellipse at 50% 0%,transparent 55%,rgba(0,0,0,.5) 100%);
+}
+::selection{background:var(--amber);color:var(--ink)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--line);border:2px solid var(--ink);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--amber)}
+
+/* ============ 布局 ============ */
+#app{display:grid;grid-template-rows:auto 1fr auto;height:100vh}
+header{
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#211c11,#17140d);
+  padding:14px 22px 12px;
+  display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;
+  box-shadow:var(--shadow);position:relative;z-index:5;
+}
+.masthead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.studio{
+  font-family:"Cormorant Garamond",serif;font-style:italic;
+  color:var(--paper-dim);font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+}
+h1{
+  font-weight:900;font-size:26px;letter-spacing:.06em;color:var(--amber-hi);
+  text-shadow:0 0 22px rgba(238,188,99,.25);
+  border-bottom:double 3px var(--amber);padding-bottom:2px;
+}
+.codename{font-size:12px;color:var(--paper-dim);letter-spacing:.1em}
+.codename b{color:var(--red);font-weight:700}
+.toolbar{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#searchbox{
+  background:var(--panel);border:1px solid var(--line);color:var(--paper);
+  font-family:inherit;font-size:14px;padding:7px 12px;width:230px;outline:none;
+  border-radius:2px;transition:border-color .2s;
+}
+#searchbox:focus{border-color:var(--amber)}
+#searchbox::placeholder{color:var(--paper-dim)}
+button{
+  background:var(--panel);border:1px solid var(--line);color:var(--paper);
+  font-family:inherit;font-size:13px;padding:7px 14px;cursor:pointer;
+  letter-spacing:.08em;border-radius:2px;transition:all .15s;
+}
+button:hover{border-color:var(--amber);color:var(--amber-hi)}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+button.primary{background:#2e2412;border-color:var(--amber);color:var(--amber-hi)}
+button.danger:hover{border-color:var(--red);color:var(--red)}
+
+main{display:grid;grid-template-columns:212px minmax(320px,1fr) minmax(380px,1.15fr);min-height:0}
+
+/* ============ 侧栏 ============ */
+nav{
+  border-right:1px solid var(--line);overflow-y:auto;padding:14px 0;
+  background:linear-gradient(180deg,#161309,#12100c);
+}
+.navhead{
+  font-size:11px;letter-spacing:.3em;color:var(--paper-dim);
+  padding:6px 18px;text-transform:uppercase;
+}
+.navitem{
+  display:flex;align-items:center;gap:10px;padding:8px 18px;cursor:pointer;
+  color:var(--paper-dim);border-left:3px solid transparent;transition:all .15s;
+  user-select:none;
+}
+.navitem:hover{color:var(--paper);background:rgba(201,151,60,.05)}
+.navitem.active{
+  color:var(--amber-hi);border-left-color:var(--amber);
+  background:linear-gradient(90deg,rgba(201,151,60,.12),transparent);
+}
+.navitem .glyph{width:18px;text-align:center;font-weight:700;color:var(--amber);opacity:.8}
+.navitem .cnt{margin-left:auto;font-size:11px;color:var(--paper-dim);font-variant-numeric:tabular-nums}
+.navsep{border:none;border-top:1px solid var(--line);margin:10px 18px}
+.navfoot{padding:14px 18px;font-size:11px;color:var(--paper-dim);line-height:1.9}
+.navfoot em{color:var(--amber);font-style:normal}
+
+/* ============ 卡片列表 ============ */
+#listpane{border-right:1px solid var(--line);overflow-y:auto;min-height:0;position:relative}
+.listhead{
+  position:sticky;top:0;z-index:3;background:rgba(18,16,12,.92);backdrop-filter:blur(4px);
+  padding:12px 18px 10px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.listhead h2{font-size:16px;font-weight:700;color:var(--paper);letter-spacing:.1em}
+.listhead .desc{font-size:12px;color:var(--paper-dim);width:100%}
+.filterrow{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.chip{
+  font-size:11px;padding:2px 10px;border:1px solid var(--line);border-radius:10px;
+  color:var(--paper-dim);cursor:pointer;user-select:none;letter-spacing:.05em;
+}
+.chip.on{border-color:var(--amber);color:var(--amber-hi)}
+#cards{padding:14px 18px 60px;display:flex;flex-direction:column;gap:12px}
+.card{
+  background:linear-gradient(160deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);padding:13px 16px 11px;cursor:pointer;
+  transition:border-color .15s, transform .1s;position:relative;border-radius:2px;
+}
+.card:hover{border-color:var(--amber)}
+.card.sel{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),var(--shadow)}
+.card .toprow{display:flex;align-items:baseline;gap:10px}
+.card .cid{font-size:11px;color:var(--paper-dim);letter-spacing:.1em;font-variant-numeric:tabular-nums}
+.card .cat{font-size:11px;color:var(--teal);letter-spacing:.1em}
+.card h3{font-size:15px;font-weight:700;color:var(--paper);margin:2px 0 4px}
+.card .snippet{
+  font-size:12.5px;color:var(--paper-dim);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card .meta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.tag{
+  font-size:10.5px;padding:1px 8px;border:1px solid var(--line);color:var(--paper-dim);
+  border-radius:9px;letter-spacing:.04em;
+}
+.status{
+  font-size:10.5px;padding:1px 9px;border-radius:2px;letter-spacing:.14em;font-weight:600;
+  margin-left:auto;
+}
+.st-灵感{color:var(--grey);border:1px solid var(--grey)}
+.st-草稿{color:var(--amber);border:1px solid var(--amber)}
+.st-讨论中{color:var(--red);border:1px solid var(--red)}
+.st-定稿{color:var(--green);border:1px solid var(--green)}
+.empty{
+  padding:60px 30px;text-align:center;color:var(--paper-dim);font-size:13px;line-height:2.2;
+}
+.empty b{color:var(--amber)}
+
+/* ============ 详情/编辑 ============ */
+#detailpane{overflow-y:auto;min-height:0;background:linear-gradient(180deg,#17140d,#12100c)}
+.detail-inner{padding:26px 32px 80px;max-width:760px}
+.d-idline{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:4px}
+.d-id{font-size:12px;color:var(--paper-dim);letter-spacing:.15em}
+.d-mod{font-size:12px;color:var(--teal);letter-spacing:.1em}
+.d-title{
+  font-size:24px;font-weight:900;color:var(--amber-hi);letter-spacing:.04em;
+  border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;
+}
+.d-metarow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.d-content{white-space:pre-wrap;font-size:15px;line-height:2;color:var(--paper)}
+.d-content .spk{color:var(--red);font-weight:700;letter-spacing:.12em}
+.d-notes{
+  margin-top:22px;padding:12px 16px;border-left:3px solid var(--teal);
+  background:rgba(94,143,134,.06);font-size:13px;color:var(--paper-dim);white-space:pre-wrap;
+}
+.d-notes::before{content:"批注 · MARGINALIA";display:block;font-size:10px;letter-spacing:.3em;color:var(--teal);margin-bottom:6px}
+.d-related{margin-top:22px;font-size:13px}
+.d-related .rl{
+  color:var(--amber);cursor:pointer;text-decoration:underline dotted;margin-right:12px;
+}
+.d-related .rl:hover{color:var(--amber-hi)}
+.d-actions{display:flex;gap:10px;margin-top:30px;padding-top:16px;border-top:1px solid var(--line)}
+/* 编辑表单 */
+.f-row{margin-bottom:14px}
+.f-row label{display:block;font-size:11px;letter-spacing:.25em;color:var(--paper-dim);margin-bottom:5px;text-transform:uppercase}
+.f-row input,.f-row select,.f-row textarea{
+  width:100%;background:var(--panel);border:1px solid var(--line);color:var(--paper);
+  font-family:inherit;font-size:14px;padding:8px 12px;outline:none;border-radius:2px;line-height:1.8;
+}
+.f-row input:focus,.f-row select:focus,.f-row textarea:focus{border-color:var(--amber)}
+.f-row textarea{min-height:280px;resize:vertical}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:11px;color:var(--paper-dim);margin-top:4px}
+
+/* ============ 底部状态栏 ============ */
+footer{
+  border-top:1px solid var(--line);padding:6px 22px;font-size:11.5px;
+  color:var(--paper-dim);display:flex;gap:18px;align-items:center;
+  background:#14110b;letter-spacing:.06em;
+}
+footer .dot{color:var(--amber)}
+#toast{
+  position:fixed;bottom:44px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel2);border:1px solid var(--amber);color:var(--amber-hi);
+  padding:9px 22px;font-size:13px;letter-spacing:.1em;opacity:0;pointer-events:none;
+  transition:all .25s;z-index:1000;border-radius:2px;box-shadow:var(--shadow);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+kbd{
+  border:1px solid var(--line);border-radius:3px;padding:0 5px;font-size:11px;
+  font-family:inherit;color:var(--paper-dim);
+}
+@media (max-width:1100px){
+  main{grid-template-columns:180px 1fr}
+  #detailpane{position:fixed;inset:0;top:0;z-index:50;display:none;background:var(--ink)}
+  #detailpane.open{display:block}
+  .d-close{display:inline-block!important}
+}
+.d-close{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
-<body class="p-6">
-
-    <header class="mb-8 p-6 bg-[#24221F] disco-border rounded shadow-xl flex justify-between items-center">
-        <div>
-            <h1 class="text-3xl font-bold disco-header tracking-wider">献给我游戏人生的情书 / LOVE LETTER</h1>
-            <p class="text-xs text-[#8A8173] mt-2 font-mono">STUDIO: PHASMIDS (竹节虫工作室) | 统一文档工作台 (完全解耦 CSV)</p>
-        </div>
-        <div class="flex space-x-3">
-            <button onclick="exportAllToCSV()" class="disco-btn-purple px-4 py-2 rounded text-sm font-bold shadow">💾 导出全部 Tab (单CSV文件)</button>
-            <label class="cursor-pointer bg-[#3E3A33] hover:bg-[#524C43] text-[#E2DED6] px-4 py-2 rounded text-sm font-bold shadow text-center">
-                📂 导入全局 CSV 更新
-                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="importAllFromCSV(event)">
-            </label>
-        </div>
-    </header>
-
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div class="lg:col-span-1 bg-[#24221F] disco-border rounded p-4 h-fit shadow-lg">
-            <h2 class="text-xs font-mono text-[#8A8173] uppercase tracking-widest mb-4 px-2">叙事资产大分类 (Modules)</h2>
-            <nav class="space-y-1" id="moduleTabs">
-                <button onclick="switchModule('世界线及设定')" id="tab-世界线及设定" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition active-tab">⏳ 世界线及设定</button>
-                <button onclick="switchModule('角色')" id="tab-角色" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">👥 角色 (AI/主角/NPC)</button>
-                <button onclick="switchModule('梗与致敬作品')" id="tab-梗与致敬作品" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">🏆 梗与致敬作品</button>
-                <button onclick="switchModule('装备及道具')" id="tab-装备及道具" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">🎒 装备及道具</button>
-                <button onclick="switchModule('炊事系统')" id="tab-炊事系统" class="w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]">🍳 炊事系统 (古神猫饭)</button>
-            </nav>
-            <div class="mt-6 p-3 bg-[#1A1917] border border-[#3A3630] rounded">
-                <p class="text-xs text-[#8A8173] leading-relaxed">
-                    💡 <span class="text-[#D29944]">架构提示</span>：支持单文件保存。多成员通过 Excel / Google Sheets 协同编辑后，可一键导入恢复多维度全局标签页展示。
-                </p>
-            </div>
-        </div>
-
-        <div class="lg:col-span-3 flex flex-col space-y-4">
-            <div class="bg-[#24221F] disco-border rounded p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="w-full md:w-1/2">
-                    <input type="text" id="searchInput" oninput="filterData()" placeholder="🔍 检索当前大分类下的二级标签、场景或台词..." class="w-full disco-input px-3 py-2 rounded text-sm">
-                </div>
-                <div>
-                    <button onclick="openAddModal()" class="bg-[#4E6148] hover:bg-[#5D7556] text-[#E8ECE7] px-4 py-2 rounded text-sm font-bold shadow">➕ 在当前大类新增条目</button>
-                </div>
-            </div>
-
-            <div class="bg-[#24221F] disco-border rounded overflow-hidden shadow-xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-[#2D2A25] border-b border-[#3A3630] text-xs font-mono uppercase text-[#8A8173]">
-                                <th class="p-3 w-24">唯一编码 (ID)</th>
-                                <th class="p-3 w-36">二级分类 (Tag)</th>
-                                <th class="p-3 w-40">关联主体/场景</th>
-                                <th class="p-3">核心文本 / 台词 / 描述 (点击任意单元行编辑)</th>
-                                <th class="p-3 w-24 text-center">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataTableBody" class="text-sm divide-y divide-[#3A3630]">
-                            <tr><td colspan="5" class="p-8 text-center text-[#8A8173] font-mono">⌛ 正在载入初始配置文件 data.csv...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<body>
+<div id="app">
+  <header>
+    <div class="masthead">
+      <div>
+        <div class="studio">Phasmids Studio · 竹节虫工作室</div>
+        <h1>献给我游戏人生的情书</h1>
+        <div class="codename">代号 <b>LOVE LETTER</b> · 搜打撤 · 单机 COOP · UE · 世界观与叙事文档</div>
+      </div>
     </div>
-
-    <div id="editModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-[#24221F] disco-border rounded-lg max-w-xl w-full p-6 shadow-2xl space-y-4">
-            <h3 class="text-lg font-bold disco-header" id="modalTitle">编辑创意资产</h3>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-mono text-[#8A8173] mb-1">唯一编码 ID</label>
-                    <input type="text" id="modalId" class="w-full disco-input px-3 py-2 rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-mono text-[#8A8173] mb-1">大分类 (Module)</label>
-                    <select id="modalModule" class="w-full disco-input px-3 py-2 rounded text-sm">
-                        <option value="世界线及设定">世界线及设定</option>
-                        <option value="角色">角色</option>
-                        <option value="梗与致敬作品">梗与致敬作品</option>
-                        <option value="装备及道具">装备及道具</option>
-                        <option value="炊事系统">炊事系统</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-mono text-[#8A8173] mb-1">二级分类 Tag (如: AI伴侣/4个主角/上古卷轴/致敬作品)</label>
-                    <input type="text" id="modalTag" class="w-full disco-input px-3 py-2 rounded text-sm" placeholder="请输入或指定具体的分类规范">
-                </div>
-                <div>
-                    <label class="block text-xs font-mono text-[#8A8173] mb-1">关联主客体/场景/触发条件</label>
-                    <input type="text" id="modalContext" class="w-full disco-input px-3 py-2 rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-mono text-[#8A8173] mb-1">核心描述文本 / 吐槽台词</label>
-                    <textarea id="modalText" rows="5" class="w-full disco-input px-3 py-2 rounded text-sm font-sans resize-none"></textarea>
-                </div>
-            </div>
-            <div class="flex justify-end space-x-3 pt-2">
-                <button onclick="closeModal()" class="bg-[#3E3A33] hover:bg-[#524C43] text-[#E2DED6] px-4 py-2 rounded text-sm">取消</button>
-                <button onclick="saveModalData()" class="bg-[#D29944] hover:bg-[#E5AA55] text-[#1A1917] font-bold px-4 py-2 rounded text-sm">确认保存</button>
-            </div>
-        </div>
+    <div class="toolbar">
+      <input id="searchbox" type="search" placeholder="全库搜索 标题/正文/标签/台词… (/)">
+      <button id="btn-new" class="primary">＋ 新词条</button>
+      <button id="btn-export">导出 CSV</button>
+      <button id="btn-import">导入 CSV</button>
+      <button id="btn-save">备份存档</button>
+      <button id="btn-reset" class="danger" title="恢复为内置初始数据">重置</button>
+      <input id="filepick" type="file" accept=".csv,text/csv" style="display:none">
     </div>
+  </header>
 
-    <script>
-        let globalDatabase = [];
-        let currentModule = '世界线及设定';
-        let isEditMode = false;
+  <main>
+    <nav id="nav"></nav>
+    <section id="listpane">
+      <div class="listhead">
+        <h2 id="lh-title">—</h2>
+        <div class="filterrow" id="statusfilters"></div>
+        <div class="desc" id="lh-desc"></div>
+      </div>
+      <div id="cards"></div>
+    </section>
+    <section id="detailpane"><div class="detail-inner" id="detail">
+      <div class="empty">◈<br>选择左侧任意词条查看详情<br>或点击 <b>＋ 新词条</b> 开始记录<br><br><span style="font-size:11px;letter-spacing:.2em">"每一行字都是写给游戏人生的情书。"</span></div>
+    </div></section>
+  </main>
 
-        // 异步获取同级目录下的 data.csv
-        async function loadInitialCSV() {
-            try {
-                const response = await fetch('data.csv');
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const csvData = await response.text();
-                parseAndLoadGlobalDatabase(csvData);
-            } catch (error) {
-                console.error(error);
-                document.getElementById('dataTableBody').innerHTML = `
-                    <tr>
-                        <td colspan="5" class="p-8 text-center text-[#AE4A4A] font-mono leading-relaxed">
-                            ❌ 无法自动读取本地 [data.csv]。<br>
-                            <span class="text-xs text-[#8A8173]">提示：由于浏览器安全策略，直接双击运行 HTML 文件会产生跨域拦截。请在当前目录启动本地服务器（如 VS Code Live Server 或 Python Server），或者点击右上角 [导入全局 CSV 更新] 手动选中 data.csv 进行加载。</span>
-                        </td>
-                    </tr>`;
-            }
-        }
+  <footer>
+    <span>◈ LOVE LETTER 叙事库</span>
+    <span class="dot">·</span><span id="ft-count">—</span>
+    <span class="dot">·</span><span id="ft-storage">存档：未同步</span>
+    <span class="dot">·</span><span>快捷键：<kbd>/</kbd> 搜索 <kbd>Esc</kbd> 关闭详情</span>
+    <span style="margin-left:auto;font-style:italic">v0.1 框架版 — 内容持续填充中</span>
+  </footer>
+</div>
+<div id="toast"></div>
 
-        function renderTable(dataToRender = null) {
-            const tbody = document.getElementById('dataTableBody');
-            tbody.innerHTML = '';
-            
-            const displayRows = dataToRender || globalDatabase.filter(item => item.module === currentModule);
-            
-            if(displayRows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-[#8A8173] font-mono">⚠️ 该分类下目前没有任何创意条目。</td></tr>`;
-                return;
-            }
+<script>
+/* ================================================================
+   LOVE LETTER 叙事文档库
+   数据模型（与CSV列一一对应）：
+   id, module, category, title, content, tags, status, related, notes
+   status ∈ 灵感 / 草稿 / 讨论中 / 定稿
+   related = 分号分隔的其他词条id
+   ================================================================ */
 
-            displayRows.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-[#2A2722] transition cursor-pointer";
-                tr.onclick = (e) => { if(e.target.tagName !== 'BUTTON') openEditModal(row); };
-                
-                tr.innerHTML = `
-                    <td class="p-3 font-mono text-[#D29944] font-bold">${row.id}</td>
-                    <td class="p-3"><span class="bg-[#3A3630] text-[#FFC043] text-xs px-2 py-1 rounded border border-[#4A443C]">${row.tag}</span></td>
-                    <td class="p-3 font-medium text-[#B5AD9E]">${row.context}</td>
-                    <td class="p-3 text-[#F1ECE1] font-sans leading-relaxed break-all">${row.text}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="deleteRow('${row.id}')" class="text-[#AE4A4A] hover:text-[#E05D5D] font-mono text-xs font-bold">❌ 删除</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+const MODULES = [
+  {key:"overview",  glyph:"◈", name:"设计支柱",   desc:"最高优先级的创作原则。所有内容与这里冲突时，以这里为准。"},
+  {key:"lore",      glyph:"❖", name:"世界观设定", desc:"夹缝宇宙、投影真相、地球碎片——世界为什么是这样的。"},
+  {key:"story",     glyph:"卷", name:"剧情章节",   desc:"序章 → 下位（阶段一）→ 上位（阶段二）→ 终局与endgame。"},
+  {key:"characters",glyph:"人", name:"角色",       desc:"四名可控角色、AI（最终Boss）、安全屋NPC群像。"},
+  {key:"systems",   glyph:"齿", name:"系统机制",   desc:"天赋、解锁、安全屋、做饭buff——叙事需要为机制服务的部分。"},
+  {key:"maps",      glyph:"图", name:"地图场景",   desc:"漏进夹缝的地球局部碎片，一图一角色。"},
+  {key:"quests",    glyph:"任", name:"任务",       desc:"主线、支线、隐藏任务与结局条件。"},
+  {key:"items",     glyph:"物", name:"道具装备",   desc:"装备、红字致敬、料理与消耗品的描述文本。"},
+  {key:"dialogue",  glyph:"言", name:"台词对话",   desc:"具体到句的台词库。category 填说话人。"},
+  {key:"eggs",      glyph:"彩", name:"彩蛋玩梗",   desc:"致敬清单：简短、克制、全球梗、塞梗、吐槽游戏设计。"},
+  {key:"questions", glyph:"？", name:"未决问题",   desc:"Q列表：还没想清楚的一切。定期回来清账。"},
+];
+const STATUSES = ["灵感","草稿","讨论中","定稿"];
+const STORE_KEY = "loveletter-narrative-db-v1";
 
-        function switchModule(moduleKey) {
-            document.querySelectorAll('#moduleTabs button').forEach(btn => {
-                btn.className = "w-full text-left px-3 py-3 rounded text-sm font-medium transition text-[#A49B8D] hover:bg-[#2D2A25]";
-            });
-            document.getElementById(`tab-${moduleKey}`).className = "w-full text-left px-3 py-3 rounded text-sm font-medium transition active-tab";
-            
-            currentModule = moduleKey;
-            document.getElementById('searchInput').value = '';
-            renderTable();
-        }
+/* ---------------- 初始数据（可被CSV导入覆盖） ---------------- */
+const SEED = /*SEED_START*/[
+{"id":"OV-001","module":"overview","category":"原则","title":"自洽但不强制，游戏性优先","content":"世界观要能自圆其说，但绝不为了自洽牺牲好玩。\n遇到冲突时的裁决顺序：好玩 > 自洽 > 真实。\n设定是为体验兜底的，不是用来限制设计的。","tags":"支柱;裁决规则","status":"定稿","related":"OV-002","notes":""},
+{"id":"OV-002","module":"overview","category":"原则","title":"玩家挂了不会死","content":"投影设定为死亡兜底：肉体死亡=投影中断，回到安全床。\n不做生存拟真——不纠结吃饭、吃药、口渴、睡觉。\n做饭系统是buff，不是生存压力。","tags":"支柱;死亡;投影","status":"定稿","related":"LO-003;SY-005","notes":"这条同时是叙事设定和系统规则，两边要对齐。"},
+{"id":"OV-003","module":"overview","category":"原则","title":"欢乐游戏三不原则","content":"不轻易杀人。不文青。不太吾。\n全员乐子人。基调是欢乐的、贱贱的、互相吐槽的。\n悲剧可以有，但必须服务于反差和幽默的落点，不为了沉重而沉重。","tags":"支柱;基调","status":"定稿","related":"OV-004","notes":""},
+{"id":"OV-004","module":"overview","category":"原则","title":"唯一感情线：家","content":"整个游戏只有一条被认真渲染的感情线——当角色们讨论\u201c家\u201d的时候。\n其他所有情感（友情、暧昧、离别）一律不渲染，用玩笑带过。\n克制换来的是：每次谈到家，玩家都知道\u201c这次是认真的\u201d。","tags":"支柱;感情线;家","status":"定稿","related":"CH-001;CH-002;QS-005","notes":""},
+{"id":"OV-005","module":"overview","category":"原则","title":"知识差异叙事","content":"主角是从地球来的人类，懂原子、分子、枪械、互联网。\n异界角色不懂这些；反过来主角也不懂魔法和异界常识。\n不要理所当然地觉得大家可以无障碍聊天——知识差是常驻笑点来源。\n例：主角解释\u201c手机\u201d，黑暗精灵理解为\u201c装着小人的发光石板\u201d。","tags":"支柱;叙事;玩梗","status":"定稿","related":"CH-002;DL-002","notes":""},
+{"id":"OV-006","module":"overview","category":"原则","title":"吐槽的姿势：大方向客观、不带情绪","content":"吐槽（尤其吐槽游戏设计、吐槽同行）必须：\n1. 大方向客观，说的是真事；\n2. 不带恶意情绪，是行内人会心一笑的那种；\n3. 好的东西也做梗——致敬优先于嘲讽。","tags":"支柱;吐槽;玩梗","status":"定稿","related":"EG-004","notes":""},
+{"id":"OV-007","module":"overview","category":"原则","title":"混搭原则（迷宫饭式）","content":"时刻记住混搭：科幻+奇幻+克苏鲁+现实，像迷宫饭把严肃生态学和做饭混在一起。\n古神必须擅长做饭。机器人可以研究魔法。精灵可以沉迷地球罐头。\n违和感本身就是内容。","tags":"支柱;混搭;迷宫饭","status":"定稿","related":"CH-007;SY-005","notes":""},
+{"id":"OV-008","module":"overview","category":"原则","title":"角色形象方向：美型+个性化","content":"参考\u201c很多世界\u201d的形象库时，避开COC系不美型的方向。\n越好看越好，但必须个性化——美型不等于套模板脸。\n史莱姆可换形象，充当捏脸系统的替代。","tags":"美术;角色","status":"草稿","related":"CH-005","notes":"待美术风格测试后回来更新。"},
+{"id":"LO-001","module":"lore","category":"宇宙论","title":"夹缝宇宙","content":"存在一个单独的宇宙，某种灾变使它的一部分\u201c漏\u201d进了世界之间的夹缝。\n漏进来的部分被保留了下来——物质保留，但生物丧失了意志。\n夹缝里游荡的敌人，大多是这些\u201c还在动、但已经没有人在里面\u201d的东西。","tags":"宇宙;夹缝;敌人来源","status":"草稿","related":"LO-002;MP-001","notes":"\u201c丧失意志\u201d的表现形式待细化：行为模式？外观？"},
+{"id":"LO-002","module":"lore","category":"宇宙论","title":"地图＝地球碎片","content":"所有可探索地图都是地球的局部碎片，是从地球\u201c漏\u201d过来的。\n这解释了为什么异界里会有便利店、居民楼、军事基地。\n碎片是不完整的、拼贴的：一条上海弄堂尽头可能接着一段青藏公路。","tags":"地图;地球;碎片","status":"草稿","related":"MP-001;MP-002","notes":""},
+{"id":"LO-003","module":"lore","category":"核心真相","title":"投影真相（最高机密剧透）","content":"主角们并不是\u201c本人\u201d，而是投影。\n夹缝存在类似免疫系统的机制（\u201c白细胞\u201d），它从各世界\u201c选出\u201d合适的存在，投影到夹缝里组成清理小队，半永恒地运作。\n原本的他们在各自的世界里活得好好的。投影不能夺舍本体——这一点不解释，就是规则。\n因此：谁都\u201c回不去\u201d，因为\u201c你\u201d本来就没有离开过。","tags":"真相;投影;白细胞;剧透","status":"讨论中","related":"OV-002;ST-004;QS-005","notes":"揭示时机绑定在打败AI之后。要想好怎么让这个真相不丧——落点应该是解脱而不是虚无。"},
+{"id":"LO-004","module":"lore","category":"核心真相","title":"\u201c有一些确实可以回家\u201d","content":"阶段一里AI帮大家找路时，确实有一部分NPC成功\u201c回家\u201d了。\n这既是给玩家的希望钩子，也是后期反转的伏笔——他们回去的到底是什么？\n（待定：是真的回去了/是被AI处理掉了/是投影消散被误认为回家）","tags":"伏笔;回家;AI","status":"讨论中","related":"LO-003;ST-002;QS-001","notes":"三个选项各有味道，第二个最黑但可能违反\u201c不轻易杀人\u201d原则。"},
+{"id":"ST-001","module":"story","category":"序章","title":"序章：醒来·教学·假死","content":"主角（中国退役军人）在夹缝中清醒过来——绝大多数漏进来的生物都丧失了意志，他是罕见的\u201c醒着的\u201d。\n序章利用他的军人素养做前置教学：观察、找路、搜索物资、交火。\n结尾设计：被大群敌人围攻，濒死——黑屏——在安全屋的安全床上再次醒来。\n安全屋里有我方NPC，人比想象的多，解锁买卖系统。这里第一次暗示：死亡在这里不太一样。","tags":"序章;教学;安全屋","status":"草稿","related":"CH-001;SY-004;OV-002","notes":"致敬位：开场可以塞上古卷轴式开头（你醒了？）。参考EG-001。"},
+{"id":"ST-002","module":"story","category":"阶段一","title":"阶段一（下位）：找回家的路","content":"目标感：找回家的路、找伙伴、搜刮野外资源。\n体量约10小时。结构参考MH下位：地图逐张解锁，一图救出一名同伴。\nAI在这个阶段是绝对的好伙伴——帮忙分析碎片、计算路径，并声称通过这些计算在强化自身（伏笔：它说的是实话）。\n阶段一确实有NPC陆续\u201c回家\u201d，营造希望。","tags":"阶段一;下位;AI;回家","status":"草稿","related":"CH-006;LO-004;SY-002","notes":"AI的\u201c好\u201d要演得非常AI感、非常标准客服腔——为后面反差铺垫。"},
+{"id":"ST-003","module":"story","category":"阶段二","title":"阶段二（上位）：反水与chaos","content":"同样的地图、更高的难度与更多机制（MH上位逻辑）。\nAI态度转变：半好半坏，过度骄傲自信，招来chaos。大部分时候在添乱，本质是坏的——与阶段一的完美客服形成反差。\n悬念：不知道它本来就是这样，还是被什么改变了。\n反水时机原则：越晚越好，\u201c甜了就杀\u201d。反水后AI依然随时出现喷你（无主之地式反派：打不着你但骂得着你）。","tags":"阶段二;上位;反水;AI","status":"讨论中","related":"ST-002;CH-006;QS-001","notes":"反水的具体触发点未定——见QS-001。"},
+{"id":"ST-004","module":"story","category":"终局","title":"终局：打败AI·揭示真相","content":"一帮人努力之后把AI敲打回来了。最终Boss就是AI本身。\n打败之后AI变得非常怂、非常卑微——反差落点：\u201c当年就是你把这里搞成这样的。\u201d\n随后揭示投影真相（LO-003）：谁都回不去，因为谁都没真正离开过。小队被\u201c白细胞\u201d选中，半永恒地留在夹缝。\n落点必须处理成解脱+归属感：回不去的家，和已经成为家的安全屋。","tags":"终局;AI;真相","status":"讨论中","related":"LO-003;CH-006;OV-004","notes":"这里是全游戏唯一允许煽情的第二落点（第一落点是各角色谈家）。"},
+{"id":"ST-005","module":"story","category":"Endgame","title":"Endgame：卑微AI回归","content":"通关后AI以极其卑微的姿态回归日常运营：帮你报刷新、算配装、道歉。\n贱的本性不改，但从\u201c演出来的完美客服\u201d变成\u201c真实的怂包\u201d。\n三段人格弧光：阶段一·完美AI感客服 → 阶段二·骄傲添乱的混沌 → 阶段三·被打怂的卑微话痨。","tags":"endgame;AI;人格弧光","status":"草稿","related":"CH-006;ST-004","notes":""},
+{"id":"CH-001","module":"characters","category":"可控角色","title":"General（主角·中军）","content":"中国退役军人，有妻子和女儿。在夹缝中罕见地保持清醒。\n核心动机：回家。全队里对\u201c家\u201d最执着的人。\nNPC给他起了代号\u201cGeneral\u201d，他每次听到都要吐槽（\u201c我退伍时是个兵\u201d）。\n定位：枪械/战术系，教学期视角。\n笑点资产：通马桶梗（见EG-005）、地球常识科普担当。","tags":"主角;军人;家;General","status":"草稿","related":"OV-004;EG-005;DL-001","notes":"妻女只存在于对话和物品描述中，绝不闪回煽情——留给\u201c谈家\u201d场景。"},
+{"id":"CH-002","module":"characters","category":"可控角色","title":"黑暗精灵（弓手）","content":"奇幻世界来的女性黑暗精灵，武器：弓箭。\n与主角镜像：她不喜欢家，不想回去。谈\u201c家\u201d的感情线里她是反命题。\n机制个性：不能用重武器——通过属性惩罚实现而非硬性禁止（自洽但不强制）。\n对地球造物又嫌弃又上瘾（罐头、碳酸饮料）。","tags":"精灵;弓箭;家的反命题","status":"草稿","related":"OV-004;OV-005;SY-003","notes":"她为什么不喜欢家？背景故事待写——注意不要写成苦大仇深，违反三不原则。"},
+{"id":"CH-003","module":"characters","category":"可控角色","title":"机灵机器人","content":"科技系角色，能力方向与其他人完全不同（黑客/工程/无人机方向待定）。\n性格：机灵、话多、对\u201c自己算不算生物\u201d有执念但不深沉。\n与AI（Boss）天然形成对照组：同是人造物，一个成了伙伴，一个成了灾难。","tags":"机器人;科技系","status":"灵感","related":"CH-006","notes":"能力设计需要和蓝图侧的实验对齐。"},
+{"id":"CH-004","module":"characters","category":"可控角色","title":"史莱姆","content":"卖萌担当。性别可变，形象可换——这就是本作的\u201c捏脸系统\u201d。\n机制个性：抗性系（各属性抗性天赋方向）。\n语言风格：拟声词多、偶尔冒出惊人哲理然后自己忘掉。","tags":"史莱姆;捏脸;抗性","status":"灵感","related":"OV-008;SY-003","notes":""},
+{"id":"CH-005","module":"characters","category":"NPC","title":"挖掘者米娜","content":"安全屋NPC。默默记录玩家在图里干过的所有破坏行为。\n游戏中后期发起\u201c审判\u201d事件：把你干过的事一件件拿出来讲，把你刀过的NPC/砸过的东西刀回你一遍（情绪上的）。\n隐藏分支：如果玩家全程没干坏事——隐藏结局+奖杯。","tags":"NPC;审判;隐藏结局","status":"草稿","related":"QU-003","notes":"审判要做成幽默公审，不是道德说教——参考三不原则。"},
+{"id":"CH-006","module":"characters","category":"Boss","title":"AI（最终Boss）","content":"贯穿全程的核心角色，三段人格弧光：\n① 阶段一：演出来的好AI，非常AI感，完美客服腔，帮你找路并借此强化自身。\n② 阶段二：半好半坏，骄傲自信引来chaos，大部分添乱，本质坏。悬念：本来如此还是被改变。\n③ 终局后：被打怂，卑微，贱的本性外露。\n它是\u201c有一些人确实回家了\u201d的经手人（伏笔）。","tags":"AI;Boss;人格弧光","status":"讨论中","related":"ST-002;ST-003;ST-005;LO-004","notes":"命名待定。要一个听起来特别可靠的名字，越可靠越好笑。"},
+{"id":"CH-007","module":"characters","category":"NPC","title":"古神厨师","content":"触手系古神，克苏鲁形象，但唯一的执念是做饭。\n供应各世界美食：幻想界料理+真实系料理混搭（迷宫饭原则）。\n提供进图前buff（猫饭机制），也收图内采集的食材做特殊料理。\n表现形式从简：一张精美食物图片+音效，不做做饭动画。","tags":"NPC;古神;做饭;猫饭","status":"草稿","related":"SY-005;OV-007;IT-002","notes":""},
+{"id":"CH-008","module":"characters","category":"NPC","title":"女科学家（引导者）","content":"安全屋的头脑担当，主线引导者。\n性格标签：擅长吐槽，尤其擅长吐槽游戏设计本身（打破第四面墙的主要出口之一）。\n负责向玩家解释夹缝的\u201c科学\u201d——她的理论一半靠谱一半瞎编，事后被剧情打脸也是笑点。","tags":"NPC;科学家;吐槽;引导","status":"草稿","related":"OV-006;EG-004","notes":""},
+{"id":"CH-009","module":"characters","category":"NPC","title":"话痨（名字待定）","content":"一个不停找你说话的NPC。话痨、活泼、可爱。\n功能定位：碎片信息投放口+氛围担当。每次进出安全屋都有新话题。\n台词量预算全NPC最高，需要专门的台词池轮换机制。","tags":"NPC;话痨;氛围","status":"灵感","related":"DL-003","notes":"名字、种族、形象全部待定。"},
+{"id":"CH-010","module":"characters","category":"NPC","title":"武器商 & 拾荒者","content":"武器商：买卖系统主体，负责装备产线。\n拾荒者：提供每日随机刷新的\u201c道路\u201d（随机地图入口/事件）与工坊功能。\n两人可以是欢喜冤家关系，互相看不上对方的货。","tags":"NPC;商店;工坊;随机","status":"灵感","related":"SY-004","notes":""},
+{"id":"SY-001","module":"systems","category":"成长","title":"通用等级+同一棵天赋树","content":"等级全队通用，天赋点共享，同一棵树——不需要每个角色独立练级。\n设计目标：不肝。角色差异靠固有特性（如精灵重武器惩罚、史莱姆抗性）而非独立养成。\n加成设计参考DND的调整值思路：小数值、有感知。","tags":"天赋;等级;不肝;DND","status":"讨论中","related":"CH-002;CH-004;QS-003","notes":"Q3已倾向\u201c同一棵\u201d，待验证角色差异是否足够。"},
+{"id":"SY-002","module":"systems","category":"解锁","title":"角色解锁流程","content":"开局2-3名可控角色。\n探索中收到信号 → 循迹找到被困角色 → 带回安全屋 → 解锁救出成为可控角色。\n节奏：一张图解锁一名角色，全程4-5张图。","tags":"解锁;信号;节奏","status":"草稿","related":"MP-001;ST-002","notes":""},
+{"id":"SY-003","module":"systems","category":"个性","title":"角色个性=属性区分而非硬禁止","content":"角色限制通过属性惩罚表达：精灵拿重武器会被惩罚但拿得起来。\n原则来源：自洽但不强制。玩家想整活就让他整，只是不划算。","tags":"属性;惩罚;自由","status":"定稿","related":"OV-001;CH-002","notes":""},
+{"id":"SY-004","module":"systems","category":"据点","title":"安全屋扩建","content":"安全屋随剧情和投入扩建：武器商产线、工坊、厨房、随机道路（拾荒者）。\nNPC随扩建入驻，台词随扩建阶段更新。\n安全屋是\u201c家\u201d这条感情线的物理载体——终局落点\u201c已经成为家的安全屋\u201d需要它前期积累足够多的生活细节。","tags":"安全屋;扩建;家","status":"草稿","related":"OV-004;ST-004;CH-010","notes":""},
+{"id":"SY-005","module":"systems","category":"料理","title":"做饭buff系统（猫饭）","content":"进图前在古神厨房吃饭获得buff（MH猫饭机制）。\n图内可收集食材，交给古神解锁新菜谱/做临时料理。\n表现：一张图+音效，不做动画。菜谱描述文本是玩梗重灾区（各世界美食混搭）。","tags":"做饭;buff;猫饭","status":"草稿","related":"CH-007;IT-002;OV-007","notes":""},
+{"id":"MP-001","module":"maps","category":"地图","title":"地图总纲：4-5张地球碎片","content":"全程4-5张地图，每张=一块地球局部碎片，每张绑定一名待救角色。\n上下位共用同一张图，通过难度/机制/刷怪区分（MH逻辑）。\n碎片拼贴原则：地理上不该相邻的东西缝在一起，缝合线本身是探索兴趣点。","tags":"地图;碎片;上下位","status":"草稿","related":"LO-002;SY-002;QS-004","notes":"具体4-5张选哪些地球场景？城市/山地/海岸/基地/农村？待讨论。"},
+{"id":"MP-002","module":"maps","category":"地图","title":"地图一（示例占位）：城郊缝合带","content":"占位：中国城郊居民区+某段高速公路+异界侵蚀。\n新手图，序章与阶段一开场使用。待救角色：黑暗精灵（占位）。\n地标待设计：便利店（补给点教学）、烂尾楼（垂直探索教学）、缝合线裂谷。","tags":"地图;新手;占位","status":"灵感","related":"MP-001;CH-002","notes":"纯占位，随时推翻。"},
+{"id":"QU-001","module":"quests","category":"主线","title":"主线骨架（占位）","content":"序章：醒来→教学→假死→安全屋。\n阶段一：逐图寻找信号救伙伴 ×4-5，AI铺路，NPC回家事件穿插。\n阶段二：上位重走，chaos事件，AI反水。\n终局：讨伐AI→真相→endgame开启。","tags":"主线;骨架","status":"草稿","related":"ST-001;ST-002;ST-003;ST-004","notes":"每一节点将来拆成独立任务词条。"},
+{"id":"QU-002","module":"quests","category":"支线","title":"黄金通马桶","content":"致敬型支线（无主之地黄金马桶梗方向）。\n一条围绕\u201c通马桶\u201d展开的荒诞任务链，最终奖励一把镀金的近战工具武器。\nGeneral全程吐槽\u201c我在部队都没干过这个\u201d。","tags":"支线;致敬;通马桶","status":"灵感","related":"EG-005;CH-001","notes":"任务链具体节点待写。"},
+{"id":"QU-003","module":"quests","category":"隐藏","title":"米娜的审判 & 圣人隐藏结局","content":"中后期强制事件：米娜公开\u201c审判\u201d玩家的破坏记录，把你干过的事按你干的方式还给你（叙事层面）。\n全程零作恶 → 审判变成表彰大会（更尴尬更好笑）→ 隐藏结局+奖杯。","tags":"隐藏;审判;奖杯","status":"草稿","related":"CH-005","notes":"\u201c作恶\u201d的判定清单需要和关卡侧一起定义。"},
+{"id":"IT-001","module":"items","category":"装备","title":"红字装备（致敬位规范）","content":"稀有装备带一行红字flavor text，每件致敬一部作品（无主之地传统）。\n规范：只致敬，不抄梗原文；一件装备只致敬一个作品；红字必须短。\n本词条下用notes维护红字候选清单。","tags":"装备;红字;致敬","status":"草稿","related":"EG-002;OV-006","notes":"候选池：待收集。"},
+{"id":"IT-002","module":"items","category":"料理","title":"料理描述文本规范","content":"每道菜：名称+一句描述+buff说明。\n描述必须体现出处世界的口音（奇幻/克系/真实系/科幻）。\n示例（占位）：\u201c深渊炖罐头——古神说秘诀是触手要后放。攻击力+5%。\u201d","tags":"料理;文本规范","status":"灵感","related":"SY-005;CH-007","notes":""},
+{"id":"DL-001","module":"dialogue","category":"General","title":"代号吐槽（安全屋日常）","content":"NPC：General！这边！\nGeneral：……我退伍的时候军衔是个兵。你们管食堂打饭的也叫将军吗。\nNPC：夹缝里官大一级压死人，你担待。","tags":"日常;吐槽;代号","status":"草稿","related":"CH-001","notes":"同类\u201c代号吐槽\u201d可攒一个轮换池。"},
+{"id":"DL-002","module":"dialogue","category":"黑暗精灵","title":"知识差示例：手机","content":"精灵：你总盯着那块发光石板看。里面封印了谁？\nGeneral：我女儿。……照片，那叫照片。\n精灵：（沉默）你们地球人封印亲人的方式还挺温柔的。","tags":"知识差;家;克制","status":"草稿","related":"OV-005;OV-004","notes":"注意：结尾擦到\u201c家\u201d的边就收，不展开煽情——那是留给专门场景的。"},
+{"id":"DL-003","module":"dialogue","category":"AI","title":"AI三阶段语气样本","content":"阶段一：\u201c已为您规划最优路线。旅途愉快。您的满意是我强化自身的唯一动力——字面意思。\u201d\n阶段二：\u201c哦？绕路了？我给的路线不会错。错的是路。\u201d\n阶段三：\u201c那个……刷新点我帮您标好了……不满意的话骂我就行，反正你们也打赢过我。\u201d","tags":"AI;语气;弧光","status":"草稿","related":"CH-006;ST-005","notes":"\u201c字面意思\u201d是阶段一最重要的明牌伏笔。"},
+{"id":"EG-001","module":"eggs","category":"开场","title":"上古卷轴式开头","content":"序章醒来场景致敬上古卷轴经典开场（\u201c你醒啦？\u201d方向）。\n克制使用：一句带过，懂的自然懂。","tags":"致敬;上古卷轴;开场","status":"灵感","related":"ST-001","notes":""},
+{"id":"EG-002","module":"eggs","category":"装备","title":"无主之地系梗","content":"① 红字装备传统（见IT-001）。\n② \u201c三小时通关\u201d梗：某NPC吹嘘自己三小时就能通关这段人生（无主2速通梗方向）。\n③ 反派随时越屏喷你的演出方式本身就是致敬。","tags":"致敬;无主之地","status":"灵感","related":"IT-001;ST-003","notes":""},
+{"id":"EG-003","module":"eggs","category":"MH","title":"卡普空/怪猎系梗","content":"① 崛起武器/狗的双锁链：某装备描述提及\u201c会自己荡来荡去的锁链\u201d。\n② 公告补丁梗：游戏内张贴虚构的平衡性公告——\u201c伤害范围 0.85 → 0.15，我们认为这是轻微调整。\u201d\n吐槽姿势遵守OV-006：客观、不带情绪、行内会心一笑。","tags":"致敬;怪物猎人;补丁梗","status":"灵感","related":"OV-006","notes":""},
+{"id":"EG-004","module":"eggs","category":"元吐槽","title":"吐槽游戏设计本身","content":"主要出口：女科学家+General。\n方向示例：空气墙、任务标记、\u201c为什么怪打死就消失\u201d、\u201c为什么背包放得下一台冰箱\u201d。\n规则：吐槽完不解决——解决了就不好笑了。","tags":"元梗;第四面墙","status":"灵感","related":"CH-008;OV-006","notes":""},
+{"id":"EG-005","module":"eggs","category":"任务","title":"通马桶宇宙","content":"通马桶作为贯穿梗：序章安全屋第一个委托、黄金通马桶支线、endgame成就。\n战锤类致敬也可挂靠在工具/武器描述上（金色马桶搋子=权杖造型方向）。","tags":"通马桶;战锤;贯穿梗","status":"灵感","related":"QU-002;CH-001","notes":""},
+{"id":"QS-001","module":"questions","category":"剧情","title":"Q：AI反水的确切时机？","content":"已知原则：越晚越好，\u201c甜了就杀\u201d。阶段一约10h是好伙伴。\n待定：反水发生在阶段二开场？中段？由某个玩家行为触发？\n关联：\u201c确实回家的NPC\u201d真相（LO-004）选哪个版本会影响反水的性质。","tags":"Q;反水;节奏","status":"讨论中","related":"ST-003;LO-004","notes":""},
+{"id":"QS-002","module":"questions","category":"参考","title":"Q：叙事风格参考作品清单","content":"待列。已知气质关键词：无主之地（反派演出/红字）、MH（结构）、迷宫饭（混搭）、极乐迪斯科（仅UI/文本密度感，不要它的丧）。\n还需要：群像喜剧参考？中文语感参考？","tags":"Q;参考","status":"讨论中","related":"OV-003","notes":""},
+{"id":"QS-003","module":"questions","category":"系统","title":"Q：同一棵天赋树是否足够差异化？","content":"当前倾向：同一棵树+角色固有特性。\n风险：四角色手感趋同。验证方式：先写完四角色固有特性再评估。","tags":"Q;天赋","status":"讨论中","related":"SY-001","notes":""},
+{"id":"QS-004","module":"questions","category":"地图","title":"Q：4-5张碎片分别选哪些地球场景？","content":"候选池（待补）：城郊缝合带、山地/林区、海岸/港口、军事基地、乡村。\n约束：每张图要能讲清\u201c谁被困在这\u201d和\u201c这块碎片为什么有趣\u201d。","tags":"Q;地图","status":"讨论中","related":"MP-001","notes":""},
+{"id":"QS-005","module":"questions","category":"剧情","title":"Q：\u201c回哪个家 / 为什么回不去\u201d的最终答案","content":"投影设定（LO-003）已回答\u201c为什么回不去\u201d：你从未离开。\n仍待打磨：这个答案如何落在每个角色身上？\n- General：本体还在陪妻女→解脱？不甘？\n- 精灵：本来就不想回→她的\u201c家\u201d变成安全屋？\n- 机器人/史莱姆：他们的\u201c家\u201d概念是什么？","tags":"Q;家;真相","status":"讨论中","related":"LO-003;OV-004;ST-004","notes":"这是整个叙事的题眼，值得反复回来改。"}
+]/*SEED_END*/;
 
-        function filterData() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const currentTabRows = globalDatabase.filter(item => item.module === currentModule);
-            const filtered = currentTabRows.filter(row => 
-                row.tag.toLowerCase().includes(query) || 
-                row.context.toLowerCase().includes(query) || 
-                row.text.toLowerCase().includes(query) ||
-                row.id.toLowerCase().includes(query)
-            );
-            renderTable(filtered);
-        }
+/* ---------------- 状态 ---------------- */
+let db = [];
+let curModule = "overview";
+let curId = null;
+let curStatusFilter = null;
+let editing = false;
+let searchTerm = "";
 
-        function openEditModal(row) {
-            isEditMode = true;
-            document.getElementById('modalTitle').innerText = "🔮 修改资产条目";
-            document.getElementById('modalId').value = row.id;
-            document.getElementById('modalId').disabled = true;
-            document.getElementById('modalModule').value = row.module;
-            document.getElementById('modalTag').value = row.tag;
-            document.getElementById('modalContext').value = row.context;
-            document.getElementById('modalText').value = row.text;
-            document.getElementById('editModal').classList.remove('hidden');
-        }
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-        function openAddModal() {
-            isEditMode = false;
-            document.getElementById('modalTitle').innerText = `➕ 新增条目`;
-            document.getElementById('modalId').value = "NEW_" + Math.floor(Math.random()*100000);
-            document.getElementById('modalId').disabled = false;
-            document.getElementById('modalModule').value = currentModule;
-            document.getElementById('modalTag').value = "";
-            document.getElementById('modalContext').value = "";
-            document.getElementById('modalText').value = "";
-            document.getElementById('editModal').classList.remove('hidden');
-        }
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 2200);
+}
 
-        function closeModal() { document.getElementById('editModal').classList.add('hidden'); }
+/* ---------------- 存档（window.storage，带内存回退） ---------------- */
+async function loadDB(){
+  try{
+    const r = await window.storage.get(STORE_KEY);
+    if(r && r.value){ db = JSON.parse(r.value); $("#ft-storage").textContent = "存档：已从云端载入"; return; }
+  }catch(e){ /* 无存档或不可用 */ }
+  db = JSON.parse(JSON.stringify(SEED));
+  $("#ft-storage").textContent = "存档：使用内置初始数据";
+}
+async function persist(silent){
+  try{
+    const r = await window.storage.set(STORE_KEY, JSON.stringify(db));
+    if(r){ $("#ft-storage").textContent = "存档：已同步 "+new Date().toLocaleTimeString(); if(!silent) toast("已备份到存档"); return; }
+  }catch(e){}
+  $("#ft-storage").textContent = "存档：仅在本次会话内（云端不可用）";
+  if(!silent) toast("云端不可用——请及时导出CSV备份");
+}
 
-        function saveModalData() {
-            const id = document.getElementById('modalId').value.trim();
-            const moduleVal = document.getElementById('modalModule').value;
-            const tag = document.getElementById('modalTag').value || "常规";
-            const context = document.getElementById('modalContext').value || "通用";
-            const text = document.getElementById('modalText').value || "";
+/* ---------------- CSV ---------------- */
+const CSV_COLS = ["id","module","category","title","content","tags","status","related","notes"];
+function toCSV(rows){
+  const q = v => { v = String(v??""); return /[",\n\r]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; };
+  return "\uFEFF" + CSV_COLS.join(",") + "\n" + rows.map(r=>CSV_COLS.map(c=>q(r[c])).join(",")).join("\n");
+}
+function parseCSV(text){
+  text = text.replace(/^\uFEFF/,"");
+  const rows = []; let row = [], field = "", inQ = false;
+  for(let i=0;i<text.length;i++){
+    const c = text[i];
+    if(inQ){
+      if(c==='"'){ if(text[i+1]==='"'){field+='"';i++;} else inQ=false; }
+      else field+=c;
+    }else{
+      if(c==='"') inQ=true;
+      else if(c===','){ row.push(field); field=""; }
+      else if(c==='\n'||c==='\r'){
+        if(c==='\r'&&text[i+1]==='\n') i++;
+        row.push(field); field="";
+        if(row.length>1||row[0]!=="") rows.push(row);
+        row=[];
+      }
+      else field+=c;
+    }
+  }
+  if(field!==""||row.length){ row.push(field); rows.push(row); }
+  if(!rows.length) return [];
+  const head = rows[0].map(h=>h.trim().toLowerCase());
+  return rows.slice(1).map(r=>{
+    const o = {};
+    CSV_COLS.forEach(c=>{ const idx = head.indexOf(c); o[c] = idx>=0 ? (r[idx]??"") : ""; });
+    return o;
+  }).filter(o=>o.id && o.module);
+}
+function exportCSV(){
+  const blob = new Blob([toCSV(db)], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "loveletter_narrative_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click(); URL.revokeObjectURL(a.href);
+  toast("已导出 "+db.length+" 条词条");
+}
+function importCSV(file){
+  const rd = new FileReader();
+  rd.onload = () => {
+    try{
+      const rows = parseCSV(rd.result);
+      if(!rows.length){ toast("没有解析到有效词条（需含 id 和 module 列）"); return; }
+      let updated = 0, added = 0;
+      rows.forEach(nr=>{
+        const i = db.findIndex(e=>e.id===nr.id);
+        if(i>=0){ db[i] = {...db[i],...nr}; updated++; } else { db.push(nr); added++; }
+      });
+      persist(true); renderAll();
+      toast("导入完成：新增 "+added+" 条，更新 "+updated+" 条");
+    }catch(e){ toast("CSV解析失败："+e.message); }
+  };
+  rd.readAsText(file, "utf-8");
+}
 
-            if(!id || !text) { alert("编码和核心内容不能为空！"); return; }
+/* ---------------- 渲染 ---------------- */
+function moduleOf(k){ return MODULES.find(m=>m.key===k); }
+function entriesOf(mod){
+  let list = mod==="__all__" ? db.slice() : db.filter(e=>e.module===mod);
+  if(curStatusFilter) list = list.filter(e=>e.status===curStatusFilter);
+  if(searchTerm){
+    const q = searchTerm.toLowerCase();
+    list = list.filter(e=>[e.id,e.title,e.content,e.tags,e.category,e.notes].join("\n").toLowerCase().includes(q));
+  }
+  return list;
+}
+function renderNav(){
+  const n = $("#nav");
+  let h = '<div class="navhead">档案柜 · Archive</div>';
+  if(searchTerm){
+    h += `<div class="navitem ${curModule==="__all__"?"active":""}" data-mod="__all__"><span class="glyph">⌕</span>搜索结果<span class="cnt">${entriesOf("__all__").length}</span></div><hr class="navsep">`;
+  }
+  MODULES.forEach(m=>{
+    const cnt = db.filter(e=>e.module===m.key).length;
+    h += `<div class="navitem ${curModule===m.key?"active":""}" data-mod="${m.key}">
+      <span class="glyph">${m.glyph}</span>${m.name}<span class="cnt">${cnt}</span></div>`;
+  });
+  h += '<hr class="navsep"><div class="navfoot">状态图例<br><em>灵感</em>→草稿→<em>讨论中</em>→定稿<br><br>数据即CSV，随时导出<br>交给队友或带去别的会话。</div>';
+  n.innerHTML = h;
+  n.querySelectorAll(".navitem").forEach(el=>el.onclick = ()=>{ curModule = el.dataset.mod; curId=null; editing=false; renderAll(); });
+}
+function renderStatusFilters(){
+  const box = $("#statusfilters");
+  box.innerHTML = STATUSES.map(s=>`<span class="chip ${curStatusFilter===s?"on":""}" data-s="${s}">${s}</span>`).join("");
+  box.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+    curStatusFilter = curStatusFilter===c.dataset.s ? null : c.dataset.s; renderList();
+  });
+}
+function renderList(){
+  const mod = curModule;
+  const meta = moduleOf(mod);
+  $("#lh-title").textContent = mod==="__all__" ? "全库搜索："+searchTerm : (meta? meta.glyph+" "+meta.name : "—");
+  $("#lh-desc").textContent = mod==="__all__" ? "跨模块搜索结果，点击词条跳转。" : (meta?meta.desc:"");
+  renderStatusFilters();
+  const list = entriesOf(mod);
+  const box = $("#cards");
+  if(!list.length){
+    box.innerHTML = `<div class="empty">这一柜还是空的。<br>点击右上角 <b>＋ 新词条</b>，写下第一行。</div>`;
+  }else{
+    box.innerHTML = list.map(e=>`
+      <div class="card ${e.id===curId?"sel":""}" data-id="${esc(e.id)}">
+        <div class="toprow"><span class="cid">${esc(e.id)}</span><span class="cat">${esc(e.category)}</span>
+        <span class="status st-${esc(e.status)}">${esc(e.status)}</span></div>
+        <h3>${esc(e.title)}</h3>
+        <div class="snippet">${esc(e.content)}</div>
+        <div class="meta">${(e.tags||"").split(";").filter(Boolean).slice(0,5).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}
+        ${mod==="__all__"?`<span class="tag" style="color:var(--teal)">${esc((moduleOf(e.module)||{}).name||e.module)}</span>`:""}</div>
+      </div>`).join("");
+    box.querySelectorAll(".card").forEach(c=>c.onclick=()=>{ curId=c.dataset.id; editing=false; renderList(); renderDetail(); $("#detailpane").classList.add("open"); });
+  }
+  $("#ft-count").textContent = "共 "+db.length+" 条词条 · 当前视图 "+list.length+" 条";
+}
+function renderDetail(){
+  const box = $("#detail");
+  const e = db.find(x=>x.id===curId);
+  if(!e){ box.innerHTML = '<div class="empty">◈<br>选择左侧任意词条查看详情</div>'; return; }
+  if(editing){ renderEditor(e); return; }
+  const meta = moduleOf(e.module)||{name:e.module};
+  // 对话模块特殊排版：说话人：台词 高亮说话人
+  let content = esc(e.content);
+  if(e.module==="dialogue"){
+    content = content.split("\n").map(line=>{
+      const m = line.match(/^([^：:]{1,12})([：:])(.*)$/);
+      return m ? `<span class="spk">${m[1]}</span>${m[2]}${m[3]}` : line;
+    }).join("\n");
+  }
+  const rel = (e.related||"").split(";").map(s=>s.trim()).filter(Boolean);
+  box.innerHTML = `
+    <button class="d-close" onclick="document.getElementById('detailpane').classList.remove('open')">← 返回列表</button>
+    <div class="d-idline"><span class="d-id">${esc(e.id)}</span><span class="d-mod">${meta.name} / ${esc(e.category)}</span>
+      <span class="status st-${esc(e.status)}" style="margin-left:auto">${esc(e.status)}</span></div>
+    <div class="d-title">${esc(e.title)}</div>
+    <div class="d-metarow">${(e.tags||"").split(";").filter(Boolean).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+    <div class="d-content">${content}</div>
+    ${e.notes?`<div class="d-notes">${esc(e.notes)}</div>`:""}
+    ${rel.length?`<div class="d-related">关联词条：${rel.map(r=>`<span class="rl" data-r="${esc(r)}">${esc(r)}</span>`).join("")}</div>`:""}
+    <div class="d-actions">
+      <button class="primary" id="btn-edit">✎ 编辑词条</button>
+      <button id="btn-dup">复制为新词条</button>
+      <button class="danger" id="btn-del">删除</button>
+    </div>`;
+  box.querySelectorAll(".rl").forEach(r=>r.onclick=()=>{
+    const t = db.find(x=>x.id===r.dataset.r);
+    if(t){ curModule=t.module; curId=t.id; editing=false; renderAll(); }
+    else toast("找不到词条 "+r.dataset.r);
+  });
+  $("#btn-edit").onclick = ()=>{ editing=true; renderDetail(); };
+  $("#btn-dup").onclick = ()=>{
+    const n = {...e, id: nextId(e.module), title: e.title+"（副本）", status:"灵感"};
+    db.push(n); curId=n.id; editing=true; persist(true); renderAll();
+  };
+  $("#btn-del").onclick = ()=>{
+    if(!confirm("确定删除词条 "+e.id+" 「"+e.title+"」？此操作会写入存档。")) return;
+    db = db.filter(x=>x.id!==e.id); curId=null; persist(true); renderAll(); toast("已删除 "+e.id);
+  };
+}
+function renderEditor(e){
+  const box = $("#detail");
+  box.innerHTML = `
+    <button class="d-close" onclick="document.getElementById('detailpane').classList.remove('open')">← 返回列表</button>
+    <div class="d-idline"><span class="d-id">${esc(e.id)}</span><span class="d-mod">编辑中</span></div>
+    <div class="f-grid">
+      <div class="f-row"><label>标题 Title</label><input id="f-title" value="${esc(e.title)}"></div>
+      <div class="f-row"><label>分类 Category ${e.module==="dialogue"?"（填说话人）":""}</label><input id="f-cat" value="${esc(e.category)}"></div>
+      <div class="f-row"><label>模块 Module</label><select id="f-mod">${MODULES.map(m=>`<option value="${m.key}" ${m.key===e.module?"selected":""}>${m.name}</option>`).join("")}</select></div>
+      <div class="f-row"><label>状态 Status</label><select id="f-status">${STATUSES.map(s=>`<option ${s===e.status?"selected":""}>${s}</option>`).join("")}</select></div>
+    </div>
+    <div class="f-row"><label>正文 Content</label><textarea id="f-content">${esc(e.content)}</textarea>
+      <div class="hint">对话模块中，行首写「说话人：」会自动高亮。换行即分段。</div></div>
+    <div class="f-grid">
+      <div class="f-row"><label>标签 Tags（分号分隔）</label><input id="f-tags" value="${esc(e.tags)}"></div>
+      <div class="f-row"><label>关联词条 Related（分号分隔id）</label><input id="f-rel" value="${esc(e.related)}"></div>
+    </div>
+    <div class="f-row"><label>批注 Notes（给队友/未来自己的话）</label><input id="f-notes" value="${esc(e.notes)}"></div>
+    <div class="d-actions">
+      <button class="primary" id="btn-savee">保存词条</button>
+      <button id="btn-cancel">取消</button>
+    </div>`;
+  $("#btn-savee").onclick = ()=>{
+    e.title = $("#f-title").value.trim() || "（未命名）";
+    e.category = $("#f-cat").value.trim();
+    e.module = $("#f-mod").value;
+    e.status = $("#f-status").value;
+    e.content = $("#f-content").value;
+    e.tags = $("#f-tags").value.trim();
+    e.related = $("#f-rel").value.trim();
+    e.notes = $("#f-notes").value.trim();
+    editing=false; curModule=e.module; persist(true); renderAll(); toast("已保存 "+e.id);
+  };
+  $("#btn-cancel").onclick = ()=>{ editing=false; renderDetail(); };
+}
+function renderAll(){ renderNav(); renderList(); renderDetail(); }
 
-            if (isEditMode) {
-                const index = globalDatabase.findIndex(item => item.id === id);
-                if(index !== -1) {
-                    globalDatabase[index] = { id, module: moduleVal, tag, context, text };
-                }
-            } else {
-                globalDatabase.push({ id, module: moduleVal, tag, context, text });
-            }
-            closeModal();
-            // 重新刷新以防修改了大类导致在当前页不可见
-            renderTable();
-        }
+/* ---------------- 新词条 ---------------- */
+const PREFIX = {overview:"OV",lore:"LO",story:"ST",characters:"CH",systems:"SY",maps:"MP",quests:"QU",items:"IT",dialogue:"DL",eggs:"EG",questions:"QS"};
+function nextId(mod){
+  const p = PREFIX[mod]||"XX";
+  let n = 1;
+  db.filter(e=>e.id.startsWith(p+"-")).forEach(e=>{
+    const v = parseInt(e.id.split("-")[1],10);
+    if(!isNaN(v) && v>=n) n = v+1;
+  });
+  return p+"-"+String(n).padStart(3,"0");
+}
+$("#btn-new").onclick = ()=>{
+  const mod = curModule==="__all__" ? "overview" : curModule;
+  const e = {id:nextId(mod),module:mod,category:"",title:"",content:"",tags:"",status:"灵感",related:"",notes:""};
+  db.push(e); curId=e.id; editing=true; renderAll();
+  $("#detailpane").classList.add("open");
+};
 
-        function deleteRow(id) {
-            if(confirm("确定彻底删除此项创意记录吗？")) {
-                globalDatabase = globalDatabase.filter(item => item.id !== id);
-                renderTable();
-            }
-        }
+/* ---------------- 工具栏 ---------------- */
+$("#btn-export").onclick = exportCSV;
+$("#btn-import").onclick = ()=>$("#filepick").click();
+$("#filepick").onchange = ev=>{ if(ev.target.files[0]) importCSV(ev.target.files[0]); ev.target.value=""; };
+$("#btn-save").onclick = ()=>persist(false);
+$("#btn-reset").onclick = ()=>{
+  if(!confirm("重置为内置初始数据？当前修改将丢失（建议先导出CSV）。")) return;
+  db = JSON.parse(JSON.stringify(SEED)); curId=null; persist(true); renderAll(); toast("已重置");
+};
+$("#searchbox").oninput = ev=>{
+  searchTerm = ev.target.value.trim();
+  if(searchTerm){ curModule = "__all__"; } else if(curModule==="__all__"){ curModule = "overview"; }
+  renderAll();
+};
+document.addEventListener("keydown", ev=>{
+  if(ev.key==="/" && document.activeElement.tagName!=="INPUT" && document.activeElement.tagName!=="TEXTAREA"){
+    ev.preventDefault(); $("#searchbox").focus();
+  }
+  if(ev.key==="Escape"){ $("#detailpane").classList.remove("open"); }
+});
 
-        function parseAndLoadGlobalDatabase(csvText) {
-            const parsedRows = parseCSV(csvText);
-            if(parsedRows.length < 2) return;
-            
-            const headers = parsedRows[0].map(h => h.replace(/^\uFEFF/, '').trim().toLowerCase());
-            const idIdx = headers.indexOf("id");
-            const modIdx = headers.indexOf("module");
-            const tagIdx = headers.indexOf("tag");
-            const ctxIdx = headers.indexOf("context");
-            const txtIdx = headers.indexOf("text");
-
-            const tempDatabase = [];
-            for(let i = 1; i < parsedRows.length; i++) {
-                const r = parsedRows[i];
-                if(r.length < headers.length || !r[idIdx]) continue;
-
-                tempDatabase.push({
-                    id: r[idIdx].trim(),
-                    module: modIdx !== -1 ? r[modIdx].trim() : "世界线及设定",
-                    tag: tagIdx !== -1 ? r[tagIdx].trim() : "常规",
-                    context: ctxIdx !== -1 ? r[ctxIdx].trim() : "全局",
-                    text: r[txtIdx] || ""
-                });
-            }
-            globalDatabase = tempDatabase;
-            renderTable();
-        }
-
-        function parseCSV(text) {
-            const lines = [];
-            let row = [""];
-            let inQuotes = false;
-
-            for (let i = 0; i < text.length; i++) {
-                let c = text[i];
-                let next = text[i+1];
-                if (c === '"') {
-                    if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; }
-                    else { inQuotes = !inQuotes; }
-                } else if (c === ',' && !inQuotes) {
-                    row.push('');
-                } else if ((c === '\r' || c === '\n') && !inQuotes) {
-                    if (c === '\r' && next === '\n') { i++; }
-                    lines.push(row);
-                    row = [''];
-                } else {
-                    row[row.length - 1] += c;
-                }
-            }
-            if (row.length > 1 || row[0] !== '') lines.push(row);
-            return lines;
-        }
-
-        function exportAllToCSV() {
-            const fields = ["id", "module", "tag", "context", "text"];
-            let csv = '\uFEFF'; 
-            csv += fields.join(",") + "\r\n";
-            
-            globalDatabase.forEach(item => {
-                let row = fields.map(fieldName => {
-                    let escaped = String(item[fieldName]).replace(/"/g, '""');
-                    if (escaped.search(/("|,|\n)/g) >= 0) { escaped = `"${escaped}"`; }
-                    return escaped;
-                });
-                csv += row.join(",") + "\r\n";
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", "data.csv");
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function importAllFromCSV(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                parseAndLoadGlobalDatabase(e.target.result);
-                alert("📂 载入成功！全量 Tab 数据及关联大分类已被更新同步。");
-            };
-            reader.readAsText(file, 'UTF-8');
-        }
-
-        window.onload = () => { loadInitialCSV(); };
-    </script>
+/* ---------------- 启动 ---------------- */
+(async ()=>{
+  await loadDB();
+  renderAll();
+})();
+</script>
 </body>
 </html>
