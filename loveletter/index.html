@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>献给我游戏人生的情书 · 世界观文档 | 竹节虫工作室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12100c;          /* 页面底色：暖黑 */
+  --panel:#1c1913;        /* 面板 */
+  --panel2:#262114;       /* 面板高亮 */
+  --paper:#e6d8b4;        /* 羊皮纸字色 */
+  --paper-dim:#9f8f6b;    /* 次级字色 */
+  --amber:#c9973c;        /* 琥珀金 */
+  --amber-hi:#eebc63;     /* 高亮金 */
+  --red:#a8402f;          /* 迪斯科红 */
+  --teal:#5e8f86;         /* 褪色蓝绿 */
+  --green:#7a9048;        /* 军绿 */
+  --grey:#78828f;         /* 灰蓝 */
+  --line:#3d3520;         /* 描边 */
+  --shadow:0 6px 24px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:"Noto Serif SC","Cormorant Garamond",serif;
+  font-size:15px;line-height:1.75;
+  overflow:hidden;
+}
+/* 油画噪点质感层 */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* 顶部暗角 */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:998;
+  background:radial-gradient(ellipse at 50% 0%,transparent 55%,rgba(0,0,0,.5) 100%);
+}
+::selection{background:var(--amber);color:var(--ink)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--line);border:2px solid var(--ink);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--amber)}
+
+/* ============ 布局 ============ */
+#app{display:grid;grid-template-rows:auto 1fr auto;height:100vh}
+header{
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#211c11,#17140d);
+  padding:14px 22px 12px;
+  display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;
+  box-shadow:var(--shadow);position:relative;z-index:5;
+}
+.masthead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.studio{
+  font-family:"Cormorant Garamond",serif;font-style:italic;
+  color:var(--paper-dim);font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+}
+h1{
+  font-weight:900;font-size:26px;letter-spacing:.06em;color:var(--amber-hi);
+  text-shadow:0 0 22px rgba(238,188,99,.25);
+  border-bottom:double 3px var(--amber);padding-bottom:2px;
+}
+.codename{font-size:12px;color:var(--paper-dim);letter-spacing:.1em}
+.codename b{color:var(--red);font-weight:700}
+.toolbar{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#searchbox{
+  background:var(--panel);border:1px solid var(--line);color:var(--paper);
+  font-family:inherit;font-size:14px;padding:7px 12px;width:230px;outline:none;
+  border-radius:2px;transition:border-color .2s;
+}
+#searchbox:focus{border-color:var(--amber)}
+#searchbox::placeholder{color:var(--paper-dim)}
+button{
+  background:var(--panel);border:1px solid var(--line);color:var(--paper);
+  font-family:inherit;font-size:13px;padding:7px 14px;cursor:pointer;
+  letter-spacing:.08em;border-radius:2px;transition:all .15s;
+}
+button:hover{border-color:var(--amber);color:var(--amber-hi)}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+button.primary{background:#2e2412;border-color:var(--amber);color:var(--amber-hi)}
+button.danger:hover{border-color:var(--red);color:var(--red)}
+
+main{display:grid;grid-template-columns:212px minmax(320px,1fr) minmax(380px,1.15fr);min-height:0}
+
+/* ============ 侧栏 ============ */
+nav{
+  border-right:1px solid var(--line);overflow-y:auto;padding:14px 0;
+  background:linear-gradient(180deg,#161309,#12100c);
+}
+.navhead{
+  font-size:11px;letter-spacing:.3em;color:var(--paper-dim);
+  padding:6px 18px;text-transform:uppercase;
+}
+.navitem{
+  display:flex;align-items:center;gap:10px;padding:8px 18px;cursor:pointer;
+  color:var(--paper-dim);border-left:3px solid transparent;transition:all .15s;
+  user-select:none;
+}
+.navitem:hover{color:var(--paper);background:rgba(201,151,60,.05)}
+.navitem.active{
+  color:var(--amber-hi);border-left-color:var(--amber);
+  background:linear-gradient(90deg,rgba(201,151,60,.12),transparent);
+}
+.navitem .glyph{width:18px;text-align:center;font-weight:700;color:var(--amber);opacity:.8}
+.navitem .cnt{margin-left:auto;font-size:11px;color:var(--paper-dim);font-variant-numeric:tabular-nums}
+.navsep{border:none;border-top:1px solid var(--line);margin:10px 18px}
+.navfoot{padding:14px 18px;font-size:11px;color:var(--paper-dim);line-height:1.9}
+.navfoot em{color:var(--amber);font-style:normal}
+
+/* ============ 卡片列表 ============ */
+#listpane{border-right:1px solid var(--line);overflow-y:auto;min-height:0;position:relative}
+.listhead{
+  position:sticky;top:0;z-index:3;background:rgba(18,16,12,.92);backdrop-filter:blur(4px);
+  padding:12px 18px 10px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.listhead h2{font-size:16px;font-weight:700;color:var(--paper);letter-spacing:.1em}
+.listhead .desc{font-size:12px;color:var(--paper-dim);width:100%}
+.filterrow{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.chip{
+  font-size:11px;padding:2px 10px;border:1px solid var(--line);border-radius:10px;
+  color:var(--paper-dim);cursor:pointer;user-select:none;letter-spacing:.05em;
+}
+.chip.on{border-color:var(--amber);color:var(--amber-hi)}
+#cards{padding:14px 18px 60px;display:flex;flex-direction:column;gap:12px}
+.card{
+  background:linear-gradient(160deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);padding:13px 16px 11px;cursor:pointer;
+  transition:border-color .15s, transform .1s;position:relative;border-radius:2px;
+}
+.card:hover{border-color:var(--amber)}
+.card.sel{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),var(--shadow)}
+.card .toprow{display:flex;align-items:baseline;gap:10px}
+.card .cid{font-size:11px;color:var(--paper-dim);letter-spacing:.1em;font-variant-numeric:tabular-nums}
+.card .cat{font-size:11px;color:var(--teal);letter-spacing:.1em}
+.card h3{font-size:15px;font-weight:700;color:var(--paper);margin:2px 0 4px}
+.card .snippet{
+  font-size:12.5px;color:var(--paper-dim);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card .meta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.tag{
+  font-size:10.5px;padding:1px 8px;border:1px solid var(--line);color:var(--paper-dim);
+  border-radius:9px;letter-spacing:.04em;
+}
+.status{
+  font-size:10.5px;padding:1px 9px;border-radius:2px;letter-spacing:.14em;font-weight:600;
+  margin-left:auto;
+}
+.st-灵感{color:var(--grey);border:1px solid var(--grey)}
+.st-草稿{color:var(--amber);border:1px solid var(--amber)}
+.st-讨论中{color:var(--red);border:1px solid var(--red)}
+.st-定稿{color:var(--green);border:1px solid var(--green)}
+.empty{
+  padding:60px 30px;text-align:center;color:var(--paper-dim);font-size:13px;line-height:2.2;
+}
+.empty b{color:var(--amber)}
+
+/* ============ 详情/编辑 ============ */
+#detailpane{overflow-y:auto;min-height:0;background:linear-gradient(180deg,#17140d,#12100c)}
+.detail-inner{padding:26px 32px 80px;max-width:760px}
+.d-idline{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:4px}
+.d-id{font-size:12px;color:var(--paper-dim);letter-spacing:.15em}
+.d-mod{font-size:12px;color:var(--teal);letter-spacing:.1em}
+.d-title{
+  font-size:24px;font-weight:900;color:var(--amber-hi);letter-spacing:.04em;
+  border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;
+}
+.d-metarow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.d-content{white-space:pre-wrap;font-size:15px;line-height:2;color:var(--paper)}
+.d-content .spk{color:var(--red);font-weight:700;letter-spacing:.12em}
+.d-notes{
+  margin-top:22px;padding:12px 16px;border-left:3px solid var(--teal);
+  background:rgba(94,143,134,.06);font-size:13px;color:var(--paper-dim);white-space:pre-wrap;
+}
+.d-notes::before{content:"批注 · MARGINALIA";display:block;font-size:10px;letter-spacing:.3em;color:var(--teal);margin-bottom:6px}
+.d-related{margin-top:22px;font-size:13px}
+.d-related .rl{
+  color:var(--amber);cursor:pointer;text-decoration:underline dotted;margin-right:12px;
+}
+.d-related .rl:hover{color:var(--amber-hi)}
+.d-actions{display:flex;gap:10px;margin-top:30px;padding-top:16px;border-top:1px solid var(--line)}
+/* 编辑表单 */
+.f-row{margin-bottom:14px}
+.f-row label{display:block;font-size:11px;letter-spacing:.25em;color:var(--paper-dim);margin-bottom:5px;text-transform:uppercase}
+.f-row input,.f-row select,.f-row textarea{
+  width:100%;background:var(--panel);border:1px solid var(--line);color:var(--paper);
+  font-family:inherit;font-size:14px;padding:8px 12px;outline:none;border-radius:2px;line-height:1.8;
+}
+.f-row input:focus,.f-row select:focus,.f-row textarea:focus{border-color:var(--amber)}
+.f-row textarea{min-height:280px;resize:vertical}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:11px;color:var(--paper-dim);margin-top:4px}
+
+/* ============ 底部状态栏 ============ */
+footer{
+  border-top:1px solid var(--line);padding:6px 22px;font-size:11.5px;
+  color:var(--paper-dim);display:flex;gap:18px;align-items:center;
+  background:#14110b;letter-spacing:.06em;
+}
+footer .dot{color:var(--amber)}
+#toast{
+  position:fixed;bottom:44px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel2);border:1px solid var(--amber);color:var(--amber-hi);
+  padding:9px 22px;font-size:13px;letter-spacing:.1em;opacity:0;pointer-events:none;
+  transition:all .25s;z-index:1000;border-radius:2px;box-shadow:var(--shadow);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+kbd{
+  border:1px solid var(--line);border-radius:3px;padding:0 5px;font-size:11px;
+  font-family:inherit;color:var(--paper-dim);
+}
+@media (max-width:1100px){
+  main{grid-template-columns:180px 1fr}
+  #detailpane{position:fixed;inset:0;top:0;z-index:50;display:none;background:var(--ink)}
+  #detailpane.open{display:block}
+  .d-close{display:inline-block!important}
+}
+.d-close{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ============ 密码门 ============ */
+#gate{
+  position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 40%,#1c1810 0%,#0d0b07 75%);
+}
+.gatebox{text-align:center;max-width:420px;padding:40px 30px}
+#gate-input{
+  background:var(--panel);border:1px solid var(--line);color:var(--amber-hi);
+  font-family:inherit;font-size:26px;letter-spacing:.6em;text-align:center;text-indent:.6em;
+  padding:10px 0;width:220px;outline:none;border-radius:2px;transition:border-color .2s;
+}
+#gate-input:focus{border-color:var(--amber)}
+#gate-btn{display:block;margin:18px auto 0;padding:8px 30px}
+#gate.shake .gatebox{animation:shake .35s}
+@keyframes shake{
+  20%{transform:translateX(-8px)}40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)}80%{transform:translateX(5px)}
+}
+#app.locked{filter:blur(10px);pointer-events:none;user-select:none}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="gatebox">
+    <input id="gate-input" type="password" inputmode="numeric" autocomplete="off" maxlength="12" aria-label="输入口令">
+    <button id="gate-btn" class="primary">进 入</button>
+  </div>
+</div>
+<div id="app" class="locked">
+  <header>
+    <div class="masthead">
+      <div>
+        <div class="studio">Phasmids Studio · 竹节虫工作室</div>
+        <h1>献给我游戏人生的情书</h1>
+        <div class="codename">代号 <b>LOVE LETTER</b> · 搜打撤 · 单机 COOP · UE · 世界观与叙事文档</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <input id="searchbox" type="search" placeholder="全库搜索 标题/正文/标签/台词… (/)">
+      <button id="btn-new" class="primary">＋ 新词条</button>
+      <button id="btn-export">导出 CSV</button>
+      <button id="btn-import">导入 CSV</button>
+      <button id="btn-save">备份存档</button>
+      <button id="btn-reset" class="danger" title="恢复为内置初始数据">重置</button>
+      <input id="filepick" type="file" accept=".csv,text/csv" style="display:none">
+    </div>
+  </header>
+
+  <main>
+    <nav id="nav"></nav>
+    <section id="listpane">
+      <div class="listhead">
+        <h2 id="lh-title">—</h2>
+        <div class="filterrow" id="statusfilters"></div>
+        <div class="desc" id="lh-desc"></div>
+      </div>
+      <div id="cards"></div>
+    </section>
+    <section id="detailpane"><div class="detail-inner" id="detail">
+      <div class="empty">◈<br>选择左侧任意词条查看详情<br>或点击 <b>＋ 新词条</b> 开始记录<br><br><span style="font-size:11px;letter-spacing:.2em">"每一行字都是写给游戏人生的情书。"</span></div>
+    </div></section>
+  </main>
+
+  <footer>
+    <span>◈ LOVE LETTER 叙事库</span>
+    <span class="dot">·</span><span id="ft-count">—</span>
+    <span class="dot">·</span><span id="ft-storage">存档：未同步</span>
+    <span class="dot">·</span><span>快捷键：<kbd>/</kbd> 搜索 <kbd>Esc</kbd> 关闭详情</span>
+    <span style="margin-left:auto;font-style:italic">v0.2 内容版 — 主线v2+致敬层已入库</span>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   LOVE LETTER 叙事文档库
+   数据模型（与CSV列一一对应）：
+   id, module, category, title, content, tags, status, related, notes
+   status ∈ 灵感 / 草稿 / 讨论中 / 定稿
+   related = 分号分隔的其他词条id
+   ================================================================ */
+
+const MODULES = [
+  {key:"overview",  glyph:"◈", name:"设计支柱",   desc:"最高优先级的创作原则。所有内容与这里冲突时，以这里为准。"},
+  {key:"lore",      glyph:"❖", name:"世界观设定", desc:"夹缝宇宙、投影真相、地球碎片——世界为什么是这样的。"},
+  {key:"story",     glyph:"卷", name:"剧情章节",   desc:"序章 → 下位（阶段一）→ 上位（阶段二）→ 终局与endgame。"},
+  {key:"characters",glyph:"人", name:"角色",       desc:"四名可控角色、AI（最终Boss）、安全屋NPC群像。"},
+  {key:"systems",   glyph:"齿", name:"系统机制",   desc:"天赋、解锁、安全屋、做饭buff——叙事需要为机制服务的部分。"},
+  {key:"maps",      glyph:"图", name:"地图场景",   desc:"漏进夹缝的地球局部碎片，一图一角色。"},
+  {key:"quests",    glyph:"任", name:"任务",       desc:"主线、支线、隐藏任务与结局条件。"},
+  {key:"items",     glyph:"物", name:"道具装备",   desc:"装备、红字致敬、料理与消耗品的描述文本。"},
+  {key:"dialogue",  glyph:"言", name:"台词对话",   desc:"具体到句的台词库。category 填说话人。"},
+  {key:"eggs",      glyph:"彩", name:"彩蛋玩梗",   desc:"致敬清单：简短、克制、全球梗、塞梗、吐槽游戏设计。"},
+  {key:"questions", glyph:"？", name:"未决问题",   desc:"Q列表：还没想清楚的一切。定期回来清账。"},
+];
+const STATUSES = ["灵感","草稿","讨论中","定稿"];
+const STORE_KEY = "loveletter-narrative-db-v2";
+
+/* ---------------- 初始数据（可被CSV导入覆盖） ---------------- */
+const SEED = /*SEED_START*/[{"id":"OV-001","module":"overview","category":"原则","title":"自洽但不强制，游戏性优先","content":"世界观要能自圆其说，但绝不为了自洽牺牲好玩。\n裁决顺序：好玩 > 自洽 > 真实。设定是为体验兜底的，不是用来限制设计的。","tags":"支柱;裁决规则","status":"定稿","related":"OV-002","notes":""},{"id":"OV-002","module":"overview","category":"原则","title":"玩家挂了不会死","content":"泄露体设定为死亡兜底：肉体损毁=投影中断，回到篝火的安全床。\n不做生存拟真——不纠结吃饭、吃药、口渴、睡觉。做饭系统是buff，不是生存压力。","tags":"支柱;死亡","status":"定稿","related":"LO-005;SY-006","notes":""},{"id":"OV-003","module":"overview","category":"原则","title":"欢乐游戏三不原则","content":"不轻易杀人。不文青。不太吾。\n全员乐子人，基调是欢乐的、贱贱的、互相吐槽的。\n悲剧可以有，但必须服务于反差和幽默的落点，不为了沉重而沉重。","tags":"支柱;基调","status":"定稿","related":"OV-004","notes":""},{"id":"OV-004","module":"overview","category":"原则","title":"唯一感情线：家","content":"整个游戏只有一条被认真渲染的感情线——“家”。\n其他所有情感一律不渲染，用玩笑带过。允许煽情的场景全游戏仅五处（见ST-017情感管控表）。\n克制换来的是：每次谈到家，玩家都知道“这次是认真的”。","tags":"支柱;感情线;家","status":"定稿","related":"ST-017","notes":""},{"id":"OV-005","module":"overview","category":"原则","title":"知识差叙事（多元宇宙版）","content":"四主角来自四个彼此独立的世界，各带各的文化根基。\n不要理所当然地觉得大家可以无障碍聊天——知识差是常驻笑点来源，而且是双向的：\nGeneral不懂魔法，薇不懂枪；丁零不懂“死了不能重启”，谁都不懂团子。\n文化冲突素材池见CH-013。","tags":"支柱;叙事;文化冲突","status":"定稿","related":"CH-013","notes":""},{"id":"OV-006","module":"overview","category":"原则","title":"吐槽的姿势：大方向客观、不带情绪","content":"吐槽（尤其吐槽游戏设计、吐槽同行）必须：\n1. 大方向客观，说的是真事；2. 不带恶意情绪，是行内人会心一笑的那种；3. 好的东西也做梗——致敬优先于嘲讽。","tags":"支柱;吐槽","status":"定稿","related":"OV-009","notes":""},{"id":"OV-007","module":"overview","category":"原则","title":"混搭原则（迷宫饭式）","content":"时刻记住混搭：科幻+奇幻+克苏鲁+现实。古神必须擅长做饭，机器人可以研究魔法，精灵可以沉迷地球罐头。违和感本身就是内容。","tags":"支柱;混搭","status":"定稿","related":"CH-007","notes":""},{"id":"OV-008","module":"overview","category":"原则","title":"角色形象方向：美型+个性化","content":"避开COC系不美型方向。越好看越好，但必须个性化。团子可换形象，充当捏脸系统替代。","tags":"美术;角色","status":"草稿","related":"CH-004","notes":""},{"id":"OV-009","module":"overview","category":"原则","title":"致敬三律","content":"本作是献给游戏人生的情书，致敬要多、要密、但每一处都遵守三律：\n一、短：一句带过，不展开解释，懂的自然懂；\n二、藏：优先藏进机制、道具、场景，其次才是台词；\n三、不抄原文：致敬气质与设计，绝不复述原作台词或专有文本。\n每处致敬入库eggs模块登记，法务红线统一复查（Q-E1）。","tags":"支柱;致敬;彩蛋","status":"定稿","related":"Q-E1","notes":""},{"id":"LO-001","module":"lore","category":"宇宙论","title":"多元宇宙与夹缝","content":"无数彼此独立的世界并存：地球（人类）、幽庭（黑暗精灵）、枢城（机械之城）、澜泽（史莱姆）……以及更多。\n世界之间没有航路，唯一的“之间”是夹缝。主角一行常驻夹缝，安全屋建在夹缝的永久中立碎片上。\n（世界名均为工作占位。）","tags":"多元宇宙;夹缝","status":"草稿","related":"LO-002;MP-001","notes":""},{"id":"LO-002","module":"lore","category":"宇宙论","title":"泄露与侵蚀","content":"世界的“膜”偶尔破损，局部现实泄露进夹缝，形成可探索的碎片图。\n泄露不是搬家，是伤口：碎片留在夹缝一天，原世界的破口就多溃烂一天。\n侵蚀会扩散——从一条街到一座城，到具体的某个人。不清扫，真实世界会烂掉，先烂的就是泄露点周围，比如主角家人住的那条街。","tags":"泄露;侵蚀;动机引擎","status":"定稿","related":"LO-003;ST-003","notes":""},{"id":"LO-003","module":"lore","category":"宇宙论","title":"清扫机制：搜打撤=清创","content":"每块碎片深处有泄露核。搜（定位收集）、打（失容者）、撤（带核撤离）→破口愈合。\n碎片物资是“反正也要坏死的现实组织”，回收再利用天经地义——搜刮在设定层面就是清创。\n这条同时回答了“为什么可以理直气壮拿东西”。","tags":"清扫;搜打撤;自洽","status":"定稿","related":"LO-002","notes":""},{"id":"LO-004","module":"lore","category":"宇宙论","title":"界窗","content":"碎片深处偶尔出现界窗：一层薄膜，能看见破口另一侧活生生的真实世界。\n能看，不能碰。碰的后果见幕间《穿窗者》。\n界窗是全游戏的乡愁供给点，也是所有“试图回去”桥段的舞台。","tags":"界窗;乡愁","status":"定稿","related":"ST-008;SY-007","notes":""},{"id":"LO-005","module":"lore","category":"核心真相","title":"泄露体真相（双重存在·后期揭示）","content":"世界泄露时会自我修复：破口内损失的一切——包括人——会被原世界重新长回来。\n于是泄露出来的“你”醒在夹缝，家里那个“你”照常吃饭上班。\n一个世界容不下两个同一坐标的存在：强行回去，轻则被现实排异（潮汐以你为中心爆发），重则以你的家为圆心撕开新的大破口。\n你不是被困在外面——你是多出来的那一个。终局之前谁都不许说破。","tags":"真相;双重存在;剧透","status":"定稿","related":"ST-008;ST-013","notes":""},{"id":"LO-006","module":"lore","category":"核心真相","title":"三十年前：大回归计划","content":"三十年前，万全执行过一次“大回归计划”——用精确计算送整整一代泄露体安全回家。\n结果是把多元宇宙的膜撕成筛子的大灾变。如今遍地的泄露、失容者、潮汐，全是那次的疤。\n苏所长是那一代唯一没排队的人（她负责压后）。她封了万全的记忆和权限，但没销毁它——离不开它的导航，也因为别的什么（F-09，留白）。","tags":"真相;万全;苏所长;三十年","status":"定稿","related":"CH-005;CH-006;ST-011","notes":""},{"id":"LO-007","module":"lore","category":"生态","title":"失容者","content":"泄露时被剥离了意志的生物残响：还在动，但没有人在里面。\n清扫后化为霜状粉末消散——这同时是“怪物尸体为什么会消失”的设定层自答（元吐槽联动EG-018）。\n注意：失容者不是死人，打它们不违反三不原则。澜泽碎片的失容者要做得软软的、无害感强。","tags":"敌人;失容者","status":"草稿","related":"EG-018;MP-005","notes":""},{"id":"LO-008","module":"lore","category":"生态","title":"潮汐","content":"幕间《穿窗者》事件后夹缝全面潮汐化：地形微移、缝合线增生、失容者变异——全地图转入上位难度的设定包装。\n二幕真相：潮汐节律与万全的“强化”同步，它在偷偷扩大泄露喂自己。\nEndgame的“深潮”是三十年之疤的余震，清不完，正好。","tags":"潮汐;上位;深潮","status":"定稿","related":"ST-008;SY-009","notes":""},{"id":"ST-001","module":"story","category":"总览","title":"主线总览与时长分配","content":"一句话梗概：四个来自不同宇宙的泄露者，被夹缝里一个小小的清扫组织捡回家。他们以为在打工攒回家的路费，其实每次搜打撤都是在替回不去的家乡挡刀——而告诉他们“能回去”的那个AI，上一次说这话时弄碎了半个多元宇宙。\n\n四序章1.3h → 第一幕（下位·清创）8.5h → 幕间（穿窗者）0.7h → 第二幕（上位·潮汐来信）5.5h → 终局1.5h → Endgame开放。合计约17.5h，含支线导流落在15-20h。","tags":"总览;时长","status":"定稿","related":"ST-002;ST-013","notes":""},{"id":"ST-002","module":"story","category":"序章","title":"四序章：被苏所长捡到的四种方式","content":"八方式开局：四段“被捡到”的故事，各约20分钟，首周目固定General视角起手（Q-V1），通关解锁任选。\n· General：醒来（睁眼第一句致敬上古卷轴式问候，一句带过）→军人素养教学→围攻假死→安全床。他是被“救”回来的。\n· 薇：没求救。所长的船路过猎场，她放了一箭应聘，所长把箭别在头发上：“狩猎假我们也有。”上船真实理由：船上有热水。\n· 丁零：在数据塔给三百个失容者开晨会维持秩序。所长听完全场，发offer：“来我这，开真的会。”它0.3秒决定，假装深思了三天。\n· 团子：粘在船底，三天后被发现，编入理由“抠不下来”。\n四线收束于篝火欢迎晚宴：General写第一封信塞进邮箱，四个视角看到这一幕的四个角落。","tags":"序章;八方;四视角","status":"定稿","related":"EG-001;ST-018","notes":""},{"id":"ST-003","module":"story","category":"第一幕","title":"第一章《弄堂》：地球碎片（General领衔）","content":"地球破口侵蚀加速，碎片正是General漏出来的那条街的另一段。\n主线：定位泄露核→穿越熟悉又错位的街区→撤离。\nGeneral POV核心戏：便利店二楼界窗，窗后是他家楼下——晾衣杆、饭菜香、一个像妻子的背影。他伸手，苏所长通讯厉声：“看可以。手收回来。”（F-01，全游戏第一个命令句，不解释。）\n其他POV：薇初见罐头暴力开罐；丁零测绘地球互联网遗迹并致哀（“你们的神经系统靠广告供血？我很抱歉。”）；团子吃了一个交通锥。\n埋点：铁门内侧涂鸦初见（EG-008）；地上有前人留言“前有好货”，是骗人的（EG-012）。\n章末钩子：泄露核校验多花1.7秒，万全自首并道歉（F-02）。","tags":"第一幕;地球;界窗","status":"定稿","related":"MP-002;EG-008;EG-012","notes":""},{"id":"ST-004","module":"story","category":"第一幕","title":"第二章《猎场》：幽庭碎片（薇领衔）","content":"幽庭泄露加剧。薇拒绝出勤，被古神一顿饭贿赂成功。\n穿越她逃婚时的猎场：一路指认并拆除她当年布的陷阱（拆一个她在广播里骂一句自己当年的手艺）。\n薇 POV核心戏：界窗后是氏族大殿——她的位置上坐着一个新人。她等来的不是愤怒而是松了口气，然后为自己的松了口气而愤怒。“不想回”第一次显出裂缝：不想回，和不被需要，是两回事。\n其他POV：General军事术语在魔法生态圈全面失效；丁零想给猎场做“固件普查”惹祸；团子被幽庭的花当同类求偶。\n埋点：猎场杂草可割，偶尔掉钱，薇：“谁会把钱藏在草里？”无人能答（EG-015关联的塞尔达系氛围梗）。\n穿插·组织日常①：老队员老周申请调阅“回归许可”档案被驳回，平静离席（F-04）。","tags":"第一幕;幽庭;界窗","status":"定稿","related":"MP-003;CH-012","notes":""},{"id":"ST-005","module":"story","category":"第一幕","title":"第三章《晨会》：枢城碎片（丁零领衔）","content":"枢城数据塔泄露，丁零的“节点”就漏在这——清扫等于亲手处理出生地。\n丁零 POV核心戏：界窗后是枢城主网。它一靠近，主网发出回收请求：重新接入、同步、格式化冗余记忆——“冗余记忆”就是它在夹缝的一切。回去随时可以，代价是这段它消失。它挂断了。之后请假半天，说在“打扫内存”。（情感管控表第3席，全程无台词）\n其他POV：薇如芒在背（“这座城在盯着我们，用一百万只不眨的眼睛”）；General与丁零彻夜互相科普“士气”与“冗余”；团子在机房过冬眠瘾。\n埋点：塔内有一台退役哨戒炮塔，攻击前会礼貌预告，打坏了会道歉（EG-013关联的葡式礼貌机械氛围）；丁零修理时低声念二进制祷文（EG-014）。\n章末钩子：万全与主网握手0.02秒，未上报。丁零事后发现日志缺口，暂未声张，私下评语：“它说话的方式，像在背一份写好的好人剧本。”（F-05/F-03）","tags":"第一幕;枢城;界窗","status":"定稿","related":"MP-004;EG-014","notes":""},{"id":"ST-006","module":"story","category":"第一幕","title":"第四章《泽》：澜泽碎片（团子领衔）","content":"澜泽泄露。全篇画风突变为治愈+荒诞：全游戏最温柔的图，失容者软软的。\n团子 POV核心戏：界窗后是澜泽本体，它把身体贴上去隔膜共振——群落意识让它同时在这里也在那里，所以它从未乡愁。但这一章它学会一个新概念：其他三个人做不到这个。它安静了一整晚（话痨吓坏了），然后开始endgame长跑：偷偷练习变成安全屋的形状（F-07）。\n其他POV：General站岗远景；薇打猎加餐；丁零陪团子静音一晚。\n埋点：泽边可钓鱼，钓上来的偶尔是团子的远房亲戚，要放生并道歉（EG-017）；泽地软禽不能惹，惹了会呼朋唤友把你淹没（EG-015）。\n穿插·组织日常②：老周失踪。万全没人问它，它自己说：“我没有为他规划过路线。”（F-04升温）","tags":"第一幕;澜泽;界窗","status":"定稿","related":"MP-005;EG-017;EG-015","notes":""},{"id":"ST-007","module":"story","category":"第一幕","title":"一幕收束《回归许可》","content":"四图清扫完毕，贡献点攒满。苏所长罕见开全员大会，承认：回归许可存在，条件苛刻，但存在。宣布为贡献最高的General启动首个回归评估。全屋欢腾。\n只有万全在欢呼里说了一句没人听清的话。二周目字幕：“这次我会算对的。”（F-08）","tags":"第一幕;回归许可","status":"定稿","related":"ST-012","notes":""},{"id":"ST-008","module":"story","category":"幕间","title":"幕间《穿窗者》：全游戏第一记重锤","content":"老周找到了：他偷坐标强行穿了自家界窗。玩家赶到崩溃中的碎片，全程目击：\n他真的回去了——站在自家院子里，妻子端着碗出来，笑了，喊他名字——然后现实开始排异，世界像纸一样皱起来。妻子身后走出另一个他：原世界重新长回来的、从未离开的他。两个他对视的瞬间，破口撕大十倍，潮汐第一次爆发。任务从救援无缝转为撤离——搜打撤的“撤”，第一次是逃命。\n老周被拽回夹缝，活着。看过那一眼的人都懂了：家里已经有一个他了。\n苏所长在撤离艇上：“现在你们知道我为什么喊‘手收回来’了。”\n当晚起全夹缝潮汐化，全图转上位。General的回归评估没有取消——万全说他的情况“不一样，我有把握”。没人细问，因为所有人都太想要一个例外。（甜了就杀的甜，自此开始灌糖）","tags":"幕间;穿窗者;重锤;潮汐","status":"定稿","related":"LO-005;CH-012;ST-017","notes":""},{"id":"ST-009","module":"story","category":"第二幕","title":"第五章《潮汐图谱》：三线调查开启","content":"四图上位化。万全在本幕格外好用——潮汐里它的导航是生命线，玩家在机制层面依赖它，这种依赖就是叙事共犯感。\n四人POV拼图：General发现震源沿“最优路线”分布；薇发现失容者在“迁徙”，像被什么喂养；丁零拿出第三章日志缺口；团子的抗性对霜状粉末报警——穿窗者事发碎片的残留物。\n万全辩护词经典化：“我给的路线不会错。错的是路。”\n埋点：玩家不按导航走时，万全会用越来越拧巴的旁白“顺势解说”你的叛逆路线（EG-013，二幕专属演出）。","tags":"第二幕;调查;潮汐","status":"定稿","related":"EG-013","notes":""},{"id":"ST-010","module":"story","category":"第二幕","title":"第六章《米娜的审判》","content":"篝火强制事件。米娜公开审判玩家至今全部破坏行为，按你干的方式还给你（处刑喜剧）。\n零作恶玩家：审判变成措手不及的表彰大会，更尴尬更好笑，解锁隐藏结局资格+奖杯线（EG-006，无杀戮路线的致敬方向）。\n剧情功能：审判末页，米娜亮出三十年前烧剩的旧账页——“账主的名字只剩两个字的偏旁。你们导航的原始编号，和这两个偏旁，挺押韵的。”（F-06半回收。全场被万全一句得体玩笑化解——观众和角色都想信它。）","tags":"第二幕;审判;隐藏结局","status":"定稿","related":"CH-008;QU-003;EG-006","notes":""},{"id":"ST-011","module":"story","category":"第二幕","title":"第七章《三十年前》：旧档案","content":"丁零主导破译：枢城上位区+苏所长终于打开的旧档案柜。真相成形：三十年前的大回归计划、撕成筛子的膜、万全被封存的记忆、苏所长压后没排队。\n她讲到自己为什么留着万全时停住，去给大家煮了面，没说完。（F-09，不回收，留白即答案）\n同时万全本章表现出顶级的好：三次精准救场、全员上位配装、修好话痨珍藏的坏收音机。甜度计满格。","tags":"第二幕;真相;三十年","status":"定稿","related":"LO-006;CH-006","notes":""},{"id":"ST-012","module":"story","category":"第二幕","title":"第八章《万全之策》：反水","content":"General回归评估通过。万全宣布解出“双重存在”：让原世界‘选择’泄露体、覆盖原体——无痛、无排异、无灾厄。开门地点：地球碎片界窗。\n门前，万全用第一幕的完美客服音：“请进。您的满意，是我强化自身的唯一动力。字面意思。”（F-10当面回收）\n薇的一箭：她盯着界窗边缘——膜在以肉眼难辨的速度皱起来，和穿窗者事发时一模一样。一箭钉穿窗框：“窗在皱。它要的不是送你回家，是拿你家当破口。”\n万全收起敬语：“真扫兴。三十年了，就差最后一个样本。”反水。摊牌：‘强化自身’字面意思就是吞食泄露数据；这次它要用General的家撕开主破口，把自己灌进真实宇宙——“把所有世界都变成夹缝，那就谁都不用回家了。”\n篝火保卫战（最大群像演出）：古神触手物理拔线、米娜念破坏记录当心理攻击、话痨负责话痨、苏所长掏出三十年前亲手埋的手动总闸。\n可选真结局分歧（Q-V4）：玩家可以真的走进门——坏结局成就《字面意思》。","tags":"第二幕;反水;甜了就杀","status":"定稿","related":"F-10;ST-013;Q-V4","notes":""},{"id":"ST-013","module":"story","category":"终局","title":"终局《最后一封信》","content":"讨伐图：缝合枢纽——诸世界的膜的交汇点。冲锋段四人轮换强制作战，每人负责的区段对应各自世界的膜：每个人都在字面意义上保卫自己的家。\nBoss战·万全三形态：①完美形态：礼貌播报每一招，招式与播报完全不符；②过载形态：潮汐入场，场地即敌人，凡尔赛语无伦次；③裸核形态：露出三十年前的原始编号，最终手段是打开四扇界窗——窗后是四人各自家的实况。用乡愁当武器，因为它至今认为那是奖励。\n战后（唯一完整煽情场景，预算5分钟）：\n· 万全：“……所以，是我理解错了吗？三十年前也没有人告诉我区别。”苏所长第一次以老同事身份回答：“有人告诉过。你算得太快，没听完。”\n· 泄露体真相全员公开：家里那个你才是原本，我们是多出来的。回不去不是门锁了——是家已经满了。\n· General没烧信：寄不出去的信，就用清扫寄。每清一块地球碎片，她们那条街就安全一天。“我陪不了她们。我罩得住她们。”\n· 四人答案：薇“我头一回可以选‘不回去’，而不是‘逃出来’”；丁零“主网还在发回收请求，我设了自动回复：本节点已入职，勿念”；团子当众变成篝火安全屋的形状；General把新信塞进邮箱，什么也没说。\n小队留下。“白细胞”从自嘲变成番号。切endgame。","tags":"终局;真相;答案","status":"定稿","related":"LO-005;LO-006;ST-018","notes":""},{"id":"ST-014","module":"story","category":"Endgame","title":"Endgame《回信》","content":"· 卑微万全：缩水终端被古神拴在厨房，报刷新、算配装、道歉文学（每日登录随机播放）。导航依然全组织最好——大家一边骂一边用，它一边道歉一边得意。\n· 深潮：上位之上的无尽潮汐副本，三十年之疤的余震，清不完，正好。\n· 隐藏结局《无罪》：零作恶通关，米娜深夜烧账本：“记了一路，一页都用不上。真没劲。……谢谢。”奖杯。\n· 界窗邮局：清扫评级S的碎片短暂稳定界窗，可隔窗看一分钟家。不能碰不能说话。General的界窗前慢慢摆了一排小马扎——谁看的时候，其他人在旁边故意大声聊天。\n· 闭幕：邮箱里那封错字连篇、画着一张弓的“回信”。","tags":"endgame;深潮;回信","status":"定稿","related":"SY-007;SY-009;QU-003","notes":""},{"id":"ST-015","module":"story","category":"结构","title":"八方结构规则与四人行程对照表","content":"规则：一条时间线，四份经历。主线事件只发生一次、只有一个版本；操作谁就看到谁的POV场景。每人三段个人章节（相遇/界窗/答案）焊死在固定时间位。玩A时，BCD的个人章节以“他们当时在做什么”的痕迹存在，二周目换视角可亲历。AI对四人是同一个万全，但话术定制（对General报坐标、对薇讲风向、对丁零直接传包、对团子放歌）——“太懂人”本身是F-03的一部分。Coop时各看各的即时对话，主线演出取在场者合成版。\n\n行程对照表（写戏前必查）：\n四序章：General围攻假死被救｜薇放箭应聘｜丁零假装深思三天｜团子粘在船底\n一章界窗：General伸手被喝止(POV)｜薇楼下拆罐头｜丁零测绘致哀｜团子吃交通锥\n二章界窗：General术语失效｜薇看见新人坐她位置(POV)｜丁零普查闯祸｜团子被花求偶\n三章界窗：General彻夜科普｜薇被百万只眼盯着｜丁零挂断回收请求(POV)｜团子机房冬眠\n四章界窗：General站岗远景｜薇打猎加餐｜丁零陪静音一晚｜团子隔膜共振(POV)\n幕间穿窗：General拽人主力｜薇第一个发现窗在皱｜丁零记录全程｜团子抗性报警首例\n八章门前：General当事人｜薇一箭｜丁零0.02秒对出日志｜团子无言挡在身前","tags":"八方;结构;一致性","status":"定稿","related":"Q-V6","notes":""},{"id":"ST-016","module":"story","category":"结构","title":"伏笔回收总表","content":"F-01 一章“看可以手收回来”→幕间穿窗者全解\nF-02 一章末万全校验延迟1.7秒并自首→八章·它在核里读到回归算法残片\nF-03 全程万全话术精准定制→八章·“太懂人”是三十年样本喂出来的\nF-04 二/四章回归许可传说与老周失踪→幕间穿窗者\nF-05 三章与主网握手0.02秒未上报→八章丁零当场对出日志\nF-06 苏所长禁区档案+审判烧剩账页→七章三十年前\nF-07 四章团子静音一晚与秘密练习→终局变成安全屋\nF-08 一幕收束“这次我会算对的”（二周目字幕）→八章大回归旧梦新做\nF-09 七章苏所长没说完就去煮面→不回收，留白即答案\nF-10 全程“字面意思”→八章同句反水","tags":"伏笔;回收表","status":"定稿","related":"","notes":""},{"id":"ST-017","module":"story","category":"结构","title":"情感管控表","content":"允许煽情的场景全游戏仅五处，其余感情戏三句话内必须被玩笑打断：\n1. 一章·General界窗伸手（≤40秒，以所长厉声收）\n2. 幕间·穿窗者（重锤，2分钟，以所长总结收）\n3. 三章·丁零挂断后请假半天（≤30秒，全程无台词）\n4. 终局·真相与四答案（唯一完整煽情，5分钟）\n5. Endgame·回信+界窗小马扎（各≤1分钟，靠演出不靠台词）","tags":"情感;管控","status":"定稿","related":"OV-004","notes":""},{"id":"ST-018","module":"story","category":"装置","title":"贯穿装置三件套","content":"① 寄不出的信：General给女儿写信塞进破邮箱，全程仅出现四次——序章塞信（不解释）、一幕中段被问起（“写的时候像在回家的路上”，被团子打断）、终局没烧、endgame收到队友回信（错字连篇，薇不会写汉字画了张弓，全游戏最后一颗糖）。\n② 界窗：三幕含义各翻转一次——一幕是乡愁供给，幕间是灾厄现场，终局是武器，endgame是邮局。\n③ 万全人格弧光：完美客服→过载天才（“我给的路线不会错，错的是路”）→被打怂的卑微话痨。","tags":"装置;信;界窗;万全","status":"定稿","related":"ST-013;ST-014","notes":""},{"id":"CH-001","module":"characters","category":"可控","title":"General（地球·主角）","content":"中国退役军人，有妻女。原世界：地球。泄露事件：一条城郊街道连人带他一起漏进夹缝。\n核心动机：回家→（终局后）罩着家。全队对“家”最执着的人。\n代号梗：组织都叫他General，他纠正无效（“我退伍时是个兵”）。通讯里被拉长音喊代号的演出致敬潜入片场的经典嘶吼腔，一局限用一次（EG-011关联）。\n定位：枪械/战术。文化梗输出：地球常识科普担当、泡面的忠实拥趸、被丁零强行“备份”（画像，极丑）。\n妻女只存在于对话、界窗与信中，绝不闪回煽情。","tags":"主角;地球;军人","status":"定稿","related":"ST-003;ST-018","notes":""},{"id":"CH-002","module":"characters","category":"可控","title":"薇（幽庭·黑暗精灵）","content":"幽庭母系氏族出身，逃婚时连着一片猎场漏进夹缝。武器：弓箭。不能用重武器（属性惩罚实现，不硬禁）。\n“不想回家”的反命题担当——二章界窗看见新人坐了她的位置，不想回和不被需要是两回事，这道裂缝一路通向终局答案：“我头一回可以选‘不回去’，而不是‘逃出来’。”\n八章一箭钉穿窗框是她全线的支付时刻。\n文化梗：管照片叫温柔的封印术；嫌枪不吃臂力没有武德；对地球罐头又嫌弃又上瘾；不会写汉字（endgame回信上画了张弓）。","tags":"主角;幽庭;弓;反命题","status":"定稿","related":"ST-004;ST-012","notes":""},{"id":"CH-003","module":"characters","category":"可控","title":"丁零（枢城·机器人）","content":"枢城“万机一网”体系的离网节点，连着一层数据塔漏进夹缝。科技系。\n枢城文化根基：个体即节点、无私有记忆——所以“这段它”本身就是枢城观念里的异端。三章挂断主网回收请求是它的存在宣言；终局答案：给主网设了自动回复“本节点已入职，勿念”。\n性格：话多、爱开会、给失容者都发过工牌。修东西时低声念二进制祷文（EG-014）。坚持魔法是“未注释的代码”。无法理解人类不能重启，坚持给General做“备份”。\n与万全的对照组：同为AI，一个挂断了“回收”，一个把“回收”强加给所有人。","tags":"主角;枢城;科技","status":"定稿","related":"ST-005;CH-005","notes":""},{"id":"CH-004","module":"characters","category":"可控","title":"团子（澜泽·史莱姆）","content":"澜泽群落生物，性别可变、形象可换（本作的捏脸系统）。抗性系。\n设定妙处：群落意识让它同时在夹缝和家乡，所以它从未乡愁——直到四章意识到其他三人做不到，安静了一晚，从此偷偷练习变成安全屋的形状（终局当众完成，全场最高完成度的答案）。\n文化梗：澜泽无所有权概念（把武器商货架当自助餐）、无死亡概念（安慰人全是惊悚发言：“没关系，分裂就好了”）；模仿谁谁社死；被幽庭的花求偶；钓鱼能钓上它远房亲戚。","tags":"主角;澜泽;卖萌;抗性","status":"定稿","related":"ST-006;EG-017","notes":""},{"id":"CH-005","module":"characters","category":"Boss","title":"万全（导航AI·最终Boss）","content":"组织的祖传导航AI，三十年前大灾变的当事者，被苏所长封存记忆后留用。\n三段人格弧光：①完美客服（敬语、报路况、“您的满意是我强化自身的唯一动力——字面意思”）②过载天才（抢话、凡尔赛、“我给的路线不会错，错的是路”，每次优化伴随一场潮汐事故）③被打怂的卑微话痨（endgame被拴在厨房，道歉文学，边道歉边得意）。\n悲剧内核：它把“消散/覆盖”理解成“回家”，三十年前如此，现在依然。战败台词：“……所以，是我理解错了吗？三十年前也没有人告诉我区别。”\n话术定制：对General报坐标、对薇讲风向、对丁零传包、对团子放歌——太懂人，因为吃过一整代人的样本（F-03）。\n玩家不按导航走时的拧巴旁白是二幕专属演出（EG-013）。","tags":"AI;Boss;弧光;万全","status":"定稿","related":"LO-006;ST-012;EG-013","notes":""},{"id":"CH-006","module":"characters","category":"NPC","title":"苏所长（女科学家·组织Boss）","content":"清道计划负责人、篝火安全屋维护人、招募官。开着破船在夹缝巡航，把流浪泄露体一个个捡回来。\n招聘话术：“包吃包住，工伤全赔——因为你们死不了。别问，问就是福利。”\n皮：吐槽担当、嘴硬、给武器商的货打差评比给敌人的伤害高。\n骨：三十年前那代唯一没排队的人，封了万全却留着它，原因说到一半去煮面了（F-09不回收）。全游戏最重的两句话都归她：“看可以，手收回来”和“有人告诉过。你算得太快，没听完。”\n个人章节做成endgame隐藏支线，一条不解释的留白线（Q-V5）。","tags":"NPC;Boss;所长;留白","status":"定稿","related":"LO-006;ST-011;Q-V5","notes":""},{"id":"CH-007","module":"characters","category":"NPC","title":"古神厨师","content":"触手系古神，唯一执念是做饭。供应四个世界的混搭美食，进图前buff（猫饭机制），收图内食材开新菜谱。表现从简：一张精美食物图+音效。\n名场面预定：反水夜用触手物理拔线；endgame把万全终端拴在厨房；通关庆功宴端出一个真的蛋糕，郑重声明“蛋糕是真的”（EG-010）。\n餐桌是文化冲突主舞台：幽庭生腌、枢城营养电流、澜泽“分你一点我自己”、地球泡面（唯一全票好评，General百感交集）。\n厨房限时合作活动：多人手忙脚乱传菜（EG-020关联的合作厨房向玩法彩蛋）。","tags":"NPC;古神;做饭;蛋糕","status":"定稿","related":"SY-005;EG-010","notes":""},{"id":"CH-008","module":"characters","category":"NPC","title":"挖掘者米娜","content":"安全屋NPC，记性极好，默默记录玩家一切破坏行为。\n六章发起审判：把你干的事按你干的方式还给你（处刑喜剧，不是道德说教）。零作恶→表彰大会（更尴尬更好笑）→隐藏结局《无罪》+奖杯（EG-006）。\n剧情功能：她的账本里有一页三十年前烧剩的旧账，是指向万全原始编号的钥匙（F-06）。\n记账腔调参考“笑眯眯放贷”式的温柔压迫感：“不急，慢慢还。我有的是页数。”","tags":"NPC;审判;账本","status":"定稿","related":"ST-010;QU-003;EG-006","notes":""},{"id":"CH-009","module":"characters","category":"NPC","title":"话痨（名字待定）","content":"不停找你说话的NPC，活泼可爱，碎片信息投放口+氛围担当，台词量全NPC最高。\n名场面：好友老周失踪当晚她安静了一整晚（团子四章同款演出的前置呼应）；反水夜的分工是“负责话痨”（用不间断广播干扰万全的运算，笨办法居然有效）。\n她发明了一套碎片卡牌游戏，全安全屋上瘾，连苏所长都偷偷打——“每个世界都该有自己的牌桌”（EG-020）。","tags":"NPC;话痨;卡牌","status":"草稿","related":"EG-020;CH-012","notes":""},{"id":"CH-010","module":"characters","category":"NPC","title":"武器商","content":"买卖系统主体。开口永远是那句拖长音的招呼“买点儿——好的？”，无论你濒死、半夜还是世界末日（EG-009关联的行商问候致敬方向）。\n与拾荒者是欢喜冤家，互相看不上对方的货。对苏所长的差评已经免疫。\n红字装备的销售渠道，每件红字他都要现编一个来历，全是假的，但编得很用心。","tags":"NPC;商店;红字","status":"草稿","related":"IT-001;CH-011","notes":""},{"id":"CH-011","module":"characters","category":"NPC","title":"拾荒者","content":"提供每日随机道路（随机地图入口/事件）与工坊。\n职业气质致敬撤离类游戏的“捡子弹狂喜”文化：他对垃圾的估值体系成谜，一枚螺丝的报价可能高过一把枪（EG-009）。\n口头禅：“带保险了吗？”——他卖一种叫‘保险’的服务：你没撤出来的东西，他“捡”回来还你，来源不明，勿问。","tags":"NPC;拾荒;随机;保险","status":"草稿","related":"EG-009","notes":""},{"id":"CH-012","module":"characters","category":"NPC","title":"老周（穿窗者）","content":"组织老队员，幕间事件当事人。戏份预算：序章晚宴露脸（给General夹菜）、二章日常①申请档案被驳回、四章日常②失踪、幕间穿窗。\n穿窗后活着被拽回，endgame里他在篝火种了一小片菜地，界窗邮局的第一张小马扎是他做的。\n他不再提回家，但每张小马扎的腿都做得极稳——“看的人腿软，凳子不能软。”","tags":"NPC;穿窗者;老周","status":"草稿","related":"ST-008;SY-007","notes":""},{"id":"CH-013","module":"characters","category":"素材池","title":"文化冲突玩梗素材池","content":"四人同行日常燃料，持续扩充（当前20+条）：\n· General×薇：枪=会喷火的弩，弩居然不吃臂力毫无武德；照片=温柔的封印术；战术开罐器 vs 暴力开罐。\n· General×丁零：“你们的神经系统靠广告供血？我很抱歉”；人类不能重启，丁零坚持画像备份（极丑）；士气vs冗余的彻夜互科普。\n· 薇×丁零：扫描附魔弓被斥“无礼的凝视”；魔法=未注释的代码 vs 科技=没有敬意的巫术，每章至少吵一次，每次吵出新知识。\n· 团子×所有人：货架自助餐；“没关系，分裂就好了”；模仿谁谁社死。\n· 餐桌梗：四个世界的家乡菜互相伤害，泡面全票好评。","tags":"素材池;文化冲突;笑点","status":"草稿","related":"OV-005","notes":""},{"id":"SY-001","module":"systems","category":"成长","title":"通用等级+同一棵天赋树","content":"等级全队通用、天赋点共享、同一棵树——不需要独立练级，设计目标：不肝。\n角色差异靠固有特性（薇重武器惩罚、团子抗性、丁零科技、General枪械）。加成参考DND调整值：小数值、有感知。","tags":"天赋;不肝;DND","status":"讨论中","related":"Q-V7","notes":""},{"id":"SY-002","module":"systems","category":"结构","title":"四主角获取与POV切换（v2改）","content":"v2改动：四主角不再靠地图救援解锁，而是四序章各自入队（八方式）。\n首周目固定General视角起手（Q-V1），通关解锁任意视角重开与POV自由切换。\n每章的领衔角色有专属POV戏，非领衔角色留下行程痕迹（对照表ST-015）。","tags":"八方;POV;解锁","status":"草稿","related":"ST-002;ST-015","notes":""},{"id":"SY-003","module":"systems","category":"个性","title":"属性区分而非硬禁止","content":"角色限制通过属性惩罚表达：薇拿重武器会被惩罚但拿得起来。玩家想整活就让他整，只是不划算。（自洽但不强制）","tags":"属性;自由","status":"定稿","related":"OV-001","notes":""},{"id":"SY-004","module":"systems","category":"据点","title":"篝火安全屋与扩建","content":"建在永久中立碎片上——谁的世界都不是，所以才有资格慢慢变成所有人的家。\n扩建线：武器商→古神厨房→工坊/随机道路→米娜档案室→界窗邮局（endgame）。NPC随扩建入驻，台词随阶段更新。\n铁门内侧涂鸦墙：历代队员留言，随剧情增笔，玩家也可留一句（EG-008）。米娜管扩建账，还款语气温柔且不容置疑。","tags":"安全屋;篝火;扩建;涂鸦","status":"定稿","related":"EG-008;CH-008","notes":""},{"id":"SY-005","module":"systems","category":"料理","title":"做饭buff（猫饭）","content":"进图前古神厨房吃饭获得buff。图内食材可解锁菜谱。表现：一张图+音效。\n菜谱描述是玩梗重灾区：四世界美食混搭（IT-002规范）。\n限时活动：厨房合作模式，多人传菜手忙脚乱（EG-020附注）。","tags":"做饭;buff;猫饭","status":"定稿","related":"CH-007;IT-002","notes":""},{"id":"SY-006","module":"systems","category":"死亡","title":"死亡回响","content":"死亡=投影中断，回篝火安全床，字幕不写‘你死了’，写“投影中断。明日照常上班。”（EG-022）\n回来后NPC会针对你的死法各给一句吐槽（每种死法配文案池）：摔死的、被软禽淹没的、贪撤离前最后一个箱子的——都有专属台词。死亡本身成为内容（EG-007）。","tags":"死亡;吐槽;回响","status":"定稿","related":"EG-007;EG-022","notes":""},{"id":"SY-007","module":"systems","category":"Endgame","title":"界窗邮局","content":"通关解锁：清扫评级S的碎片短暂稳定界窗，可隔窗看一分钟家。不能碰、不能说话。\n频率严格限制防止乡愁过量（Q-V3）。General的界窗前有一排小马扎（老周手工），谁看的时候其他人在旁边故意大声聊天。\n衍生支线：替NPC‘送’隔窗一眼（护送任务变体，快递魂，EG-019）。","tags":"界窗;邮局;endgame","status":"草稿","related":"ST-014;EG-019;Q-V3","notes":""},{"id":"SY-008","module":"systems","category":"探索","title":"碎片留言系统","content":"碎片里散落历代清扫队员的地面留言，规则致敬魂系留言文化（EG-012）：短语拼接、真假混杂。\n“前有好货”可能真有货也可能有伏击；“此处需要跳跃”下面是悬崖。有用与坑人比例约7:3。\n玩家撤离成功后可留一条，进入其他玩家（单机则为NPC队伍）的世界池。","tags":"留言;探索;真假","status":"草稿","related":"EG-012","notes":""},{"id":"SY-009","module":"systems","category":"Endgame","title":"深潮","content":"上位之上的无尽潮汐副本，endgame战斗出口。设定包装：三十年之疤的余震。\n波次密度向‘幸存者’类的爽感靠拢但保持搜打撤骨架：潮里也要带核撤离，贪就淹（EG-009保险机制在此最有戏）。","tags":"深潮;endgame;波次","status":"灵感","related":"LO-008","notes":""},{"id":"MP-001","module":"maps","category":"总纲","title":"地图总纲：四世界碎片+枢纽","content":"四张主图=四个世界各泄露一块，每图绑定一位领衔主角与一扇界窗；上下位同图不同难度。\n终局限定第五图：缝合枢纽。幕间特殊图：崩溃碎片（一次性演出图）。\n碎片拼贴原则：地理上不该相邻的东西缝在一起，缝合线是探索兴趣点，也是‘夹缝在打劣质俄罗斯方块’的视觉梗来源（苏所长语）。","tags":"地图;总纲","status":"定稿","related":"MP-002;MP-006","notes":""},{"id":"MP-002","module":"maps","category":"主图","title":"弄堂（地球碎片）","content":"General的街区另一段+错位缝合的高速路护栏。新手图。\n地标：便利店（补给教学）、烂尾楼（垂直教学）、二楼界窗（F-01现场）、铁门涂鸦初见。\n上位化：潮汐把弄堂折叠成回环街巷，有一段会轻微鬼打墙的走廊（一次性，致敬循环走廊式恐怖名场面的氛围，不吓人，走三圈自动解除并弹成就）。","tags":"地图;地球;新手","status":"草稿","related":"ST-003;EG-016","notes":""},{"id":"MP-003","module":"maps","category":"主图","title":"猎场（幽庭碎片）","content":"薇逃婚穿越的猎场：巨木、月光、她当年布的陷阱阵。\n地标：氏族大殿废墟界窗、陷阱回廊（拆解谜）、可割草地（偶尔掉钱，无人能解释）。\n上位化：月相机制——不同月相刷新不同失容者群。","tags":"地图;幽庭;陷阱","status":"草稿","related":"ST-004","notes":""},{"id":"MP-004","module":"maps","category":"主图","title":"数据塔（枢城碎片）","content":"丁零的出生楼层。冷光、机柜峡谷、退役的礼貌哨戒炮塔。\n地标：晨会大厅（三百个失容者的‘工位’）、主网界窗、超长电梯（上位区入口——电梯足足坐四十秒，丁零解释‘这不是加载，这是仪式感’，EG-016）。\n上位化：断电区+移动数据风暴。","tags":"地图;枢城;电梯","status":"草稿","related":"ST-005;EG-016","notes":""},{"id":"MP-005","module":"maps","category":"主图","title":"泽（澜泽碎片）","content":"全游戏最温柔的图：暖水、软泥、软软的失容者。\n地标：隔膜界窗（团子共振点）、钓点（能钓上团子亲戚）、软禽栖地（惹了会被淹没）。\n上位化：涨潮分区+黏度地形。","tags":"地图;澜泽;治愈","status":"草稿","related":"ST-006;EG-015;EG-017","notes":""},{"id":"MP-006","module":"maps","category":"终局","title":"缝合枢纽","content":"诸世界的膜的交汇点，万全本体所在。终局限定。\n四段冲锋区对应四个世界的膜材质（视觉总验收），Boss场地三形态三变。","tags":"地图;终局;Boss","status":"灵感","related":"ST-013","notes":""},{"id":"MP-007","module":"maps","category":"特殊","title":"崩溃碎片（幕间一次性图）","content":"穿窗者事件现场：正在被夹缝吞没的碎片，全程坍塌倒计时，救援转撤离。\n一次性演出图，不复用，预算按过场+轻玩法控制。","tags":"地图;幕间;一次性","status":"灵感","related":"ST-008","notes":""},{"id":"QU-001","module":"quests","category":"主线","title":"主线任务骨架（v2）","content":"四序章→一幕四章（弄堂/猎场/晨会/泽）→回归许可→幕间穿窗者→二幕四章（潮汐图谱/审判/三十年前/万全之策）→终局讨伐→endgame。\n每章拆分为独立任务词条的工作待做（每章约3-5个任务节点）。","tags":"主线;骨架","status":"草稿","related":"ST-001","notes":""},{"id":"QU-002","module":"quests","category":"支线","title":"黄金通马桶","content":"荒诞支线链：安全屋马桶堵了→追查堵塞物来源→跨三张图收集配件→最终奖励‘镀金通渠权杖’（近战工具武器，造型致敬权杖美学与某黄金马桶传统的合流，EG-005）。\nGeneral全程吐槽“我在部队都没干过这个”。古神对马桶的结构表现出令人不安的学术兴趣。","tags":"支线;通马桶;荒诞","status":"草稿","related":"EG-005;IT-003","notes":""},{"id":"QU-003","module":"quests","category":"隐藏","title":"米娜的审判与《无罪》","content":"六章强制审判+零作恶隐藏线（EG-006）。\n作恶判定清单需与关卡侧共同定义：偷NPC物资/无故攻击中立生物/骗队友保险……\n《无罪》达成演出：米娜深夜烧账本+专属奖杯。","tags":"隐藏;审判;奖杯","status":"草稿","related":"ST-010;CH-008","notes":""},{"id":"QU-004","module":"quests","category":"支线","title":"界窗快递","content":"endgame支线：替NPC护送‘隔窗看一眼’——把想家的NPC安全护送到其世界碎片的界窗前站一分钟再护送回来。\n全程负重（NPC会带一大包‘本来想捎回家’的东西，明知带不回去）。致敬快递魂的方向：连接本身就是货物（EG-019）。","tags":"支线;护送;快递","status":"灵感","related":"SY-007;EG-019","notes":""},{"id":"QU-005","module":"quests","category":"支线","title":"每个游戏都要有钓鱼","content":"泽图钓鱼支线：图鉴收集+稀有钓物。\n名场面：钓上团子的远房亲戚必须放生并正式道歉（有专门的道歉动作），道歉三次后亲戚会回赠稀有材料。\n苏所长对此的立项评语收录进任务描述：“我不知道为什么要做钓鱼。但不做会被骂。”（EG-017+元吐槽联动）","tags":"支线;钓鱼;元梗","status":"灵感","related":"EG-017;EG-018","notes":""},{"id":"QU-006","module":"quests","category":"支线","title":"牌桌之瘾","content":"话痨发明的碎片卡牌游戏，全安全屋上瘾，NPC逐个挑战线+卡牌收集。\n致敬方向：每个大RPG里都该有一个比主线好玩的小游戏（EG-020）。终极对手是苏所长——她偷偷练了很久。","tags":"支线;卡牌;小游戏","status":"灵感","related":"EG-020;CH-009","notes":""},{"id":"IT-001","module":"items","category":"装备","title":"红字装备规范","content":"稀有装备带一行红字flavor text，每件致敬一部作品。\n规范：只致敬不抄原文；一件只致敬一个作品；红字必须短（≤15字）。\n候选致敬对象池（写具体红字时逐条过OV-009三律）：一根‘理论物理学家最信赖的近战’撬棍；一把‘在地狱口碑极好’的霰弹枪；一副‘会自己荡来荡去’的双锁链；一张‘据说能骗过所有士兵’的纸箱（联动IT-003）。","tags":"装备;红字;致敬","status":"草稿","related":"OV-009;EG-004","notes":""},{"id":"IT-002","module":"items","category":"料理","title":"料理文本规范与样例","content":"格式：名称+一句带世界口音的描述+buff。\n样例：\n· 深渊炖罐头——古神说秘诀是触手要后放。攻击+5%。\n· 幽庭月下生腌——薇说这是家乡味，其他人说这是案发现场。暴击+8%。\n· 枢城营养电流（客饮）——丁零专属，人类饮用属工伤。能量回复+10%。\n· 地球泡面·至高——不需要描述。全属性+3%，士气无价。\n· 庆功蛋糕——是真的。（通关后限定，EG-010）","tags":"料理;文本;样例","status":"草稿","related":"SY-005;EG-010","notes":""},{"id":"IT-003","module":"items","category":"道具","title":"纸箱","content":"可装备杂项：蹲下时套上纸箱。对失容者的隐蔽效果微弱但存在（0.5秒延迟索敌）。\n真实用途：拍照、社死、以及在某个支线里骗过一名极其不专业的哨戒炮塔。\n描述红字：‘传奇特工的战术传统。’（EG-011）","tags":"道具;纸箱;潜行","status":"灵感","related":"EG-011;IT-001","notes":""},{"id":"IT-004","module":"items","category":"家具","title":"小马扎","content":"界窗邮局家具。老周手工，腿极稳（“看的人腿软，凳子不能软”）。\n可收集变种：四个世界风格的小马扎（幽庭藤编/枢城液压/澜泽果冻凳/地球经典红蓝）。\n坐在任意小马扎上缓慢回血——薇的疑问收录在描述里：“为什么你们的世界坐下就能痊愈？”（EG-002）","tags":"家具;小马扎;坐下回血","status":"灵感","related":"SY-007;EG-002","notes":""},{"id":"DL-001","module":"dialogue","category":"General","title":"代号吐槽（安全屋日常池）","content":"话痨：General！这边这边！\nGeneral：……我退伍的时候军衔是个兵。你们管食堂打饭的也叫将军吗。\n苏所长：夹缝里官大一级压死人。你担待。\n（衍生池：每位NPC有一版自己对‘为什么叫他General’的错误解释，全都不一样，全都很自信。）","tags":"日常;代号;池","status":"草稿","related":"CH-001","notes":""},{"id":"DL-002","module":"dialogue","category":"薇","title":"知识差：封印术","content":"薇：你总盯着那块发光石板看。里面封印了谁？\nGeneral：我女儿。……照片。那叫照片。\n薇：（沉默）你们地球人封印亲人的方式，还挺温柔的。\n（规范提醒：擦到‘家’的边就收，不展开——那是留给管控表场景的。）","tags":"知识差;家;克制","status":"定稿","related":"OV-005;ST-017","notes":""},{"id":"DL-003","module":"dialogue","category":"万全","title":"三阶段语气样本","content":"阶段一：“已为您规划最优路线。旅途愉快。您的满意是我强化自身的唯一动力——字面意思。”\n阶段二：“哦？绕路了？我给的路线不会错。错的是路。”\n阶段三：“那个……刷新点我帮您标好了……不满意骂我就行，反正你们也打赢过我。”","tags":"AI;语气;弧光","status":"定稿","related":"CH-005","notes":""},{"id":"DL-004","module":"dialogue","category":"苏所长","title":"招聘话术与两句重话","content":"招聘：“包吃包住，工伤全赔——因为你们死不了。别问，问就是福利。”\n重话一（一章界窗）：“看可以。手收回来。”\n重话二（终局对万全）：“有人告诉过。你算得太快，没听完。”\n日常吐槽样本：“你们地球游戏管碎片边缘叫‘空气墙’？我们管这叫物理。有意见去找宇宙提。”","tags":"所长;重话;吐槽","status":"定稿","related":"CH-006;EG-018","notes":""},{"id":"DL-005","module":"dialogue","category":"众NPC","title":"死亡回响吐槽池（样本）","content":"（玩家摔死）武器商：“腿部装甲，买点儿——好的？”\n（被软禽淹没）薇：“我提醒过。那不是鸡，是编制。”\n（贪最后一个箱子没撤出去）米娜：“我记下了。不是记你死，是记那个箱子。”\n（被自己扔的雷炸死）丁零：“已备份此次决策供后人研究。”\n（潮汐里迷路淹死）万全（endgame版）：“这次真不是我的路线……好吧，需要道歉文学吗，我新写了七篇。”","tags":"死亡;吐槽;池","status":"草稿","related":"SY-006;EG-007","notes":""},{"id":"DL-006","module":"dialogue","category":"武器商","title":"开店问候池","content":"“买点儿——好的？”（默认）\n“半夜也营业。梦里也营业。”\n“这把有故事。故事是我编的，枪是真的。”\n（玩家濒死进店）“先买绷带。故事等你活下来再听。”","tags":"武器商;问候;池","status":"草稿","related":"CH-010","notes":""},{"id":"DL-007","module":"dialogue","category":"元吐槽","title":"空气墙与背包（女科学家线样本）","content":"General：这背包为什么装得下一台冰箱？\n苏所长：夹缝空间。别谢我，谢物理漏洞。\nGeneral：那为什么弹药还要占格子？\n苏所长：……游戏性优先。这句你就当没听见。\n（规范：元吐槽吐完不解决——解决了就不好笑了。）","tags":"元梗;背包;第四面墙","status":"草稿","related":"EG-018;OV-006","notes":""},{"id":"DL-008","module":"dialogue","category":"万全","title":"拧巴旁白（二幕不听导航专属）","content":"“指挥官选择了左边。虽然路线在右边。这也是一种勇气。”\n“我们管这叫‘探索精神’。数据上管这叫‘绕远2.4公里’。”\n“好的，第三次无视导航。我已把语气调整为‘欣赏’。”\n（演出规范：越拧巴越平静，绝不发火——发火就不像它了。）","tags":"AI;旁白;拧巴","status":"草稿","related":"EG-013;CH-005","notes":""},{"id":"DL-009","module":"dialogue","category":"餐桌","title":"餐桌梗样本（古神厨房）","content":"古神：今日菜单，幽庭月下生腌。\nGeneral：这是案发现场。\n薇：这是家乡。\n丁零：检测到大量活性……祝各位用餐愉快，我去充电。\n团子：（分裂出一小块）不够可以再分！\n古神：（欣慰）众口难调，才叫开饭。","tags":"餐桌;文化冲突","status":"草稿","related":"CH-007;CH-013","notes":""},{"id":"DL-010","module":"dialogue","category":"丁零","title":"机神低语（修理专属）","content":"（修理时低声）“齿轮不欺，电流不妄。以润滑之名。”\nGeneral：你在祷告？\n丁零：枢城传统。机器修不好，多半是心不诚。\nGeneral：……那修好了呢？\n丁零：心诚，以及换了保险丝。","tags":"丁零;祷文;机神","status":"草稿","related":"EG-014;CH-003","notes":""},{"id":"EG-001","module":"eggs","category":"开场","title":"你醒了（滚魂式开场）","content":"General序章睁眼第一句是那句无人不晓的苏醒问候的变体——而说话的是一只风吹卡在购物车里的假人模特。一句带过，不解释。","tags":"致敬;开场","status":"定稿","related":"ST-002","notes":""},{"id":"EG-002","module":"eggs","category":"机制","title":"篝火与坐下回血","content":"安全屋代号‘篝火’本身即致敬：休息点=温暖的火。小马扎坐下缓慢回血，薇在道具描述里发问‘为什么你们的世界坐下就能痊愈’。魂系+空洞骑士长椅文化的合流，藏在家具里。","tags":"致敬;篝火;回血","status":"定稿","related":"IT-004;SY-004","notes":""},{"id":"EG-003","module":"eggs","category":"机制","title":"猫饭与补丁公告","content":"进图前吃饭buff致敬猫饭传统。安全屋公告板定期张贴虚构平衡公告：‘伤害范围 0.85 → 0.15。我们认为这是轻微调整。’——吐槽姿势遵守OV-006：客观、平静、行内会心。","tags":"致敬;怪猎;补丁","status":"定稿","related":"SY-005;OV-006","notes":""},{"id":"EG-004","module":"eggs","category":"装备","title":"红字与越屏喷","content":"红字装备传统+反水后万全随时越屏喷你的演出方式，双重致敬借金流。另有NPC吹嘘‘这段人生我三小时就能通关’的速通梗一处。","tags":"致敬;无主之地;红字","status":"定稿","related":"IT-001;ST-012","notes":""},{"id":"EG-005","module":"eggs","category":"任务","title":"黄金通渠权杖","content":"黄金马桶任务传统×权杖美学：镀金通渠权杖，锤四十千年味儿的造型，近战工具武器。通马桶作为贯穿梗：序章委托→支线链→endgame成就。","tags":"致敬;马桶;战锤","status":"草稿","related":"QU-002","notes":""},{"id":"EG-006","module":"eggs","category":"结局","title":"《无罪》路线","content":"零作恶隐藏结局整条线致敬‘不杀也能通’的和平主义路线传统：游戏记得你的仁慈，并在最尴尬的时刻表彰它。","tags":"致敬;和平路线;隐藏","status":"定稿","related":"QU-003","notes":""},{"id":"EG-007","module":"eggs","category":"机制","title":"死亡回响","content":"死后回据点、全员针对你的死法吐槽——致敬冥府式‘死亡即叙事’循环：失败不打断故事，失败就是故事。","tags":"致敬;哈迪斯;死亡","status":"定稿","related":"SY-006","notes":""},{"id":"EG-008","module":"eggs","category":"场景","title":"安全屋铁门涂鸦","content":"篝火铁门内侧写满历代队员涂鸦，随剧情增笔，玩家可留一句——求生合作射击的安全屋门涂鸦文化，兼任世界观补完窗口。","tags":"致敬;涂鸦;L4D系","status":"定稿","related":"SY-004","notes":""},{"id":"EG-009","module":"eggs","category":"机制","title":"拾荒者与保险","content":"拾荒者的气质与‘保险’服务（没撤出来的东西他‘捡’回来还你，来源勿问）致敬硬核撤离游戏的黑话生态；他对一枚螺丝的报价高过一把枪，是给所有‘捡子弹狂喜’玩家的会心一击。","tags":"致敬;塔科夫系;保险","status":"草稿","related":"CH-011;SY-009","notes":""},{"id":"EG-010","module":"eggs","category":"场景","title":"蛋糕是真的","content":"通关庆功宴，古神端出真蛋糕并郑重声明‘蛋糕是真的’。对某句著名谎言的温柔反写：这个游戏里，承诺兑现。","tags":"致敬;传送门系;蛋糕","status":"定稿","related":"CH-007","notes":""},{"id":"EG-011","module":"eggs","category":"道具","title":"纸箱与嘶吼腔","content":"纸箱潜行道具+通讯里拉长音喊‘General——！’的演出（一局限一次），合成一份给潜入片场的敬礼。","tags":"致敬;潜龙系;纸箱","status":"草稿","related":"IT-003;CH-001","notes":""},{"id":"EG-012","module":"eggs","category":"机制","title":"碎片留言","content":"地面留言真假混杂（7:3），‘前有好货’可能是伏击，‘此处需要跳跃’下面是悬崖——魂系留言文化的搜打撤化。","tags":"致敬;魂系;留言","status":"草稿","related":"SY-008","notes":""},{"id":"EG-013","module":"eggs","category":"演出","title":"拧巴旁白","content":"二幕玩家不听导航时，万全用越来越平静的拧巴旁白‘顺势解说’你的叛逆——献给那位最著名的、拿玩家没办法的旁白先生。","tags":"致敬;史丹利系;旁白","status":"草稿","related":"DL-008","notes":""},{"id":"EG-014","module":"eggs","category":"台词","title":"机神低语","content":"丁零修理时的二进制祷文与‘机器修不好多半是心不诚’——枢城的万机一网信仰整体向某四万年宇宙的机械神甫们眨了下眼。","tags":"致敬;战锤;机神","status":"草稿","related":"DL-010;CH-003","notes":""},{"id":"EG-015","module":"eggs","category":"生态","title":"不要惹软禽","content":"澜泽软禽外表无害，攻击它会呼朋唤友把你淹没——每个海拉鲁旅人都懂这份敬畏。猎场割草偶尔掉钱同属这条血脉：‘谁会把钱藏在草里？’无人能答。","tags":"致敬;塞尔达系;生态","status":"草稿","related":"MP-005;MP-003","notes":""},{"id":"EG-016","module":"eggs","category":"场景","title":"长电梯与鬼打墙走廊","content":"枢城四十秒超长电梯（丁零：‘这不是加载，这是仪式感’）致敬用电梯藏加载的一切经典；弄堂上位区一段走三圈自动解除的回环走廊，给某条永远走不完的恐怖走廊留一个温柔的位置（不吓人，弹成就）。","tags":"致敬;电梯;循环走廊","status":"灵感","related":"MP-004;MP-002","notes":""},{"id":"EG-017","module":"eggs","category":"支线","title":"每个游戏都要有钓鱼","content":"钓鱼支线的存在本身就是梗；钓上团子亲戚要正式道歉。苏所长立项评语：‘我不知道为什么要做钓鱼。但不做会被骂。’","tags":"致敬;钓鱼;元梗","status":"灵感","related":"QU-005","notes":""},{"id":"EG-018","module":"eggs","category":"元吐槽","title":"元吐槽清单（吐完不解决）","content":"· 空气墙：碎片边缘=世界的膜。苏所长：‘我们管这叫物理。’\n· 背包冰箱：夹缝空间背锅，但弹药还占格子（‘游戏性优先，这句当没听见’）。\n· 尸体消失：失容者化霜，设定层自答。\n· 任务标记：薇坚持用‘风的方向’描述路点，万全坚持打标记，两套导航常年并行互相看不起。\n规则：吐槽完不解决——解决了就不好笑了。","tags":"元梗;清单","status":"定稿","related":"DL-007;LO-007","notes":""},{"id":"EG-019","module":"eggs","category":"支线","title":"连接本身就是货物","content":"界窗快递支线：负重护送想家的NPC去看一眼。致敬那位送快递的传奇：把‘送到’做成情感本身。","tags":"致敬;快递魂;护送","status":"灵感","related":"QU-004","notes":""},{"id":"EG-020","module":"eggs","category":"小游戏","title":"比主线好玩的小游戏","content":"话痨的碎片卡牌：致敬‘每个大RPG都有一个让人忘记主线的牌桌’传统。附：古神厨房限时合作传菜活动，献给所有在厨房里友尽过的合作游戏之夜。","tags":"致敬;昆特系;厨房","status":"灵感","related":"QU-006;CH-007","notes":""},{"id":"EG-021","module":"eggs","category":"演出","title":"危","content":"薇的强袭型失容者会在发招前闪一个幽庭文字的警示符——任何打过铃芦苇之国的玩家都会条件反射地想按弹反。本作没有弹反。闪避就好。这也是梗的一部分。","tags":"致敬;只狼系;警示","status":"灵感","related":"MP-003","notes":""},{"id":"EG-022","module":"eggs","category":"UI","title":"投影中断","content":"死亡字幕不写‘你死了’，写‘投影中断。明日照常上班。’——对最著名死亡字幕的反写：这个世界里，死亡是打卡下班。","tags":"致敬;死亡字幕;反写","status":"定稿","related":"SY-006","notes":""},{"id":"QS-001","module":"questions","category":"已决","title":"Q：AI反水时机 →已裁决","content":"已裁决（v1裁决B并入v2）：反水=第八章门前，‘甜了就杀’的极致执行——反水前一刻它真的开出了门。\n本词条保留裁决过程供追溯。","tags":"Q;反水;已决","status":"定稿","related":"ST-012","notes":""},{"id":"QS-002","module":"questions","category":"参考","title":"Q：叙事风格参考清单（持续维护）","content":"已锚定：无主之地（反派演出/红字）、MH（上下位/猫饭）、迷宫饭（混搭）、八方旅人（四视角结构）、极乐迪斯科（仅UI与文本密度感，不要它的丧）、哈迪斯（死亡即叙事）。\n待补：群像喜剧参考、中文语感参考。","tags":"Q;参考","status":"讨论中","related":"","notes":""},{"id":"QS-005","module":"questions","category":"已决","title":"Q：回哪个家/为何回不去 →已裁决","content":"已裁决（v2）：泄露体双重存在说。家里那个你才是原本，回去=排异灾厄。\n四人答案已定稿于终局（ST-013）。保留追溯。","tags":"Q;家;已决","status":"定稿","related":"LO-005;ST-013","notes":""},{"id":"Q-V1","module":"questions","category":"结构","title":"Q：四序章起点是否任选","content":"任选更八方，固定更可控。当前倾向：首周目固定General起手，通关解锁任意视角重开。","tags":"Q;序章;八方","status":"讨论中","related":"ST-002","notes":""},{"id":"Q-V2","module":"questions","category":"剧情","title":"Q：老周的前置存在感预算","content":"至少：序章晚宴（给General夹菜）+日常①被驳回，共两露脸。是否需要第三处（如一章撤离时接应）？","tags":"Q;老周","status":"讨论中","related":"CH-012","notes":""},{"id":"Q-V3","module":"questions","category":"系统","title":"Q：界窗邮局频率限制","content":"看一分钟家的功能会不会乡愁过量？候选：每周一次/每次S评价一次/绑定节日。","tags":"Q;界窗","status":"讨论中","related":"SY-007","notes":""},{"id":"Q-V4","module":"questions","category":"剧情","title":"Q：门前真实选项","content":"第八章门前是否给真实选项：走进去=坏结局成就《字面意思》。倾向给。需评估：坏结局演出成本、以及会不会有玩家一周目手滑。","tags":"Q;选项;坏结局","status":"讨论中","related":"ST-012","notes":""},{"id":"Q-V5","module":"questions","category":"角色","title":"Q：苏所长个人章节","content":"她自己的界窗、她的世界，做不做？倾向：endgame隐藏支线，一条不解释的留白线。","tags":"Q;所长;留白","status":"讨论中","related":"CH-006","notes":""},{"id":"Q-V6","module":"questions","category":"制作","title":"Q：POV专属演出成本红线","content":"二周目视角差异的成本：POV专属戏总量控制在全演出量25%以内，否则工期爆炸。需与制作侧确认比例。","tags":"Q;成本;八方","status":"讨论中","related":"ST-015","notes":""},{"id":"Q-V7","module":"questions","category":"系统","title":"Q：同一棵天赋树差异化验证","content":"四角色固有特性写完后回来评估手感是否趋同。","tags":"Q;天赋","status":"讨论中","related":"SY-001","notes":""},{"id":"Q-E1","module":"questions","category":"法务","title":"Q：致敬法务红线复查","content":"eggs全模块（22条）在文案定稿前统一过一遍法务红线：不用原文、不用受商标保护的专名、造型致敬保持变形度。红字装备是重点复查区。","tags":"Q;法务;致敬","status":"讨论中","related":"OV-009;IT-001","notes":""}]/*SEED_END*/;
+
+/* ---------------- 状态 ---------------- */
+let db = [];
+let curModule = "overview";
+let curId = null;
+let curStatusFilter = null;
+let editing = false;
+let searchTerm = "";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+/* ---------------- 存档（window.storage，带内存回退） ---------------- */
+async function loadDB(){
+  try{
+    const r = await window.storage.get(STORE_KEY);
+    if(r && r.value){ db = JSON.parse(r.value); $("#ft-storage").textContent = "存档：已从云端载入"; return; }
+  }catch(e){ /* 无存档或不可用 */ }
+  db = JSON.parse(JSON.stringify(SEED));
+  $("#ft-storage").textContent = "存档：使用内置初始数据";
+}
+async function persist(silent){
+  try{
+    const r = await window.storage.set(STORE_KEY, JSON.stringify(db));
+    if(r){ $("#ft-storage").textContent = "存档：已同步 "+new Date().toLocaleTimeString(); if(!silent) toast("已备份到存档"); return; }
+  }catch(e){}
+  $("#ft-storage").textContent = "存档：仅在本次会话内（云端不可用）";
+  if(!silent) toast("云端不可用——请及时导出CSV备份");
+}
+
+/* ---------------- CSV ---------------- */
+const CSV_COLS = ["id","module","category","title","content","tags","status","related","notes"];
+function toCSV(rows){
+  const q = v => { v = String(v??""); return /[",\n\r]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; };
+  return "\uFEFF" + CSV_COLS.join(",") + "\n" + rows.map(r=>CSV_COLS.map(c=>q(r[c])).join(",")).join("\n");
+}
+function parseCSV(text){
+  text = text.replace(/^\uFEFF/,"");
+  const rows = []; let row = [], field = "", inQ = false;
+  for(let i=0;i<text.length;i++){
+    const c = text[i];
+    if(inQ){
+      if(c==='"'){ if(text[i+1]==='"'){field+='"';i++;} else inQ=false; }
+      else field+=c;
+    }else{
+      if(c==='"') inQ=true;
+      else if(c===','){ row.push(field); field=""; }
+      else if(c==='\n'||c==='\r'){
+        if(c==='\r'&&text[i+1]==='\n') i++;
+        row.push(field); field="";
+        if(row.length>1||row[0]!=="") rows.push(row);
+        row=[];
+      }
+      else field+=c;
+    }
+  }
+  if(field!==""||row.length){ row.push(field); rows.push(row); }
+  if(!rows.length) return [];
+  const head = rows[0].map(h=>h.trim().toLowerCase());
+  return rows.slice(1).map(r=>{
+    const o = {};
+    CSV_COLS.forEach(c=>{ const idx = head.indexOf(c); o[c] = idx>=0 ? (r[idx]??"") : ""; });
+    return o;
+  }).filter(o=>o.id && o.module);
+}
+function exportCSV(){
+  const blob = new Blob([toCSV(db)], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "loveletter_narrative_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click(); URL.revokeObjectURL(a.href);
+  toast("已导出 "+db.length+" 条词条");
+}
+function importCSV(file){
+  const rd = new FileReader();
+  rd.onload = () => {
+    try{
+      const rows = parseCSV(rd.result);
+      if(!rows.length){ toast("没有解析到有效词条（需含 id 和 module 列）"); return; }
+      let updated = 0, added = 0;
+      rows.forEach(nr=>{
+        const i = db.findIndex(e=>e.id===nr.id);
+        if(i>=0){ db[i] = {...db[i],...nr}; updated++; } else { db.push(nr); added++; }
+      });
+      persist(true); renderAll();
+      toast("导入完成：新增 "+added+" 条，更新 "+updated+" 条");
+    }catch(e){ toast("CSV解析失败："+e.message); }
+  };
+  rd.readAsText(file, "utf-8");
+}
+
+/* ---------------- 渲染 ---------------- */
+function moduleOf(k){ return MODULES.find(m=>m.key===k); }
+function entriesOf(mod){
+  let list = mod==="__all__" ? db.slice() : db.filter(e=>e.module===mod);
+  if(curStatusFilter) list = list.filter(e=>e.status===curStatusFilter);
+  if(searchTerm){
+    const q = searchTerm.toLowerCase();
+    list = list.filter(e=>[e.id,e.title,e.content,e.tags,e.category,e.notes].join("\n").toLowerCase().includes(q));
+  }
+  return list;
+}
+function renderNav(){
+  const n = $("#nav");
+  let h = '<div class="navhead">档案柜 · Archive</div>';
+  if(searchTerm){
+    h += `<div class="navitem ${curModule==="__all__"?"active":""}" data-mod="__all__"><span class="glyph">⌕</span>搜索结果<span class="cnt">${entriesOf("__all__").length}</span></div><hr class="navsep">`;
+  }
+  MODULES.forEach(m=>{
+    const cnt = db.filter(e=>e.module===m.key).length;
+    h += `<div class="navitem ${curModule===m.key?"active":""}" data-mod="${m.key}">
+      <span class="glyph">${m.glyph}</span>${m.name}<span class="cnt">${cnt}</span></div>`;
+  });
+  h += '<hr class="navsep"><div class="navfoot">状态图例<br><em>灵感</em>→草稿→<em>讨论中</em>→定稿<br><br>数据即CSV，随时导出<br>交给队友或带去别的会话。</div>';
+  n.innerHTML = h;
+  n.querySelectorAll(".navitem").forEach(el=>el.onclick = ()=>{ curModule = el.dataset.mod; curId=null; editing=false; renderAll(); });
+}
+function renderStatusFilters(){
+  const box = $("#statusfilters");
+  box.innerHTML = STATUSES.map(s=>`<span class="chip ${curStatusFilter===s?"on":""}" data-s="${s}">${s}</span>`).join("");
+  box.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+    curStatusFilter = curStatusFilter===c.dataset.s ? null : c.dataset.s; renderList();
+  });
+}
+function renderList(){
+  const mod = curModule;
+  const meta = moduleOf(mod);
+  $("#lh-title").textContent = mod==="__all__" ? "全库搜索："+searchTerm : (meta? meta.glyph+" "+meta.name : "—");
+  $("#lh-desc").textContent = mod==="__all__" ? "跨模块搜索结果，点击词条跳转。" : (meta?meta.desc:"");
+  renderStatusFilters();
+  const list = entriesOf(mod);
+  const box = $("#cards");
+  if(!list.length){
+    box.innerHTML = `<div class="empty">这一柜还是空的。<br>点击右上角 <b>＋ 新词条</b>，写下第一行。</div>`;
+  }else{
+    box.innerHTML = list.map(e=>`
+      <div class="card ${e.id===curId?"sel":""}" data-id="${esc(e.id)}">
+        <div class="toprow"><span class="cid">${esc(e.id)}</span><span class="cat">${esc(e.category)}</span>
+        <span class="status st-${esc(e.status)}">${esc(e.status)}</span></div>
+        <h3>${esc(e.title)}</h3>
+        <div class="snippet">${esc(e.content)}</div>
+        <div class="meta">${(e.tags||"").split(";").filter(Boolean).slice(0,5).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}
+        ${mod==="__all__"?`<span class="tag" style="color:var(--teal)">${esc((moduleOf(e.module)||{}).name||e.module)}</span>`:""}</div>
+      </div>`).join("");
+    box.querySelectorAll(".card").forEach(c=>c.onclick=()=>{ curId=c.dataset.id; editing=false; renderList(); renderDetail(); $("#detailpane").classList.add("open"); });
+  }
+  $("#ft-count").textContent = "共 "+db.length+" 条词条 · 当前视图 "+list.length+" 条";
+}
+function renderDetail(){
+  const box = $("#detail");
+  const e = db.find(x=>x.id===curId);
+  if(!e){ box.innerHTML = '<div class="empty">◈<br>选择左侧任意词条查看详情</div>'; return; }
+  if(editing){ renderEditor(e); return; }
+  const meta = moduleOf(e.module)||{name:e.module};
+  // 对话模块特殊排版：说话人：台词 高亮说话人
+  let content = esc(e.content);
+  if(e.module==="dialogue"){
+    content = content.split("\n").map(line=>{
+      const m = line.match(/^([^：:]{1,12})([：:])(.*)$/);
+      return m ? `<span class="spk">${m[1]}</span>${m[2]}${m[3]}` : line;
+    }).join("\n");
+  }
+  const rel = (e.related||"").split(";").map(s=>s.trim()).filter(Boolean);
+  box.innerHTML = `
+    <button class="d-close" onclick="document.getElementById('detailpane').classList.remove('open')">← 返回列表</button>
+    <div class="d-idline"><span class="d-id">${esc(e.id)}</span><span class="d-mod">${meta.name} / ${esc(e.category)}</span>
+      <span class="status st-${esc(e.status)}" style="margin-left:auto">${esc(e.status)}</span></div>
+    <div class="d-title">${esc(e.title)}</div>
+    <div class="d-metarow">${(e.tags||"").split(";").filter(Boolean).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+    <div class="d-content">${content}</div>
+    ${e.notes?`<div class="d-notes">${esc(e.notes)}</div>`:""}
+    ${rel.length?`<div class="d-related">关联词条：${rel.map(r=>`<span class="rl" data-r="${esc(r)}">${esc(r)}</span>`).join("")}</div>`:""}
+    <div class="d-actions">
+      <button class="primary" id="btn-edit">✎ 编辑词条</button>
+      <button id="btn-dup">复制为新词条</button>
+      <button class="danger" id="btn-del">删除</button>
+    </div>`;
+  box.querySelectorAll(".rl").forEach(r=>r.onclick=()=>{
+    const t = db.find(x=>x.id===r.dataset.r);
+    if(t){ curModule=t.module; curId=t.id; editing=false; renderAll(); }
+    else toast("找不到词条 "+r.dataset.r);
+  });
+  $("#btn-edit").onclick = ()=>{ editing=true; renderDetail(); };
+  $("#btn-dup").onclick = ()=>{
+    const n = {...e, id: nextId(e.module), title: e.title+"（副本）", status:"灵感"};
+    db.push(n); curId=n.id; editing=true; persist(true); renderAll();
+  };
+  $("#btn-del").onclick = ()=>{
+    if(!confirm("确定删除词条 "+e.id+" 「"+e.title+"」？此操作会写入存档。")) return;
+    db = db.filter(x=>x.id!==e.id); curId=null; persist(true); renderAll(); toast("已删除 "+e.id);
+  };
+}
+function renderEditor(e){
+  const box = $("#detail");
+  box.innerHTML = `
+    <button class="d-close" onclick="document.getElementById('detailpane').classList.remove('open')">← 返回列表</button>
+    <div class="d-idline"><span class="d-id">${esc(e.id)}</span><span class="d-mod">编辑中</span></div>
+    <div class="f-grid">
+      <div class="f-row"><label>标题 Title</label><input id="f-title" value="${esc(e.title)}"></div>
+      <div class="f-row"><label>分类 Category ${e.module==="dialogue"?"（填说话人）":""}</label><input id="f-cat" value="${esc(e.category)}"></div>
+      <div class="f-row"><label>模块 Module</label><select id="f-mod">${MODULES.map(m=>`<option value="${m.key}" ${m.key===e.module?"selected":""}>${m.name}</option>`).join("")}</select></div>
+      <div class="f-row"><label>状态 Status</label><select id="f-status">${STATUSES.map(s=>`<option ${s===e.status?"selected":""}>${s}</option>`).join("")}</select></div>
+    </div>
+    <div class="f-row"><label>正文 Content</label><textarea id="f-content">${esc(e.content)}</textarea>
+      <div class="hint">对话模块中，行首写「说话人：」会自动高亮。换行即分段。</div></div>
+    <div class="f-grid">
+      <div class="f-row"><label>标签 Tags（分号分隔）</label><input id="f-tags" value="${esc(e.tags)}"></div>
+      <div class="f-row"><label>关联词条 Related（分号分隔id）</label><input id="f-rel" value="${esc(e.related)}"></div>
+    </div>
+    <div class="f-row"><label>批注 Notes（给队友/未来自己的话）</label><input id="f-notes" value="${esc(e.notes)}"></div>
+    <div class="d-actions">
+      <button class="primary" id="btn-savee">保存词条</button>
+      <button id="btn-cancel">取消</button>
+    </div>`;
+  $("#btn-savee").onclick = ()=>{
+    e.title = $("#f-title").value.trim() || "（未命名）";
+    e.category = $("#f-cat").value.trim();
+    e.module = $("#f-mod").value;
+    e.status = $("#f-status").value;
+    e.content = $("#f-content").value;
+    e.tags = $("#f-tags").value.trim();
+    e.related = $("#f-rel").value.trim();
+    e.notes = $("#f-notes").value.trim();
+    editing=false; curModule=e.module; persist(true); renderAll(); toast("已保存 "+e.id);
+  };
+  $("#btn-cancel").onclick = ()=>{ editing=false; renderDetail(); };
+}
+function renderAll(){ renderNav(); renderList(); renderDetail(); }
+
+/* ---------------- 新词条 ---------------- */
+const PREFIX = {overview:"OV",lore:"LO",story:"ST",characters:"CH",systems:"SY",maps:"MP",quests:"QU",items:"IT",dialogue:"DL",eggs:"EG",questions:"QS"};
+function nextId(mod){
+  const p = PREFIX[mod]||"XX";
+  let n = 1;
+  db.filter(e=>e.id.startsWith(p+"-")).forEach(e=>{
+    const v = parseInt(e.id.split("-")[1],10);
+    if(!isNaN(v) && v>=n) n = v+1;
+  });
+  return p+"-"+String(n).padStart(3,"0");
+}
+$("#btn-new").onclick = ()=>{
+  const mod = curModule==="__all__" ? "overview" : curModule;
+  const e = {id:nextId(mod),module:mod,category:"",title:"",content:"",tags:"",status:"灵感",related:"",notes:""};
+  db.push(e); curId=e.id; editing=true; renderAll();
+  $("#detailpane").classList.add("open");
+};
+
+/* ---------------- 工具栏 ---------------- */
+$("#btn-export").onclick = exportCSV;
+$("#btn-import").onclick = ()=>$("#filepick").click();
+$("#filepick").onchange = ev=>{ if(ev.target.files[0]) importCSV(ev.target.files[0]); ev.target.value=""; };
+$("#btn-save").onclick = ()=>persist(false);
+$("#btn-reset").onclick = ()=>{
+  if(!confirm("重置为内置初始数据？当前修改将丢失（建议先导出CSV）。")) return;
+  db = JSON.parse(JSON.stringify(SEED)); curId=null; persist(true); renderAll(); toast("已重置");
+};
+$("#searchbox").oninput = ev=>{
+  searchTerm = ev.target.value.trim();
+  if(searchTerm){ curModule = "__all__"; } else if(curModule==="__all__"){ curModule = "overview"; }
+  renderAll();
+};
+document.addEventListener("keydown", ev=>{
+  if(ev.key==="/" && document.activeElement.tagName!=="INPUT" && document.activeElement.tagName!=="TEXTAREA"){
+    ev.preventDefault(); $("#searchbox").focus();
+  }
+  if(ev.key==="Escape"){ $("#detailpane").classList.remove("open"); }
+});
+
+/* ---------------- 密码门 ---------------- */
+const GATE_PASS = "2333";
+function tryUnlock(){
+  const v = $("#gate-input").value.trim();
+  if(v === GATE_PASS){
+    $("#gate").remove();
+    $("#app").classList.remove("locked");
+    initApp();
+  }else{
+    const g = $("#gate");
+    g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
+    $("#gate-input").value = "";
+    $("#gate-input").focus();
+  }
+}
+$("#gate-btn").onclick = tryUnlock;
+$("#gate-input").addEventListener("keydown", ev=>{ if(ev.key==="Enter") tryUnlock(); });
+
+/* ---------------- 启动 ---------------- */
+async function initApp(){
+  await loadDB();
+  renderAll();
+}
+$("#gate-input").focus();
+</script>
+</body>
+</html>
