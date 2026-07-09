@@ -104,6 +104,8 @@ main{flex:1; display:flex; min-height:0}
 .card.faded{opacity:.28}
 .card.person-hit{border-color:var(--ak); box-shadow:0 0 0 1px var(--ak) inset}
 .card-head{padding:12px 14px 8px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:8px}
+.card.grp .card-head{background:rgba(77,163,255,.05)}
+.card.grp .dept-code{color:var(--dep-in)}
 .dept-code{font-family:var(--mono); font-size:10px; color:var(--dim); letter-spacing:.15em}
 .dept-name{font-family:'Oswald','Noto Sans SC',sans-serif; font-weight:600; font-size:17px; letter-spacing:.05em}
 .dep-tags{padding:7px 14px 0; display:flex; flex-wrap:wrap; gap:4px}
@@ -412,11 +414,11 @@ footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; col
   <div class="modal-box">
     <div class="modal-head">
       <h3>编辑成员（data.csv）</h3>
-      <span class="tip">同一部门多名成员各占一行；「职责 / 依赖部门」用分号 ; 分隔多项</span>
+      <span class="tip">同一部门/组多名成员各占一行；层级填「部门」或「组」；「职责 / 依赖部门」用分号 ; 分隔多项</span>
     </div>
     <div class="modal-body">
       <table>
-        <thead><tr><th style="width:13%">部门</th><th style="width:10%">人员</th><th style="width:9%">角色</th><th style="width:30%">职责（;分隔）</th><th style="width:22%">依赖部门（;分隔）</th><th style="width:12%">备注</th><th></th></tr></thead>
+        <thead><tr><th style="width:12%">部门/组</th><th style="width:7%">层级</th><th style="width:9%">人员</th><th style="width:8%">角色</th><th style="width:28%">职责（;分隔）</th><th style="width:20%">依赖部门（;分隔）</th><th style="width:12%">备注</th><th></th></tr></thead>
         <tbody id="editRows"></tbody>
       </table>
     </div>
