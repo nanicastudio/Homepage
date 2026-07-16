@@ -30,98 +30,112 @@ const DEFAULT_DATA_CSV = `部门,层级,人员,角色,职责,依赖部门,备注
 社区运营,组,夜灵,成员,社群运营,,
 Staff管理,组,早苗,负责人,Staff规划招募培训排班,法务部,`;
 
-const DEFAULT_TASKS_CSV = `ID,部门,分类,任务,负责人,前置任务,状态,备注
-T01,宣发,节点,宣发作图(发出去的图),小火;Vita;Abi,T51,未开始,0宣~3宣/终宣;小火主导美术团队;盐宝可能想参与由小火分配
-T02,宣发,节点,宣发文案,咩咩;蜀山,,未开始,0宣~3宣/终宣;1宣之后保持weekly;定宣发节点锚定每周宣发内容
-T03,宣发,物料,物料图拍摄(打样/成品效果),红白,T83,未开始,物料团队负责拍摄;物料部门对接
-T04,宣发,活动,线下漫展返图,咩咩;蜀山;盐宝,,未开始,AIBA 7.18/Anime Destiny 10.31/ALA 1月初/Carrier Con 3月末/Anime Otapia(?);AX没做下次做
-T05,宣发,活动,线下漫展无料发放,蜀山;盐宝;小火,T83,未开始,全员谁去谁发 还得美少女发
-T06,宣发,运营,持续关注社媒账号并回答问题,咩咩;蜀山,,未开始,蜀山Secondary;转发
-T07,宣发,运营,网站运营更新,盐宝,,未开始,美术部门找人更新(盐宝?)
-T08,宣发,运营,保持社群活跃度(Discord英文/中文),蜀山;夜灵,,未开始,英文:早苗试试找人不保证;中文:蜀山负责
-T09,财务,法务,预算估计与审核,光;Xixi;早苗,,未开始,联动各种合同
-T10,财务,法务,Non-profit准备材料,光;Xixi;早苗,,未开始,
-T11,财务,法务,Non-profit foundation成立,光;Xixi;早苗,T10,未开始,
-T12,财务,法务,Non-profit 501c3批准以及更新宣传,光;Xixi;早苗,T11,未开始,
-T13,财务,寄售,联系寄售并确认数量,光,T21,未开始,
-T14,财务,寄售,确认寄售物料运输/清点/储存,红白,T13,未开始,企鹅物流
-T15,财务,官谷,更新售卖网站,光,T59,未开始,啥时候弄完
-T16,财务,官谷,确认KV官谷物料运输/清点/储存,红白,T83,未开始,企鹅物流
-T17,商务外交,赞助,拟定合作计划与对接,光;Xixi,T18,未开始,
-T18,商务外交,赞助,联系可能的赞助(食品饮料/物料厂商),光,,未开始,比如UME
-T19,商务外交,参展,联动活动/摊位参展(Anime Otapia),光,,未开始,联系ONLY不包括参展;参展找宣发部门
-T20,商务外交,参展,Artist Alley邀请参展,蜀山,,未开始,上次收application蜀山批
-T21,商务外交,寄售,联系寄售(全员人脉reachout),红白;小火;光,,未开始,红白小火可能有人脉;光去和所有人谈分成;能抓到reliable的人帮忙
-T22,场地,合同,场地调研,蜀山;光;早苗;咩咩;Fero,,未开始,主催三人组+咩咩Fero
-T23,场地,合同,场地合同,光;Xixi,T22,未开始,光团
-T24,场地,合同,场地保险,光;Xixi,T23,未开始,联动法务/财务
-T25,场地,合同,场地安保,光;Xixi,T23,未开始,
-T26,场地,合同,场地食物许可,光;Xixi,T23,未开始,
-T27,场地,规划,设计场地规划(动线),蜀山;光;早苗;咩咩;Fero;老师,T23,未开始,多部门(主催+策划+舞台)
-T28,场地,规划,确认场地布置详细图纸,蜀山;光;早苗;小火,T27,未开始,小火refine
-T29,场地,规划,准备场地规划所需材料(胶带/警戒线),早苗;红白,T28,未开始,早苗发需求 企鹅物流组执行
-T30,场地,规划,场地路线引导/停车规划,蜀山;光;早苗,T27,未开始,
-T31,场地,规划,场地布置确认,光;Xixi,T28,未开始,
-T32,场地,布景,主题布景设计,咩咩;Fero;小火;蜀山;光;早苗,T51,未开始,联动美术
-T33,场地,布景,主题布景下单,咩咩;Fero,T32,未开始,
-T34,场地,布景,主题布景制作,Fero;Abi;小火,T33,未开始,
-T35,场地,布景,主题布景运输,红白,T34,未开始,企鹅物流
-T36,场地,布景,主题布景设置(提前一天/预演),咩咩;Fero;小火;蜀山;光;早苗,T35,未开始,
-T37,AA,摊位,摊位招募,蜀山,,未开始,联动法务
-T38,AA,摊位,摊位审核,蜀山,T37,未开始,
-T39,AA,摊位,摊位联系,蜀山,T38,未开始,
-T40,AA,摊位,摊位合同确认以及收款,光,T39,未开始,
-T41,舞台,节目,舞台节目招募,早苗;老师,,未开始,宅舞/唱歌
-T42,舞台,节目,舞台节目审核,早苗;老师;波兰小哥,T41,未开始,跳宅舞
-T43,舞台,小游戏,舞台小游戏设计和跟Hina讲解,Fero,T63,未开始,联动小游戏设计
-T44,舞台,节目,舞台时间轴安排,Fero;早苗;老师,T42,未开始,
-T45,舞台,技术,舞台场地规划(AV需求),早苗;老师;波兰小哥,T23,未开始,
-T46,舞台,节目,舞台PPT,Fero;早苗;老师;小火,T44,未开始,
-T47,舞台,技术,舞台设备租赁,早苗;老师;波兰小哥,T45,未开始,MIN=保证舞台能用 对齐去年水平
-T48,舞台,技术,舞台音响调试,早苗;老师;波兰小哥,T47,未开始,
-T49,美术,KV,确认初步KV设计草图,小火,,未开始,
-T50,美术,KV,对接KV设计,小火,T49,未开始,
-T51,美术,KV,完成KV设计,小火,T50,未开始,
-T52,美术,物料设计,设计场贩物料,小火;Vita;Abi,T51,未开始,联动物料
-T53,美术,物料设计,设计奖品物料,小火;Vita;Abi,T51,未开始,
-T54,美术,场地,场刊与纸袋等赠品设计,小火;Vita;Abi,T51,未开始,
-T55,美术,场地,Cosplay lineup模板,小火;Vita;Abi,,未开始,
-T56,美术,场地,小活动相关美术设计,Fero;小火;Vita;Abi,T61,未开始,Fero提要求+美术组+布景组
-T57,美术,网站,网页设计与更新,盐宝,T58;T51,未开始,盐(?)
-T58,美术,网站,写网页所需文案(policy/招募问卷表格),光,,未开始,联动法务/财务
-T59,美术,网站,购票页面,盐宝;小火,T57,未开始,
-T60,活动,策划,设计主题沉浸活动背景文案,Fero,,未开始,联动美术/物料/宣发
-T61,活动,策划,拆分主题沉浸活动到摊位/布景/物料,Fero,T60,未开始,
-T62,活动,策划,准备对应材料并设计印刷,Fero;小火;Vita;Abi,T61,未开始,Fero提要求+美术组
-T63,活动,舞台,设计舞台小游戏活动,Fero,,未开始,联动舞台
-T64,活动,舞台,准备舞台小游戏物料,Fero;小火;Vita;Abi,T63,未开始,Fero提要求+美术组
-T65,活动,舞台,讲解舞台小游戏,Fero,T64,未开始,
-T66,活动,有人摊位,设计摊位活动,Fero,,未开始,联动人力
-T67,活动,有人摊位,准备摊位小游戏物料,Fero;小火;Vita;Abi,T66,未开始,Fero提要求+美术组
-T68,活动,有人摊位,讲解摊位小游戏给Staff,Fero,T67,未开始,
-T69,活动,无人摊位,调研是否设置无人摊位(布景/抓娃娃机等),蜀山;光;早苗;Fero;咩咩,,未开始,联动布景
-T70,活动,无人摊位,无人摊位准备相应设备,蜀山;咩咩;Abi;Fero,T69,未开始,布景组
-T71,人力,Coser,联系Coser嘉宾并购买所需服装道具,咩咩,T51,未开始,联动KV/宣发
-T72,人力,Coser,联系Coser嘉宾后勤,咩咩,T71,未开始,
-T73,人力,Staff,规划现场需要的人员,早苗,,未开始,联动法务
-T74,人力,Staff,联系人员并培训,早苗,T73,未开始,
-T75,人力,Staff,Staff合同起草以及报酬发放,光;Xixi,T74,未开始,光团
-T76,人力,主负责,安排主要区域人员,蜀山;光;早苗,T73,未开始,主催三人组
-T77,人力,主负责,对接全部staff与培训,早苗,T74,未开始,
-T78,人力,杂项,购买场地需要的零食饮料,早苗,,未开始,
-T79,人力,杂项,购买午餐,早苗,,未开始,
-T80,人力,杂项,购买需要的医疗用品,早苗,,未开始,
-T81,人力,杂项,考虑场地物料运输(uhaul),红白,T82,未开始,企鹅物流组
-T82,人力,杂项,物料检查分发打包,全员,T83,未开始,能上的都上!
-T83,物料,物流,所有物料下单与打样,红白,T52;T53,未开始,企鹅物流
-T84,物料,物流,准备贩售物料menu与印刷运输成品,红白,T13;T52,未开始,企鹅物流
-T85,物料,物流,监管所有物料运输,红白,T83,未开始,联动美术;企鹅物流`;
+const DEFAULT_TASKS_CSV = `ID,部门,分类,任务,负责人,前置任务,截止日期,状态,备注
+T01,宣发,节点,宣发作图(发出去的图),小火;Vita;Abi,T51,2026-10-01,未开始,0宣~3宣/终宣;小火主导美术团队;盐宝可能想参与由小火分配
+T02,宣发,节点,宣发文案,咩咩;蜀山,,2026-09-30,未开始,0宣~3宣/终宣;1宣之后保持weekly;定宣发节点锚定每周宣发内容
+T03,宣发,物料,物料图拍摄(打样/成品效果),红白,T83,,未开始,物料团队负责拍摄;物料部门对接
+T04,宣发,活动,线下漫展返图,咩咩;蜀山;盐宝,,,未开始,AIBA 7.18/Anime Destiny 10.31/ALA 1月初/Carrier Con 3月末/Anime Otapia(?);AX没做下次做
+T05,宣发,活动,线下漫展无料发放,蜀山;盐宝;小火,T83,,未开始,全员谁去谁发 还得美少女发
+T06,宣发,运营,持续关注社媒账号并回答问题,咩咩;蜀山,,,未开始,蜀山Secondary;转发
+T07,宣发,运营,网站运营更新,盐宝,,,未开始,美术部门找人更新(盐宝?)
+T08,宣发,运营,保持社群活跃度(Discord英文/中文),蜀山;夜灵,,,未开始,英文:早苗试试找人不保证;中文:蜀山负责
+T09,财务,法务,预算估计与审核,光;Xixi;早苗,,2026-08-31,未开始,联动各种合同
+T10,财务,法务,Non-profit准备材料,光;Xixi;早苗,,2026-08-15,未开始,
+T11,财务,法务,Non-profit foundation成立,光;Xixi;早苗,T10,2026-09-30,未开始,
+T12,财务,法务,Non-profit 501c3批准以及更新宣传,光;Xixi;早苗,T11,2026-12-31,未开始,
+T13,财务,寄售,联系寄售并确认数量,光,T21,2026-11-15,未开始,
+T14,财务,寄售,确认寄售物料运输/清点/储存,红白,T13,2027-01-31,未开始,企鹅物流
+T15,财务,官谷,更新售卖网站,光,T59,2026-12-31,未开始,啥时候弄完
+T16,财务,官谷,确认KV官谷物料运输/清点/储存,红白,T83,2027-01-31,未开始,企鹅物流
+T17,商务外交,赞助,拟定合作计划与对接,光;Xixi,T18,,未开始,
+T18,商务外交,赞助,联系可能的赞助(食品饮料/物料厂商),光,,,未开始,比如UME
+T19,商务外交,参展,联动活动/摊位参展(Anime Otapia),光,,,未开始,联系ONLY不包括参展;参展找宣发部门
+T20,商务外交,参展,Artist Alley邀请参展,蜀山,,,未开始,上次收application蜀山批
+T21,商务外交,寄售,联系寄售(全员人脉reachout),红白;小火;光,,2026-10-15,未开始,红白小火可能有人脉;光去和所有人谈分成;能抓到reliable的人帮忙
+T22,场地,合同,场地调研,蜀山;光;早苗;咩咩;Fero,,2026-08-15,未开始,主催三人组+咩咩Fero
+T23,场地,合同,场地合同,光;Xixi,T22,2026-09-30,未开始,光团
+T24,场地,合同,场地保险,光;Xixi,T23,2026-10-31,未开始,联动法务/财务
+T25,场地,合同,场地安保,光;Xixi,T23,2026-12-15,未开始,
+T26,场地,合同,场地食物许可,光;Xixi,T23,2026-12-15,未开始,
+T27,场地,规划,设计场地规划(动线),蜀山;光;早苗;咩咩;Fero;老师,T23,2026-11-15,未开始,多部门(主催+策划+舞台)
+T28,场地,规划,确认场地布置详细图纸,蜀山;光;早苗;小火,T27,2026-12-15,未开始,小火refine
+T29,场地,规划,准备场地规划所需材料(胶带/警戒线),早苗;红白,T28,2027-01-15,未开始,早苗发需求 企鹅物流组执行
+T30,场地,规划,场地路线引导/停车规划,蜀山;光;早苗,T27,2027-01-15,未开始,
+T31,场地,规划,场地布置确认,光;Xixi,T28,2027-01-31,未开始,
+T32,场地,布景,主题布景设计,咩咩;Fero;小火;蜀山;光;早苗,T51,2026-10-15,未开始,联动美术
+T33,场地,布景,主题布景下单,咩咩;Fero,T32,2026-11-15,未开始,
+T34,场地,布景,主题布景制作,Fero;Abi;小火,T33,2026-12-31,未开始,
+T35,场地,布景,主题布景运输,红白,T34,2027-01-31,未开始,企鹅物流
+T36,场地,布景,主题布景设置(提前一天/预演),咩咩;Fero;小火;蜀山;光;早苗,T35,2027-02-06,未开始,
+T37,AA,摊位,摊位招募,蜀山,,2026-10-01,未开始,联动法务
+T38,AA,摊位,摊位审核,蜀山,T37,2026-11-01,未开始,
+T39,AA,摊位,摊位联系,蜀山,T38,2026-11-15,未开始,
+T40,AA,摊位,摊位合同确认以及收款,光,T39,2026-12-15,未开始,
+T41,舞台,节目,舞台节目招募,早苗;老师,,2026-11-01,未开始,宅舞/唱歌
+T42,舞台,节目,舞台节目审核,早苗;老师;波兰小哥,T41,2026-12-01,未开始,跳宅舞
+T43,舞台,小游戏,舞台小游戏设计和跟Hina讲解,Fero,T63,,未开始,联动小游戏设计
+T44,舞台,节目,舞台时间轴安排,Fero;早苗;老师,T42,2027-01-15,未开始,
+T45,舞台,技术,舞台场地规划(AV需求),早苗;老师;波兰小哥,T23,2026-12-15,未开始,
+T46,舞台,节目,舞台PPT,Fero;早苗;老师;小火,T44,2027-01-31,未开始,
+T47,舞台,技术,舞台设备租赁,早苗;老师;波兰小哥,T45,2027-01-15,未开始,MIN=保证舞台能用 对齐去年水平
+T48,舞台,技术,舞台音响调试,早苗;老师;波兰小哥,T47,2027-02-06,未开始,
+T49,美术,KV,确认初步KV设计草图,小火,,2026-08-01,未开始,
+T50,美术,KV,对接KV设计,小火,T49,2026-08-15,未开始,
+T51,美术,KV,完成KV设计,小火,T50,2026-09-15,未开始,
+T52,美术,物料设计,设计场贩物料,小火;Vita;Abi,T51,2026-10-31,未开始,联动物料
+T53,美术,物料设计,设计奖品物料,小火;Vita;Abi,T51,2026-10-31,未开始,
+T54,美术,场地,场刊与纸袋等赠品设计,小火;Vita;Abi,T51,,未开始,
+T55,美术,场地,Cosplay lineup模板,小火;Vita;Abi,,,未开始,
+T56,美术,场地,小活动相关美术设计,Fero;小火;Vita;Abi,T61,,未开始,Fero提要求+美术组+布景组
+T57,美术,网站,网页设计与更新,盐宝,T58;T51,2026-10-15,未开始,盐(?)
+T58,美术,网站,写网页所需文案(policy/招募问卷表格),光,,2026-09-15,未开始,联动法务/财务
+T59,美术,网站,购票页面,盐宝;小火,T57,2026-11-15,未开始,
+T60,活动,策划,设计主题沉浸活动背景文案,Fero,,2026-09-30,未开始,联动美术/物料/宣发
+T61,活动,策划,拆分主题沉浸活动到摊位/布景/物料,Fero,T60,2026-10-31,未开始,
+T62,活动,策划,准备对应材料并设计印刷,Fero;小火;Vita;Abi,T61,2026-12-15,未开始,Fero提要求+美术组
+T63,活动,舞台,设计舞台小游戏活动,Fero,,,未开始,联动舞台
+T64,活动,舞台,准备舞台小游戏物料,Fero;小火;Vita;Abi,T63,,未开始,Fero提要求+美术组
+T65,活动,舞台,讲解舞台小游戏,Fero,T64,,未开始,
+T66,活动,有人摊位,设计摊位活动,Fero,,,未开始,联动人力
+T67,活动,有人摊位,准备摊位小游戏物料,Fero;小火;Vita;Abi,T66,,未开始,Fero提要求+美术组
+T68,活动,有人摊位,讲解摊位小游戏给Staff,Fero,T67,,未开始,
+T69,活动,无人摊位,调研是否设置无人摊位(布景/抓娃娃机等),蜀山;光;早苗;Fero;咩咩,,,未开始,联动布景
+T70,活动,无人摊位,无人摊位准备相应设备,蜀山;咩咩;Abi;Fero,T69,,未开始,布景组
+T71,人力,Coser,联系Coser嘉宾并购买所需服装道具,咩咩,T51,2026-10-31,未开始,联动KV/宣发
+T72,人力,Coser,联系Coser嘉宾后勤,咩咩,T71,2027-01-15,未开始,
+T73,人力,Staff,规划现场需要的人员,早苗,,2026-12-01,未开始,联动法务
+T74,人力,Staff,联系人员并培训,早苗,T73,2027-01-15,未开始,
+T75,人力,Staff,Staff合同起草以及报酬发放,光;Xixi,T74,2027-02-28,未开始,光团
+T76,人力,主负责,安排主要区域人员,蜀山;光;早苗,T73,2027-01-15,未开始,主催三人组
+T77,人力,主负责,对接全部staff与培训,早苗,T74,2027-01-31,未开始,
+T78,人力,杂项,购买场地需要的零食饮料,早苗,,,未开始,
+T79,人力,杂项,购买午餐,早苗,,,未开始,
+T80,人力,杂项,购买需要的医疗用品,早苗,,,未开始,
+T81,人力,杂项,考虑场地物料运输(uhaul),红白,T82,2027-02-06,未开始,企鹅物流组
+T82,人力,杂项,物料检查分发打包,全员,T83,2027-02-05,未开始,能上的都上!
+T83,物料,物流,所有物料下单与打样,红白,T52;T53,2026-11-30,未开始,企鹅物流
+T84,物料,物流,准备贩售物料menu与印刷运输成品,红白,T13;T52,2026-12-15,未开始,企鹅物流
+T85,物料,物流,监管所有物料运输,红白,T83,2027-01-31,未开始,联动美术;企鹅物流`;
 
 const HEADERS  = ['部门','层级','人员','角色','职责','依赖部门','备注'];
-const THEADERS = ['ID','部门','分类','任务','负责人','前置任务','状态','备注'];
+const THEADERS = ['ID','部门','分类','任务','负责人','前置任务','截止日期','状态','备注'];
 const STATUSES = ['未开始','进行中','已完成'];
 const ST_COLOR = { '未开始':'var(--st0)', '进行中':'var(--st1)', '已完成':'var(--st2)' };
 const PALETTE = ['#FFD90F','#4DA3FF','#FF8A2A','#7BE0A5','#E07BD4','#8FA6FF','#FF6B6B','#5FD4D9','#C9E06B','#B98CFF','#F0A6C0','#9CB5C9'];
+
+let listSort = 'id';   // 'id' | 'dueAsc' | 'dueDesc'
+
+function parseDue(s){
+  s = String(s || '').trim().replace(/\//g, '-');
+  if(!/^\d{4}-\d{1,2}-\d{1,2}$/.test(s)) return null;
+  const d = new Date(s + 'T00:00:00');
+  return isNaN(d) ? null : d;
+}
+function todayZero(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+function isOverdue(t){
+  const d = parseDue(t['截止日期']);
+  return !!d && d < todayZero() && t['状态'] !== '已完成';
+}
 
 let rows = [];      // 成员
 let tasks = [];     // 任务
@@ -217,6 +231,7 @@ function switchView(v){
   if(v === 'map'){ render(); }
   if(v === 'tasks'){ renderTaskBoard(); }
   if(v === 'list'){ renderList(); }
+  if(v === 'timeline'){ renderTimeline(); }
 }
 
 /* ================================================================
@@ -530,6 +545,16 @@ function renderFilters(){
   tasks.forEach(t => { if(!order.includes(t['部门'])) order.push(t['部门']); });
   fDept.innerHTML = `<option value="">全部部门</option>` + order.map(d =>
     `<option value="${esc(d)}" ${filters.dept === d ? 'selected' : ''}>${esc(d)}</option>`).join('');
+  // 排序 chips
+  const fSort = document.getElementById('fSort');
+  fSort.innerHTML = '';
+  [['id','默认'],['dueAsc','截止 ↑'],['dueDesc','截止 ↓']].forEach(([k,label]) => {
+    const c = document.createElement('button');
+    c.className = 'chip' + (listSort === k ? ' on' : '');
+    c.textContent = label;
+    c.addEventListener('click', () => { listSort = k; renderList(); });
+    fSort.appendChild(c);
+  });
 }
 fDept.addEventListener('change', () => { filters.dept = fDept.value; renderList(); });
 document.getElementById('btnClearFilter').addEventListener('click', () => {
@@ -543,10 +568,22 @@ function taskVisible(t){
   return true;
 }
 
+function sortedTasks(){
+  if(listSort === 'id') return tasks.slice();
+  const dir = listSort === 'dueAsc' ? 1 : -1;
+  return tasks.slice().sort((a, b) => {
+    const da = parseDue(a['截止日期']), db = parseDue(b['截止日期']);
+    if(da && db) return (da - db) * dir;
+    if(da) return -1;           // 有日期的排前面（无论升降序）
+    if(db) return 1;
+    return 0;
+  });
+}
+
 function renderList(){
   renderFilters();
   taskRows.innerHTML = '';
-  tasks.forEach(t => taskRows.appendChild(listRow(t)));
+  sortedTasks().forEach(t => taskRows.appendChild(listRow(t)));
   sizeTaskColumn();
   growAll(taskRows);
   updateSummary();
@@ -597,6 +634,7 @@ function listRow(t){
       ${preNames.length ? `<div class="dep-hint">← <b>${preNames.map(esc).join('；')}</b></div>` : ''}
     </td>
     <td class="down-cell">${downs.length ? downs.map(d => esc(d['ID'] + ' ' + d['任务'])).join('<br>') : '<span style="color:var(--dim)">—</span>'}</td>
+    <td><input type="date" data-f="截止日期" value="${esc(t['截止日期'] || '')}" class="${isOverdue(t) ? 'due-over' : ''}"></td>
     <td class="c-note"><textarea data-f="备注" rows="1" placeholder="…">${esc(t['备注'])}</textarea></td>
     <td><button class="row-del" title="删除任务">✕</button></td>`;
 
@@ -647,6 +685,7 @@ document.getElementById('btnAddTask').addEventListener('click', () => {
     '任务': '',
     '负责人': filters.person || '',
     '前置任务': '',
+    '截止日期': '',
     '状态': '未开始',
     '备注': ''
   });
@@ -654,6 +693,129 @@ document.getElementById('btnAddTask').addEventListener('click', () => {
   const last = taskRows.querySelector('tr:last-child input[data-f="任务"]');
   if(last){ last.scrollIntoView({ block: 'center' }); last.focus(); }
 });
+
+/* ================================================================
+   VIEW 4 · 时间线（按截止日期分列的任务流）
+================================================================ */
+const tlCols = document.getElementById('tlCols');
+const tlBoard = document.getElementById('tlBoard');
+const flSvg = document.getElementById('flwires');
+const flWireG = document.getElementById('flWireG');
+
+function fmtDateLabel(s){
+  const d = parseDue(s);
+  if(!d) return s;
+  const wd = ['日','一','二','三','四','五','六'][d.getDay()];
+  return `${s} 周${wd}`;
+}
+
+function renderTimeline(){
+  // 按截止日期分组
+  const groups = new Map();
+  const undated = [];
+  tasks.forEach(t => {
+    const s = String(t['截止日期'] || '').trim();
+    if(parseDue(s)){
+      if(!groups.has(s)) groups.set(s, []);
+      groups.get(s).push(t);
+    }else undated.push(t);
+  });
+  const dates = [...groups.keys()].sort();
+  const today = todayZero();
+  const todayStr = today.toISOString().slice(0, 10);
+  document.getElementById('tlToday').textContent = 'TODAY ' + todayStr;
+
+  tlCols.innerHTML = '';
+  const mkNode = t => `
+    <div class="tltask ${isOverdue(t) ? 'overdue' : ''}" data-tid="${esc(t['ID'])}"
+         style="--stc:${ST_COLOR[t['状态']] || 'var(--st0)'}" tabindex="0" role="button">
+      <div class="t-r1">
+        <span class="t-dot"></span>
+        <span class="t-name">${esc(t['任务'])}</span>
+        <span class="t-id">${esc(t['ID'])}</span>
+      </div>
+      <div class="t-meta">${esc(t['部门'])} · ${esc(t['分类'] || '—')}${isOverdue(t) ? ' · 已逾期' : ''}</div>
+      <div class="t-who">${splitList(t['负责人']).map(esc).join(' · ') || '—'}</div>
+    </div>`;
+
+  dates.forEach(s => {
+    const d = parseDue(s);
+    const col = document.createElement('div');
+    col.className = 'tl-col' + (s === todayStr ? ' today-col' : (d < today ? ' past' : ''));
+    col.innerHTML = `<div class="tl-date"><span>${esc(fmtDateLabel(s))}</span><span class="cnt">${groups.get(s).length}</span></div>`
+      + groups.get(s).map(mkNode).join('');
+    tlCols.appendChild(col);
+  });
+  if(undated.length){
+    const col = document.createElement('div');
+    col.className = 'tl-col undated';
+    col.innerHTML = `<div class="tl-date"><span>未定期</span><span class="cnt">${undated.length}</span></div>`
+      + undated.map(mkNode).join('');
+    tlCols.appendChild(col);
+  }
+
+  tlCols.querySelectorAll('.tltask').forEach(el => {
+    el.addEventListener('click', e => {
+      const id = el.dataset.tid;
+      selTask = (selTask === id) ? null : id;
+      applyTlHighlight(); drawTlWires();
+      e.stopPropagation();
+    });
+    el.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); el.click(); }
+    });
+  });
+
+  applyTlHighlight();
+  requestAnimationFrame(drawTlWires);
+}
+document.getElementById('tlWrap').addEventListener('click', () => {
+  selTask = null; applyTlHighlight(); drawTlWires();
+});
+
+function applyTlHighlight(){
+  const els = tlCols.querySelectorAll('.tltask');
+  els.forEach(el => el.classList.remove('sel','up','down','faded'));
+  if(!selTask) return;
+  const t = taskById(selTask);
+  const ups = new Set(t ? splitList(t['前置任务']) : []);
+  const downs = new Set(downstreamOf(selTask).map(x => x['ID']));
+  els.forEach(el => {
+    const id = el.dataset.tid;
+    if(id === selTask) el.classList.add('sel');
+    else if(ups.has(id)) el.classList.add('up');
+    else if(downs.has(id)) el.classList.add('down');
+    else el.classList.add('faded');
+  });
+}
+
+function drawTlWires(){
+  const bw = tlBoard.getBoundingClientRect();
+  flSvg.setAttribute('width', tlBoard.scrollWidth);
+  flSvg.setAttribute('height', tlBoard.scrollHeight);
+  const pos = {};
+  tlCols.querySelectorAll('.tltask').forEach(el => {
+    const r = el.getBoundingClientRect();
+    pos[el.dataset.tid] = { x: r.left - bw.left, y: r.top - bw.top, w: r.width, h: r.height };
+  });
+  let html = '';
+  tasks.forEach(t => {
+    splitList(t['前置任务']).forEach(pre => {
+      const a = pos[pre], b = pos[t['ID']];       // 前置 → 任务
+      if(!a || !b) return;
+      const ac = { x: a.x + a.w/2, y: a.y + a.h/2 }, bc = { x: b.x + b.w/2, y: b.y + b.h/2 };
+      const p1 = edgePoint(a, bc.x, bc.y), p2 = edgePoint(b, ac.x, ac.y);
+      let stroke = '#3a3f2a', w = 1.1, op = .45, marker = 'flDim';
+      if(selTask){
+        if(t['ID'] === selTask){ stroke = '#FFD90F'; w = 2.2; op = 1; marker = 'flY'; }
+        else if(pre === selTask){ stroke = '#4DA3FF'; w = 2; op = .95; marker = 'flB'; }
+        else op = .06;
+      }
+      html += `<path d="${curvePath(p1,p2)}" fill="none" stroke="${stroke}" stroke-width="${w}" opacity="${op}" marker-end="url(#${marker})"/>`;
+    });
+  });
+  flWireG.innerHTML = html;
+}
 
 /* ================================================================
    load / save（data.csv + tasks.csv）
@@ -785,10 +947,12 @@ window.addEventListener('resize', () => {
   if(curView === 'map') drawWires();
   if(curView === 'tasks') drawTaskWires();
   if(curView === 'list'){ sizeTaskColumn(); growAll(taskRows); }
+  if(curView === 'timeline') drawTlWires();
 });
 if(window.ResizeObserver){
   new ResizeObserver(() => { if(curView === 'map') drawWires(); }).observe(board);
   new ResizeObserver(() => { if(curView === 'tasks') drawTaskWires(); }).observe(taskBoard);
+  new ResizeObserver(() => { if(curView === 'timeline') drawTlWires(); }).observe(tlBoard);
 }
 
 loadFromFolder();

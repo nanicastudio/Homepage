@@ -240,6 +240,47 @@ td.c-task{max-width:800px}
 .row-del:hover{border-color:var(--warn)}
 .list-actions{padding:14px 0 0; display:flex; gap:8px}
 
+/* ===== view 4: timeline ===== */
+#tlWrap{flex:1; overflow:auto; position:relative}
+#tlBoard{position:relative; padding:26px 26px 80px; min-height:400px}
+#flwires{position:absolute; inset:0; pointer-events:none; overflow:visible}
+#tlCols{position:relative; z-index:1; display:flex; gap:30px; align-items:flex-start}
+.tl-col{width:216px; flex-shrink:0}
+.tl-date{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--ak);
+  padding:7px 10px; border:1px solid var(--line); background:var(--panel);
+  display:flex; justify-content:space-between; align-items:baseline;
+  clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+.tl-date .cnt{color:var(--dim); font-size:10px}
+.tl-col.past .tl-date{color:var(--dim)}
+.tl-col.today-col .tl-date{background:var(--ak); color:#14161A; font-weight:700}
+.tl-col.today-col .tl-date .cnt{color:#14161A}
+.tl-col.undated .tl-date{color:var(--muted); border-style:dashed; clip-path:none}
+.tltask{
+  background:var(--panel-2); border:1px solid transparent; border-left:3px solid var(--stc,#666);
+  border-radius:var(--radius); padding:7px 9px; margin-top:7px; cursor:pointer;
+  transition:border-color .15s, opacity .2s;
+}
+.tltask:hover{border-color:#3a424d; border-left-color:var(--stc)}
+.tltask.sel{border-color:var(--ak)}
+.tltask.up{border-color:var(--ak-dark)}
+.tltask.down{border-color:#2b5f99}
+.tltask.faded{opacity:.2}
+.tltask .t-r1{display:flex; align-items:flex-start; gap:6px}
+.tltask .t-dot{width:8px; height:8px; border-radius:50%; background:var(--stc); flex-shrink:0; margin-top:4px}
+.tltask .t-name{font-size:12.5px; font-weight:500; flex:1; line-height:1.4}
+.tltask .t-id{font-family:var(--mono); font-size:9.5px; color:var(--dim)}
+.tltask .t-meta{margin-top:3px; font-size:10.5px; color:var(--dim)}
+.tltask .t-who{margin-top:2px; font-size:11px; color:var(--muted)}
+.tltask.overdue{border-left-color:#FF6B6B}
+.tltask.overdue .t-meta{color:#FF6B6B}
+.tlegend .lo i{background:#FF6B6B}
+.today-chip{font-family:var(--mono); font-size:10.5px; color:#14161A; background:var(--ak); padding:2px 9px; letter-spacing:.08em}
+/* 列表:日期输入 */
+#taskTable input[type="date"]{color-scheme:dark; width:126px}
+#taskTable input.due-over{color:#FF6B6B}
+
 footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; color:var(--dim); font-family:var(--mono); letter-spacing:.06em}
 
 /* ---------- member editor modal ---------- */
@@ -311,6 +352,7 @@ footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; col
   <button class="tab on" data-view="map"><span class="tcode">01</span>分工导图</button>
   <button class="tab" data-view="tasks"><span class="tcode">02</span>任务导图</button>
   <button class="tab" data-view="list"><span class="tcode">03</span>任务列表</button>
+  <button class="tab" data-view="timeline"><span class="tcode">04</span>时间线</button>
 </nav>
 
 <div id="hint"></div>
@@ -385,6 +427,8 @@ footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; col
         <div id="fStatus" class="f-row" style="gap:6px"></div>
         <span class="f-label" style="width:auto; margin-left:14px">DEPT</span>
         <select id="fDept" class="chip" style="padding:4px 8px"></select>
+        <span class="f-label" style="width:auto; margin-left:14px">SORT</span>
+        <div id="fSort" class="f-row" style="gap:6px"></div>
         <span class="f-summary" id="fSummary"></span>
       </div>
     </div>
@@ -395,6 +439,7 @@ footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; col
           <th style="width:110px">部门</th><th style="width:84px">分类</th>
           <th id="thTask" style="min-width:300px">任务</th><th style="width:100px">负责人(;分隔)</th>
           <th style="width:100px">前置任务(ID;分隔)</th><th style="width:140px">下游(等它的)</th>
+          <th style="width:132px">截止日期</th>
           <th style="min-width:200px">备注</th><th style="width:36px"></th>
         </tr></thead>
         <tbody id="taskRows"></tbody>
@@ -402,6 +447,35 @@ footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; col
       <div class="list-actions">
         <button id="btnAddTask" class="primary">＋ 新任务</button>
         <button id="btnClearFilter">清除筛选</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== VIEW 4 时间线 ========== -->
+  <section class="view" id="view-timeline">
+    <div id="tlWrap">
+      <div id="tlBoard">
+        <div class="tlegend">
+          <span class="l0"><i></i>未开始</span>
+          <span class="l1"><i></i>进行中</span>
+          <span class="l2"><i></i>已完成</span>
+          <span class="lo"><i></i>已逾期</span>
+          <span class="lu"><span class="ln"></span>黄线：选中任务的 前置</span>
+          <span class="ld"><span class="ln"></span>蓝线：等它的 下游</span>
+          <span id="tlToday" class="today-chip"></span>
+        </div>
+        <svg id="flwires">
+          <defs>
+            <marker id="flY" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#FFD90F"/></marker>
+            <marker id="flB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#4DA3FF"/></marker>
+            <marker id="flDim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#3a3f2a"/></marker>
+          </defs>
+          <g id="flWireG"></g>
+        </svg>
+        <div id="tlCols"></div>
       </div>
     </div>
   </section>
