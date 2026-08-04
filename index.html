@@ -3,311 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="NanicaLogoInitial_square.png">
+    <link rel="icon" type="image/png" href="NanicaLogo_transparent.png">
     <title>Nanica Studio</title>
     <style>
-        /* --- 基础设置 --- */
+        /* ---------- 基础设置 ---------- */
         :root {
-            --primary-red: #8a1c1c; /* 哑光深红 */
-            --bg-white: #f5f5f5;    /* 哑光米白 */
-            --bg-dark: #121212;     /* 接近黑 */
-            --text-main: #1a1a1a;
-            --text-light: #ffffff;
-            --rainbow-gradient: linear-gradient(90deg, #ff5e62, #ff9966, #ffff66, #66ff66, #66ccff, #9966ff, #ff66cc);
+            --red: #8a1c1c;          /* 哑光深红 */
+            --red-deep: #5e1212;
+            --paper: #f7f5f2;        /* 暖调米白 */
+            --ink: #141414;          /* 近黑 */
+            --ink-soft: #555;
+            --line: rgba(20, 20, 20, 0.12);
+            --rainbow: linear-gradient(90deg, #ff5e62, #ff9966, #ffd166, #66d97e, #5cb8ff, #9b7dff, #ff7ac8);
+            --font-sans: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "PingFang SC", "Microsoft YaHei", sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html {
-            scroll-behavior: smooth; /* 让点击导航跳转时更平滑 */
-        }
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: var(--bg-white);
-            color: var(--text-main);
-            line-height: 1.6;
+            font-family: var(--font-sans);
+            background-color: var(--paper);
+            color: var(--ink);
+            line-height: 1.7;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        a { text-decoration: none; color: inherit; transition: color 0.25s ease; }
         ul { list-style: none; }
+        img { max-width: 100%; }
 
-        /* --- 布局工具 --- */
+        ::selection { background: var(--red); color: #fff; }
+
         .container {
-            max-width: 1200px;
+            max-width: 1160px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 28px;
         }
 
-        .section-padding {
-            padding: 80px 0;
-        }
+        .section-padding { padding: 110px 0; }
 
-        /* --- 创意几何元素 --- */
-        .geo-shape {
-            position: absolute;
-            z-index: -1;
-            opacity: 0.1;
+        /* ---------- 入场动画（仅在 JS 可用时启用，避免无 JS 环境白屏） ---------- */
+        .js .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
         }
-        .circle { border-radius: 50%; }
-        .square { transform: rotate(45deg); }
+        .js .reveal.is-visible { opacity: 1; transform: none; }
 
-        /* --- 导航栏 --- */
+        /* ---------- 导航栏 ---------- */
         header {
-            background-color: var(--bg-white);
-            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: rgba(247, 245, 242, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
         }
 
         .nav-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 68px;
+            gap: 20px;
         }
 
         .logo {
             font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: -0.5px;
+            font-size: 1.05rem;
+            letter-spacing: 0.14em;
             display: flex;
             align-items: center;
             gap: 12px;
-            color: var(--text-main);
+            white-space: nowrap;
         }
 
-        /* 新增：Logo 图片样式 */
-        .logo-img {
-            height: 36px; /* 设置一个合适的高度，宽度自适应 */
-            width: auto;
-            display: block;
-            /* 如果图片是纯方形，想加一点圆角可以把下面这行注释取消掉 */
-            /* border-radius: 4px; */
-        }
-        
-        nav ul { display: flex; gap: 30px; }
-        nav ul li a { font-weight: 500; font-size: 0.9rem; letter-spacing: 1px; position: relative; }
-        nav ul li a:hover { color: var(--primary-red); }
+        .logo-img { height: 34px; width: auto; display: block; }
 
-        /* --- Hero 区域 --- */
+        .nav-right { display: flex; align-items: center; gap: 28px; }
+
+        nav ul { display: flex; gap: 28px; }
+        nav ul li a {
+            font-weight: 600;
+            font-size: 0.78rem;
+            letter-spacing: 0.18em;
+            color: var(--ink-soft);
+            position: relative;
+            padding: 4px 0;
+        }
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: 0;
+            width: 100%; height: 2px;
+            background: var(--red);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        nav ul li a:hover { color: var(--ink); }
+        nav ul li a:hover::after { transform: scaleX(1); }
+
+        /* 语言切换 */
+        .lang-switch {
+            display: flex;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .lang-switch button {
+            appearance: none;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 6px 13px;
+            cursor: pointer;
+            color: var(--ink-soft);
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        .lang-switch button + button { border-left: 1px solid var(--line); }
+        .lang-switch button:hover { color: var(--ink); }
+        .lang-switch button.active { background: var(--ink); color: #fff; }
+
+        /* ---------- Hero ---------- */
         .hero {
-            background-color: var(--primary-red);
-            color: var(--text-light);
-            height: 80vh;
+            background-color: var(--red);
+            background-image: radial-gradient(ellipse at 85% 115%, rgba(0,0,0,0.28), transparent 55%);
+            color: #fff;
+            min-height: 78vh;
             display: flex;
             align-items: center;
             position: relative;
             overflow: hidden;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
+        .hero-bg-circle {
+            position: absolute;
+            width: 640px; height: 640px;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 50%;
+            right: -140px; bottom: -180px;
+            pointer-events: none;
+        }
+        .hero-bg-circle::before {
+            content: '';
+            position: absolute;
+            inset: 70px;
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 50%;
+        }
+
+        .hero-content { position: relative; z-index: 2; width: 100%; }
+
+        .hero-kicker {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            opacity: 0.75;
+            margin-bottom: 28px;
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: clamp(3rem, 7.5vw, 5.2rem);
             font-weight: 900;
-            margin-bottom: 20px;
-            line-height: 1.1;
+            line-height: 1.04;
+            letter-spacing: -0.015em;
+            margin-bottom: 34px;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 500px;
-            border-left: 3px solid var(--text-light); /* 简约线条 */
-            padding-left: 20px;
+            font-size: 1.05rem;
+            opacity: 0.88;
+            max-width: 480px;
+            border-left: 2px solid rgba(255,255,255,0.6);
+            padding-left: 22px;
+            font-weight: 300;
+            letter-spacing: 0.04em;
         }
 
-        /* 装饰圆 */
-        .hero-bg-circle {
-            width: 600px;
-            height: 600px;
-            background: #000;
-            opacity: 0.1;
-            position: absolute;
-            right: -100px;
-            bottom: -100px;
-        }
+        /* ---------- 通用标题 ---------- */
+        .section-head { margin-bottom: 64px; }
 
-        /* --- 通用标题样式 --- */
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 50px;
-            position: relative;
-            display: inline-block;
-        }
-        .section-title::after {
-            content: '';
+        .section-index {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            color: var(--red);
             display: block;
-            width: 40px;
-            height: 4px;
-            background: var(--primary-red);
-            margin-top: 10px;
+            margin-bottom: 12px;
         }
 
-        /* --- 游戏部分 (网格布局) --- */
-        .game-category { margin-bottom: 60px; }
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            line-height: 1.15;
+        }
+
+        .section-lede {
+            margin-top: 18px;
+            max-width: 560px;
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+        }
+
+        /* ---------- 游戏部分 ---------- */
+        .game-category { margin-bottom: 72px; }
+        .game-category:last-child { margin-bottom: 0; }
+
         .category-label {
-            font-size: 1rem;
+            font-size: 0.78rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            color: #666;
+            letter-spacing: 0.24em;
+            margin-bottom: 26px;
+            color: var(--ink-soft);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
         }
         .category-label::before {
-            content:''; width: 8px; height: 8px; background: var(--primary-red);
+            content: '';
+            width: 22px; height: 2px;
+            background: var(--red);
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+            gap: 26px;
         }
 
         .card {
             background: #fff;
-            padding: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #eee;
+            border: 1px solid var(--line);
+            padding: 18px 18px 24px;
             position: relative;
             overflow: hidden;
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(20, 20, 20, 0.08);
+            border-color: transparent;
         }
-        
-        /* 简约彩虹悬停效果 */
+
         .card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
-            background: var(--rainbow-gradient);
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: var(--rainbow);
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.3s;
+            transition: transform 0.4s ease;
         }
         .card:hover::before { transform: scaleX(1); }
 
-        .card-img-placeholder {
+        .card-cover {
             width: 100%;
-            aspect-ratio: 16 / 9; /* 固定图片比例为 16:9 */
-            background-color: #333; /* 这里以后换成图片 */
+            aspect-ratio: 16 / 9;
             margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-size: 0.8rem;
-            background-size: cover;
-            background-position: center;
+            overflow: hidden;
         }
+        .card-cover svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: transform 0.55s ease;
+        }
+        .card:hover .card-cover svg { transform: scale(1.06); }
 
-        .card h3 { font-size: 1.2rem; margin-bottom: 5px; }
-        .card p { font-size: 0.9rem; color: #777; }
+        .card h3 {
+            font-size: 1.12rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            margin-bottom: 6px;
+        }
+        .card p { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.65; }
 
-        /* --- 音乐部分 (双栏) --- */
+        /* ---------- 音乐部分 ---------- */
+        #music { background: var(--ink); }
+
         .music-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            background: var(--bg-dark);
+            grid-template-columns: 1.1fr 1fr;
+            gap: 70px;
             color: #fff;
-            padding: 80px; /* 宽大的内边距 */
+            padding: 110px 0;
             position: relative;
             overflow: hidden;
         }
 
-        /* 音乐背景装饰 */
         .music-bg-shape {
-            width: 300px; height: 300px; background: var(--primary-red);
-            position: absolute; top: -50px; right: -50px; opacity: 0.05; border-radius: 50%;
+            position: absolute;
+            width: 420px; height: 420px;
+            background: var(--red);
+            top: -140px; right: -120px;
+            opacity: 0.12;
+            border-radius: 50%;
+            filter: blur(10px);
+            pointer-events: none;
         }
 
-        .music-info h3 { font-size: 1.5rem; margin-bottom: 20px; color: var(--primary-red);}
+        .music-info .section-title { color: #fff; }
+        .music-info .section-lede { color: rgba(255,255,255,0.65); }
+
+        .music-genres-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin: 44px 0 16px;
+        }
+
         .music-tags span {
             display: inline-block;
-            border: 1px solid #444;
-            padding: 5px 15px;
-            margin-right: 10px;
-            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.22);
+            padding: 6px 18px;
+            margin: 0 10px 10px 0;
             font-size: 0.8rem;
-            border-radius: 20px;
-            transition: 0.3s;
+            letter-spacing: 0.05em;
+            border-radius: 999px;
+            color: rgba(255,255,255,0.85);
+            transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
         }
-        .music-tags span:hover { border-color: var(--primary-red); color: var(--primary-red); }
-
-        .band-list .band-item {
-            margin-bottom: 30px;
-            border-left: 2px solid var(--primary-red);
-            padding-left: 20px;
-        }
-        .band-item h4 { font-size: 1.8rem; font-weight: 300; }
-        .band-item p { color: #888; font-size: 0.9rem; margin-top: 5px;}
-
-        /* --- 3D 设计部分 --- */
-        .design-showcase {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .design-item {
-            flex: 1;
-            min-width: 280px;
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 40px;
-            text-align: center;
-            transition: 0.3s;
-        }
-        .design-item:hover { border-color: var(--primary-red); }
-
-        .design-shape {
-            width: 100px;
-            height: 100px;
-            background: #eee;
-            margin: 0 auto 20px;
-            border-radius: 50%; /* 圆形展示台 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem; color: #999;
+        .music-tags span:hover {
+            border-color: var(--red);
+            background: rgba(138, 28, 28, 0.25);
         }
 
-        /* --- 页脚 --- */
+        .band-list-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 34px;
+        }
+
+        .band-item {
+            border-left: 2px solid var(--red);
+            padding: 4px 0 4px 24px;
+            margin-bottom: 36px;
+            transition: border-color 0.3s ease;
+        }
+        .band-item:hover { border-color: #fff; }
+        .band-item h4 {
+            font-size: 1.7rem;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            line-height: 1.3;
+        }
+        .band-item p {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.82rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        /* ---------- 页脚 ---------- */
         footer {
-            background-color: var(--primary-red);
-            color: white;
+            background-color: var(--red);
+            background-image: radial-gradient(ellipse at 15% -20%, rgba(0,0,0,0.22), transparent 55%);
+            color: #fff;
             text-align: center;
-            padding: 50px 0;
+            padding: 90px 0 60px;
+        }
+
+        .footer-tagline {
+            font-size: 1.25rem;
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            line-height: 2;
+            opacity: 0.95;
+        }
+
+        .footer-divider {
+            width: 84px; height: 3px;
+            background: var(--rainbow);
+            margin: 36px auto;
+            border-radius: 2px;
+            opacity: 0.9;
+        }
+
+        .footer-contact {
             font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            opacity: 0.85;
+            margin-bottom: 40px;
         }
-        footer a:hover { text-decoration: underline; }
+        .footer-contact a { border-bottom: 1px solid rgba(255,255,255,0.35); padding-bottom: 2px; }
+        .footer-contact a:hover { border-color: #fff; }
 
-        /* --- 响应式 --- */
+        .footer-copy { opacity: 0.5; font-size: 0.78rem; letter-spacing: 0.08em; }
+
+        /* ---------- 响应式 ---------- */
+        @media (max-width: 860px) {
+            .music-layout { grid-template-columns: 1fr; gap: 50px; padding: 80px 0; }
+        }
+
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .music-layout { grid-template-columns: 1fr; padding: 60px 20px; }
-            .nav-inner { flex-wrap: wrap; }
-            nav { margin-top: 15px; width: 100%; }
-            nav ul { justify-content: space-between; gap: 10px; }
-            nav ul li a { font-size: 0.8rem; }
-        }
+            .section-padding { padding: 72px 0; }
+            .hero { min-height: 64vh; }
+            .hero p { font-size: 0.95rem; }
 
+            .nav-inner {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 14px 0;
+                row-gap: 12px;
+            }
+            .nav-right { width: 100%; justify-content: space-between; gap: 14px; }
+            nav ul { gap: 18px; }
+            nav ul li a { font-size: 0.72rem; letter-spacing: 0.12em; }
+        }
     </style>
 </head>
 <body>
@@ -315,75 +437,199 @@
     <header>
         <div class="container nav-inner">
             <a href="#" class="logo">
-                <img src="NanicaLogoInitial_square.png" alt="Nanica Studio Logo" class="logo-img">
+                <img src="NanicaLogo_transparent.png" alt="Nanica Studio Logo" class="logo-img">
                 NANICA STUDIO
             </a>
-            <nav>
-                <ul>
-                    <li><a href="#games">GAMES</a></li>
-                    <li><a href="#music">MUSIC</a></li>
-                    <li><a href="#design">DESIGN</a></li>
-                    <li><a href="#contact">CONTACT</a></li>
-                </ul>
-            </nav>
+            <div class="nav-right">
+                <nav>
+                    <ul>
+                        <li><a href="#games" data-i18n="nav_games">GAMES</a></li>
+                        <li><a href="#music" data-i18n="nav_music">MUSIC</a></li>
+                        <li><a href="#contact" data-i18n="nav_contact">CONTACT</a></li>
+                    </ul>
+                </nav>
+                <div class="lang-switch" role="group" aria-label="Language">
+                    <button type="button" data-lang="zh">中文</button>
+                    <button type="button" data-lang="ja">日本語</button>
+                    <button type="button" data-lang="en">EN</button>
+                </div>
+            </div>
         </div>
     </header>
 
     <section class="hero">
-        <div class="geo-shape circle hero-bg-circle"></div>
+        <div class="hero-bg-circle"></div>
         <div class="container hero-content">
-            <h1>Create.<br>Resonate.<br>Materialize.</h1>
-            <p>独立游戏开发 / 独立音乐制作 / 3D创意设计</p>
+            <div class="hero-kicker" data-i18n="hero_kicker">Independent Creative Studio</div>
+            <h1>Create.<br>Resonate.</h1>
+            <p data-i18n="hero_sub">独立游戏开发 / 独立音乐制作</p>
         </div>
     </section>
 
     <section id="games" class="section-padding">
         <div class="container">
-            <h2 class="section-title">Indie Games</h2>
+            <div class="section-head reveal">
+                <span class="section-index">01</span>
+                <h2 class="section-title">Indie Games</h2>
+                <p class="section-lede" data-i18n="games_lede">从个人实验到团队协作，我们用游戏讲述那些难以言说的故事。</p>
+            </div>
 
-            <div class="game-category">
-                <div class="category-label">Solo Projects</div>
+            <div class="game-category reveal">
+                <div class="category-label" data-i18n="cat_solo">Solo Projects</div>
                 <div class="grid">
                     <div class="card">
-                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #222, #333);">Orbit Echo View</div>
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orbit Echo">
+                                <rect width="320" height="180" fill="#171a21"/>
+                                <circle cx="52" cy="34" r="1.5" fill="#ffffff" opacity="0.5"/>
+                                <circle cx="278" cy="142" r="1.5" fill="#ffffff" opacity="0.4"/>
+                                <circle cx="86" cy="150" r="1" fill="#ffffff" opacity="0.35"/>
+                                <circle cx="246" cy="26" r="1" fill="#ffffff" opacity="0.45"/>
+                                <ellipse cx="160" cy="90" rx="122" ry="52" fill="none" stroke="#ffffff" stroke-opacity="0.10"/>
+                                <ellipse cx="160" cy="90" rx="86" ry="37" fill="none" stroke="#ffffff" stroke-opacity="0.18"/>
+                                <ellipse cx="160" cy="90" rx="52" ry="22" fill="none" stroke="#ffffff" stroke-opacity="0.30"/>
+                                <circle cx="160" cy="90" r="9" fill="#f5f0e8"/>
+                                <circle cx="236" cy="64" r="4" fill="#c0392b"/>
+                                <path d="M 250 46 A 52 52 0 0 1 262 92" fill="none" stroke="#c0392b" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M 262 36 A 68 68 0 0 1 278 96" fill="none" stroke="#c0392b" stroke-opacity="0.25" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
                         <h3>Orbit Echo</h3>
-                        <p>探索深空的孤独回响。</p>
+                        <p data-i18n="game_orbit">探索深空的孤独回响。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #333, #444);">Band Run View</div>
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Band Run">
+                                <rect width="320" height="180" fill="#1d1a19"/>
+                                <rect x="24" y="140" width="16" height="40" fill="#8a1c1c" opacity="0.55"/>
+                                <rect x="52" y="110" width="16" height="70" fill="#8a1c1c" opacity="0.75"/>
+                                <rect x="80" y="125" width="16" height="55" fill="#8a1c1c" opacity="0.6"/>
+                                <rect x="108" y="85" width="16" height="95" fill="#8a1c1c" opacity="0.85"/>
+                                <rect x="136" y="115" width="16" height="65" fill="#8a1c1c" opacity="0.7"/>
+                                <rect x="164" y="70" width="16" height="110" fill="#8a1c1c"/>
+                                <rect x="192" y="100" width="16" height="80" fill="#8a1c1c" opacity="0.8"/>
+                                <rect x="220" y="120" width="16" height="60" fill="#8a1c1c" opacity="0.65"/>
+                                <rect x="248" y="95" width="16" height="85" fill="#8a1c1c" opacity="0.8"/>
+                                <rect x="276" y="130" width="16" height="50" fill="#8a1c1c" opacity="0.55"/>
+                                <circle cx="172" cy="56" r="6" fill="#f5f0e8"/>
+                                <line x1="148" y1="50" x2="160" y2="50" stroke="#f5f0e8" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="142" y1="58" x2="156" y2="58" stroke="#f5f0e8" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                            </svg>
+                        </div>
                         <h3>Band Run</h3>
-                        <p>节奏与奔跑的完美结合。</p>
+                        <p data-i18n="game_bandrun">节奏与奔跑的完美结合。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #444, #555);">Golden Handcuff View</div>
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Golden Handcuff">
+                                <rect width="320" height="180" fill="#1d1a19"/>
+                                <circle cx="132" cy="90" r="32" fill="none" stroke="#d4a942" stroke-width="9"/>
+                                <circle cx="188" cy="90" r="32" fill="none" stroke="#f5f0e8" stroke-width="9"/>
+                                <path d="M 154.6 67.4 A 32 32 0 0 1 163.5 84.4" fill="none" stroke="#d4a942" stroke-width="9"/>
+                                <circle cx="132" cy="90" r="47" fill="none" stroke="#d4a942" stroke-opacity="0.12" stroke-width="1.5"/>
+                                <circle cx="188" cy="90" r="47" fill="none" stroke="#f5f0e8" stroke-opacity="0.1" stroke-width="1.5"/>
+                            </svg>
+                        </div>
                         <h3>Golden Handcuff</h3>
-                        <p>关于束缚与自由的叙事。</p>
+                        <p data-i18n="game_handcuff">关于束缚与自由的叙事。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #2a2a2a, #1a1a1a);">Hell Kid View</div>
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hell Kid">
+                                <rect width="320" height="180" fill="#171010"/>
+                                <path d="M160 34 C 192 66 200 94 189 122 C 182 141 169 151 160 153 C 151 151 138 141 131 122 C 120 94 128 66 160 34 Z" fill="#8a1c1c"/>
+                                <path d="M160 66 C 177 84 181 100 175 116 C 171 127 165 133 160 134 C 155 133 149 127 145 116 C 139 100 143 84 160 66 Z" fill="#c0392b"/>
+                                <circle cx="151" cy="112" r="4.5" fill="#f5f0e8"/>
+                                <circle cx="169" cy="112" r="4.5" fill="#f5f0e8"/>
+                                <circle cx="151.5" cy="113" r="2" fill="#171010"/>
+                                <circle cx="169.5" cy="113" r="2" fill="#171010"/>
+                            </svg>
+                        </div>
                         <h3>Hell Kid</h3>
-                        <p>地狱之子的逆袭之旅。</p>
+                        <p data-i18n="game_hellkid">地狱之子的逆袭之旅。</p>
                     </div>
                 </div>
             </div>
 
-            <div class="game-category">
-                <div class="category-label">Co-op Productions</div>
+            <div class="game-category reveal">
+                <div class="category-label" data-i18n="cat_coop">Co-op Productions</div>
                 <div class="grid">
                     <div class="card">
-                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #8a1c1c, #521111);">GameLoveLetter View</div>
-                        <h3>GameLoveLetter</h3>
-                        <p>写给游戏的一封情书。</p>
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LoveLetter">
+                                <rect width="320" height="180" fill="#3a0e0e"/>
+                                <rect x="100" y="55" width="120" height="74" rx="4" fill="none" stroke="#f5f0e8" stroke-width="3"/>
+                                <path d="M 102 58 L 160 100 L 218 58" fill="none" stroke="#f5f0e8" stroke-width="3" stroke-linejoin="round"/>
+                                <path d="M160 112 C 153 103 144 99 148 90 C 151 84 159 86 160 93 C 161 86 169 84 172 90 C 176 99 167 103 160 112 Z" fill="#ff5e62"/>
+                                <path d="M 62 40 C 70 34 78 40 74 48" fill="none" stroke="#ff5e62" stroke-opacity="0.4" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M 252 132 C 260 126 268 132 264 140" fill="none" stroke="#ff5e62" stroke-opacity="0.4" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3>LoveLetter</h3>
+                        <p data-i18n="game_loveletter">写给游戏的一封情书。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #6d1616, #3d0c0c);">FlowerFactoria View</div>
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FlowerFactoria">
+                                <rect width="320" height="180" fill="#151a14"/>
+                                <g fill="#f5f0e8" opacity="0.85">
+                                    <rect x="155" y="42" width="10" height="14" rx="2"/>
+                                    <rect x="155" y="42" width="10" height="14" rx="2" transform="rotate(45 160 90)"/>
+                                    <rect x="155" y="42" width="10" height="14" rx="2" transform="rotate(90 160 90)"/>
+                                    <rect x="155" y="42" width="10" height="14" rx="2" transform="rotate(135 160 90)"/>
+                                    <rect x="155" y="42" width="10" height="14" rx="2" transform="rotate(180 160 90)"/>
+                                    <rect x="155" y="42" width="10" height="14" rx="2" transform="rotate(225 160 90)"/>
+                                    <rect x="155" y="42" width="10" height="14" rx="2" transform="rotate(270 160 90)"/>
+                                    <rect x="155" y="42" width="10" height="14" rx="2" transform="rotate(315 160 90)"/>
+                                </g>
+                                <circle cx="160" cy="90" r="40" fill="none" stroke="#f5f0e8" stroke-width="3" opacity="0.85"/>
+                                <circle cx="160" cy="74" r="7" fill="#ff5e62"/>
+                                <circle cx="174" cy="82" r="7" fill="#ff9966"/>
+                                <circle cx="174" cy="98" r="7" fill="#ffd166"/>
+                                <circle cx="160" cy="106" r="7" fill="#66d97e"/>
+                                <circle cx="146" cy="98" r="7" fill="#5cb8ff"/>
+                                <circle cx="146" cy="82" r="7" fill="#9b7dff"/>
+                                <circle cx="160" cy="90" r="8" fill="#f5f0e8"/>
+                            </svg>
+                        </div>
                         <h3>FlowerFactoria</h3>
-                        <p>工业与自然的策略经营。</p>
+                        <p data-i18n="game_flower">工业与自然的策略经营。</p>
                     </div>
                     <div class="card">
-                        <div class="card-img-placeholder" style="background-image: linear-gradient(45deg, #521111, #2e0909);">Tabi Color View</div>
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tabi Color">
+                                <rect width="320" height="180" fill="#181614"/>
+                                <path d="M -10 152 C 60 150 80 102 120 96 C 170 89 172 62 220 56 C 262 51 292 42 330 34" fill="none" stroke="#f5f0e8" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 12" opacity="0.9"/>
+                                <circle cx="58" cy="140" r="6" fill="#ff5e62"/>
+                                <circle cx="110" cy="99" r="6" fill="#ff9966"/>
+                                <circle cx="160" cy="76" r="6" fill="#ffd166"/>
+                                <circle cx="212" cy="58" r="6" fill="#66d97e"/>
+                                <circle cx="262" cy="47" r="6" fill="#5cb8ff"/>
+                                <path d="M 298 38 L 298 20 L 312 25 L 298 30" fill="#c0392b" stroke="#c0392b" stroke-width="2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
                         <h3>Tabi Color</h3>
-                        <p>色彩斑斓的旅途。</p>
+                        <p data-i18n="game_tabi">色彩斑斓的旅途。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-cover">
+                            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="StrangeMarket">
+                                <rect width="320" height="180" fill="#14121d"/>
+                                <circle cx="272" cy="38" r="13" fill="#d9d4f0" opacity="0.9"/>
+                                <circle cx="279" cy="33" r="11" fill="#14121d"/>
+                                <path d="M 92 56 L 110 56 L 126 106 L 198 106 L 210 70 L 118 70" fill="none" stroke="#cfc8ea" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+                                <circle cx="138" cy="122" r="7" fill="none" stroke="#cfc8ea" stroke-width="3"/>
+                                <circle cx="188" cy="122" r="7" fill="none" stroke="#cfc8ea" stroke-width="3"/>
+                                <ellipse cx="152" cy="88" rx="4.5" ry="6.5" fill="#ffffff"/>
+                                <ellipse cx="172" cy="88" rx="4.5" ry="6.5" fill="#ffffff"/>
+                                <circle cx="153" cy="90" r="2" fill="#14121d"/>
+                                <circle cx="173" cy="90" r="2" fill="#14121d"/>
+                                <rect x="230" y="98" width="58" height="30" rx="4" fill="none" stroke="#9b7dff" stroke-width="2" opacity="0.85"/>
+                                <text x="259" y="119" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#b98cff">24H</text>
+                            </svg>
+                        </div>
+                        <h3>StrangeMarket</h3>
+                        <p data-i18n="game_strange">深夜营业中——欢迎光临灵异超市。经营模拟 × 怪谈。</p>
                     </div>
                 </div>
             </div>
@@ -391,60 +637,36 @@
     </section>
 
     <section id="music">
-        <div class="music-layout">
-             <div class="geo-shape music-bg-shape"></div>
-            <div class="music-info">
-                <h2 class="section-title" style="color:#fff; border-color:#fff;">Indie Music</h2>
-                <p style="margin-bottom: 30px; opacity: 0.8; max-width: 400px;">我们探索声音的边界，从指尖的钢琴叙事到躁动的乐队现场。</p>
-                
-                <h3 style="font-size: 1.1rem; color:#bbb;">Genres</h3>
-                <div class="music-tags">
-                    <span>J-Pop</span>
-                    <span>New Age</span>
-                    <span>Piano Solo</span>
-                    <span>Band Sound</span>
-                </div>
-            </div>
-
-            <div class="band-list">
-                <h3 style="color:#fff;">Our Bands</h3>
-                <br>
-                <div class="band-item">
-                    <a href="https://www.instagram.com/banish.hannashi/" target="_blank">
-                      <h4>半梨 ~ Banish ~ Hannashi</h4>
-                    </a>
-                    <p>Anime / Jpop</p>
-                </div>
-                <div class="band-item">
-                    <h4>Net Cafe</h4>
-                    <p>Rock</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="design" class="section-padding">
         <div class="container">
-            <h2 class="section-title">Design & 3D Print</h2>
-            <p style="max-width: 600px; margin-bottom: 40px; color:#555;">
-                将虚拟带入现实。专注于高精度3D打印、个人设计委托及游戏周边定制，连接数字创意与实体触感。
-            </p>
+            <div class="music-layout">
+                <div class="music-bg-shape"></div>
+                <div class="music-info reveal">
+                    <div class="section-head" style="margin-bottom: 0;">
+                        <span class="section-index">02</span>
+                        <h2 class="section-title">Indie Music</h2>
+                        <p class="section-lede" data-i18n="music_lede">我们探索声音的边界，从指尖的钢琴叙事到躁动的乐队现场。</p>
+                    </div>
+                    <div class="music-genres-label">Genres</div>
+                    <div class="music-tags">
+                        <span>J-Pop</span>
+                        <span>New Age</span>
+                        <span>Piano Solo</span>
+                        <span>Band Sound</span>
+                    </div>
+                </div>
 
-            <div class="design-showcase">
-                <div class="design-item">
-                    <div class="design-shape">Placeholder</div>
-                    <h3>Game Peripherals</h3>
-                    <p>Nanica Studio 游戏独家周边定制。</p>
-                </div>
-                <div class="design-item">
-                    <div class="design-shape" style="border-radius: 4px;">Placeholder</div> 
-                    <h3>Fan Art Merch</h3>
-                    <p>明日方舟 (Arknights) 及其他同人周边设计。</p>
-                </div>
-                <div class="design-item">
-                    <div class="design-shape" style="background-color: var(--primary-red); color:white; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; ">Shape</div> 
-                    <h3>Personal Commission</h3>
-                    <p>接受个人3D建模与打印委托。</p>
+                <div class="band-list reveal">
+                    <div class="band-list-label" data-i18n="music_bands">Our Bands</div>
+                    <div class="band-item">
+                        <a href="https://www.instagram.com/banish.hannashi/" target="_blank" rel="noopener">
+                            <h4>半梨 ~ Banish ~ Hannashi</h4>
+                        </a>
+                        <p>Anime / J-Pop</p>
+                    </div>
+                    <div class="band-item">
+                        <h4>Net Cafe</h4>
+                        <p>Rock</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -452,20 +674,127 @@
 
     <footer id="contact">
         <div class="container">
-            <!-- <div style="display: inline-flex; align-items: center; gap: 10px; margin-bottom: 15px; font-weight: bold; font-size: 1.2rem;">
-                 <img src="NanicaLogoInitial_square.png" alt="Logo" style="height: 24px; width: auto; filter: brightness(0) invert(1);"> NANICA STUDIO
-            </div> -->
-            <p style="margin: 10px 0; opacity: 0.7;">Heartbound Creation, Boundless Connection. <BR> 以心之名，连结万象</p>
-            
-            <div style="width: 80px; height: 3px; background: var(--rainbow-gradient); margin: 25px auto; opacity: 0.8;"></div>
-
-            <div style="margin-bottom: 20px; font-size: 0.9rem;">
-                <p>Contact: nanica.studio.2333@gmail.com</p>
-                 </div>
-            
-            <p style="opacity: 0.5; font-size: 0.8rem;">&copy; 2025 Nanica Studio. All Rights Reserved.</p>
+            <p class="footer-tagline" data-i18n="footer_tagline">Heartbound Creation, Boundless Connection.<br>以心之名，连结万象</p>
+            <div class="footer-divider"></div>
+            <p class="footer-contact"><span data-i18n="footer_contact">联系我们</span>: <a href="mailto:nanica.studio.2333@gmail.com">nanica.studio.2333@gmail.com</a></p>
+            <p class="footer-copy">&copy; 2025 Nanica Studio. All Rights Reserved.</p>
         </div>
     </footer>
 
+    <script>
+        /* ---------- 多语言 ---------- */
+        const I18N = {
+            zh: {
+                _lang: 'zh-CN',
+                nav_games: '游戏',
+                nav_music: '音乐',
+                nav_contact: '联系',
+                hero_kicker: '独立创作工作室',
+                hero_sub: '独立游戏开发 / 独立音乐制作',
+                games_lede: '从个人实验到团队协作，我们用游戏讲述那些难以言说的故事。',
+                cat_solo: '个人项目',
+                cat_coop: '合作项目',
+                game_orbit: '探索深空的孤独回响。',
+                game_bandrun: '节奏与奔跑的完美结合。',
+                game_handcuff: '关于束缚与自由的叙事。',
+                game_hellkid: '地狱之子的逆袭之旅。',
+                game_loveletter: '写给游戏的一封情书。',
+                game_flower: '工业与自然的策略经营。',
+                game_tabi: '色彩斑斓的旅途。',
+                game_strange: '深夜营业中——欢迎光临灵异超市。经营模拟 × 怪谈。',
+                music_lede: '我们探索声音的边界，从指尖的钢琴叙事到躁动的乐队现场。',
+                music_bands: '旗下乐队',
+                footer_tagline: 'Heartbound Creation, Boundless Connection.<br>以心之名，连结万象',
+                footer_contact: '联系我们'
+            },
+            ja: {
+                _lang: 'ja',
+                nav_games: 'ゲーム',
+                nav_music: '音楽',
+                nav_contact: 'お問い合わせ',
+                hero_kicker: 'インディークリエイティブスタジオ',
+                hero_sub: 'インディーゲーム開発 / インディー音楽制作',
+                games_lede: '個人の実験からチーム制作まで。言葉にできない物語を、ゲームで語ります。',
+                cat_solo: 'ソロプロジェクト',
+                cat_coop: '共同制作',
+                game_orbit: '深宇宙に響く、孤独なエコー。',
+                game_bandrun: 'リズムと疾走が交わる場所。',
+                game_handcuff: '束縛と自由をめぐる物語。',
+                game_hellkid: '地獄の子、逆襲の旅へ。',
+                game_loveletter: 'ゲームに捧げるラブレター。',
+                game_flower: '工業と自然のストラテジー経営。',
+                game_tabi: '色彩あふれる旅路。',
+                game_strange: '深夜営業中——ようこそ、怪異のスーパーへ。経営シム × 怪談。',
+                music_lede: '指先のピアノから熱狂のバンドサウンドまで、音の境界を探求します。',
+                music_bands: '所属バンド',
+                footer_tagline: 'Heartbound Creation, Boundless Connection.<br>心の名のもとに、万象を結ぶ',
+                footer_contact: 'お問い合わせ'
+            },
+            en: {
+                _lang: 'en',
+                nav_games: 'GAMES',
+                nav_music: 'MUSIC',
+                nav_contact: 'CONTACT',
+                hero_kicker: 'Independent Creative Studio',
+                hero_sub: 'Indie Game Development / Indie Music Production',
+                games_lede: 'From solo experiments to team productions, we tell the stories words can’t reach.',
+                cat_solo: 'Solo Projects',
+                cat_coop: 'Co-op Productions',
+                game_orbit: 'Lonely echoes from deep space.',
+                game_bandrun: 'Where rhythm meets the run.',
+                game_handcuff: 'A tale of restraint and freedom.',
+                game_hellkid: 'A hell-born kid fights back.',
+                game_loveletter: 'A love letter to games themselves.',
+                game_flower: 'Strategy where industry meets nature.',
+                game_tabi: 'A journey painted in every color.',
+                game_strange: 'Open all night — welcome to the haunted supermarket. Management sim × ghost stories.',
+                music_lede: 'We explore the edges of sound, from fingertip piano narratives to restless live band energy.',
+                music_bands: 'Our Bands',
+                footer_tagline: 'Heartbound Creation, Boundless Connection.',
+                footer_contact: 'Contact'
+            }
+        };
+
+        function setLang(lang) {
+            const dict = I18N[lang] || I18N.zh;
+            document.documentElement.lang = dict._lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key] !== undefined) el.innerHTML = dict[key];
+            });
+            document.querySelectorAll('.lang-switch button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            try { localStorage.setItem('nanica-lang', lang); } catch (e) {}
+        }
+
+        document.querySelectorAll('.lang-switch button').forEach(btn => {
+            btn.addEventListener('click', () => setLang(btn.dataset.lang));
+        });
+
+        (function initLang() {
+            let lang = null;
+            try { lang = localStorage.getItem('nanica-lang'); } catch (e) {}
+            if (!lang) {
+                const nav = (navigator.language || 'zh').toLowerCase();
+                lang = nav.startsWith('zh') ? 'zh' : nav.startsWith('ja') ? 'ja' : 'en';
+            }
+            setLang(lang);
+        })();
+
+        /* ---------- 滚动入场 ---------- */
+        document.documentElement.classList.add('js');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
