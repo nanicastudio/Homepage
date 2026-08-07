@@ -82,10 +82,27 @@ main{flex:1; display:flex; min-height:0}
 #boardWrap{flex:1; overflow:auto; position:relative}
 #board{position:relative; padding:26px 26px 60px; min-width:720px}
 #wires,#twires{position:absolute; inset:0; pointer-events:none; overflow:visible}
-.grid{
-  position:relative; z-index:1;
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:38px 30px;
+.grid{position:relative; z-index:1}
+.g-depts{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:38px 30px}
+.grid-sep{
+  margin:36px 0 14px; font-family:var(--mono); font-size:10.5px; letter-spacing:.24em; color:var(--dep-in);
+  display:flex; align-items:center; gap:12px;
 }
+.grid-sep::after{content:""; flex:1; border-top:1px dashed var(--line)}
+.g-groups{display:grid; grid-template-columns:repeat(auto-fill,minmax(165px,1fr)); gap:20px 18px}
+/* 组卡片:更小更紧凑 */
+.card.grp .card-head{padding:8px 11px 5px}
+.card.grp .dept-name{font-size:13.5px}
+.card.grp .dept-code{font-size:9px}
+.card.grp .dep-tags{padding:5px 11px 0; gap:3px}
+.card.grp .dep-tag{font-size:10px; padding:0 6px}
+.card.grp .members{padding:6px 7px 0; gap:4px}
+.card.grp .member{padding:4px 7px; border-left-width:2px}
+.card.grp .member .name{font-size:12px}
+.card.grp .member .role{font-size:9px}
+.card.grp .duties{margin-top:2px; gap:3px}
+.card.grp .duty{font-size:10.5px; padding:0 6px}
+.card.grp{padding-bottom:7px; clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%)}
 .card{
   background:var(--panel); border:1px solid var(--line);
   clip-path:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
@@ -240,26 +257,35 @@ td.c-task{max-width:800px}
 .row-del:hover{border-color:var(--warn)}
 .list-actions{padding:14px 0 0; display:flex; gap:8px}
 
-/* ===== view 4: timeline ===== */
+/* ===== view 4: timeline（纵向） ===== */
 #tlWrap{flex:1; overflow:auto; position:relative}
 #tlBoard{position:relative; padding:26px 26px 80px; min-height:400px}
 #flwires{position:absolute; inset:0; pointer-events:none; overflow:visible}
-#tlCols{position:relative; z-index:1; display:flex; gap:30px; align-items:flex-start}
-.tl-col{width:216px; flex-shrink:0}
-.tl-date{
-  font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--ak);
-  padding:7px 10px; border:1px solid var(--line); background:var(--panel);
-  display:flex; justify-content:space-between; align-items:baseline;
-  clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+#tlCols{position:relative; z-index:1; display:flex; flex-direction:column; gap:22px; max-width:1100px}
+#tlCols::before{content:""; position:absolute; left:150px; top:6px; bottom:6px; border-left:1px dashed var(--line)}
+.tl-row{display:grid; grid-template-columns:128px 1fr; gap:44px; position:relative}
+.tl-row::before{
+  content:""; position:absolute; left:146px; top:12px; width:9px; height:9px;
+  background:var(--ak); transform:rotate(45deg); z-index:1;
 }
-.tl-date .cnt{color:var(--dim); font-size:10px}
-.tl-col.past .tl-date{color:var(--dim)}
-.tl-col.today-col .tl-date{background:var(--ak); color:#14161A; font-weight:700}
-.tl-col.today-col .tl-date .cnt{color:#14161A}
-.tl-col.undated .tl-date{color:var(--muted); border-style:dashed; clip-path:none}
+.tl-row.past::before{background:var(--dim)}
+.tl-row.today-row::before{background:var(--ak); box-shadow:0 0 0 4px rgba(255,217,15,.22); width:11px; height:11px; left:145px}
+.tl-row.undated::before{background:transparent; border:1px dashed var(--muted)}
+.tl-when{
+  text-align:right; padding-top:5px;
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--ak);
+  display:flex; flex-direction:column; align-items:flex-end; gap:2px;
+}
+.tl-when .cnt{color:var(--dim); font-size:10px}
+.tl-row.past .tl-when{color:var(--dim)}
+.tl-row.today-row .tl-when{color:var(--ak); font-weight:700}
+.tl-row.today-row .tl-when .tl-d{background:var(--ak); color:#14161A; padding:1px 8px}
+.tl-row.undated .tl-when{color:var(--muted)}
+.tl-tasks{display:flex; flex-wrap:wrap; gap:9px; align-items:flex-start}
 .tltask{
+  width:236px;
   background:var(--panel-2); border:1px solid transparent; border-left:3px solid var(--stc,#666);
-  border-radius:var(--radius); padding:7px 9px; margin-top:7px; cursor:pointer;
+  border-radius:var(--radius); padding:7px 9px; cursor:pointer;
   transition:border-color .15s, opacity .2s;
 }
 .tltask:hover{border-color:#3a424d; border-left-color:var(--stc)}
@@ -277,6 +303,13 @@ td.c-task{max-width:800px}
 .tltask.overdue .t-meta{color:#FF6B6B}
 .tlegend .lo i{background:#FF6B6B}
 .today-chip{font-family:var(--mono); font-size:10.5px; color:#14161A; background:var(--ak); padding:2px 9px; letter-spacing:.08em}
+@media (max-width:700px){
+  #tlCols::before{display:none}
+  .tl-row{grid-template-columns:1fr; gap:8px}
+  .tl-row::before{display:none}
+  .tl-when{text-align:left; align-items:flex-start; flex-direction:row; gap:8px; padding-top:0}
+  .tltask{width:100%}
+}
 /* 列表:日期输入 */
 #taskTable input[type="date"]{color-scheme:dark; width:126px}
 #taskTable input.due-over{color:#FF6B6B}
