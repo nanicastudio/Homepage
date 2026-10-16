@@ -16,6 +16,7 @@
   --st0:#6B7280;  /* 未开始 */
   --st1:#FFD90F;  /* 进行中 */
   --st2:#35D07F;  /* 已完成 */
+  --st3:#8B4A4A;  /* 废弃 */
   --radius:2px;
   --mono:ui-monospace,'SF Mono',Consolas,monospace;
 }
@@ -195,7 +196,7 @@ aside h2{font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var
 .task .t-note{font-size:10.5px; color:var(--warn)}
 .tlegend{position:sticky; left:26px; display:flex; gap:16px; padding:0 0 16px; font-size:11.5px; color:var(--muted); flex-wrap:wrap; z-index:2}
 .tlegend i{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px}
-.tlegend .l0 i{background:var(--st0)} .tlegend .l1 i{background:var(--st1)} .tlegend .l2 i{background:var(--st2)}
+.tlegend .l0 i{background:var(--st0)} .tlegend .l1 i{background:var(--st1)} .tlegend .l2 i{background:var(--st2)} .tlegend .l3 i{background:var(--st3)}
 .tlegend span.ln{display:inline-block; width:20px; border-top:2px solid; margin-right:5px; vertical-align:middle}
 .tlegend .lu span.ln{border-color:var(--ak)} .tlegend .ld span.ln{border-color:var(--dep-in)}
 
@@ -215,6 +216,8 @@ aside h2{font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var
 .chip.on{background:var(--ak); border-color:var(--ak); color:#14161A; font-weight:700}
 .chip.st0.on{background:var(--st0); border-color:var(--st0); color:#fff}
 .chip.st2.on{background:var(--st2); border-color:var(--st2); color:#08301C}
+.chip.st3.on{background:var(--st3); border-color:var(--st3); color:#fff}
+.task.dead .t-name, .tltask.dead .t-name{text-decoration:line-through; color:var(--dim)}
 .chip .cdot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:1px}
 .f-summary{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.04em}
 .f-summary b{color:var(--ink)}
@@ -429,6 +432,7 @@ footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; col
           <span class="l0"><i></i>未开始</span>
           <span class="l1"><i></i>进行中</span>
           <span class="l2"><i></i>已完成</span>
+          <button id="tbDeadToggle" class="chip st3" title="点击显示/隐藏废弃任务">显示废弃</button>
           <span class="lu"><span class="ln"></span>黄线：选中任务的 前置(上游)</span>
           <span class="ld"><span class="ln"></span>蓝线：等它的 下游任务</span>
         </div>
@@ -492,6 +496,7 @@ footer{border-top:1px solid var(--line); padding:8px 20px; font-size:11.5px; col
           <span class="l0"><i></i>未开始</span>
           <span class="l1"><i></i>进行中</span>
           <span class="l2"><i></i>已完成</span>
+          <button id="tlDeadToggle" class="chip st3" title="点击显示/隐藏废弃任务">显示废弃</button>
           <span class="lo"><i></i>已逾期</span>
           <span class="lu"><span class="ln"></span>黄线：选中任务的 前置</span>
           <span class="ld"><span class="ln"></span>蓝线：等它的 下游</span>
